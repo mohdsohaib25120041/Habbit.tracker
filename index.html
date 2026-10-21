@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus - Gamified Habit Tracker</title>
+    <title>Quantum - Gamified Habit Tracker</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 
@@ -416,7 +416,7 @@
     <div class="toast" id="toastMsg">Level Up! 🎉</div>
 
     <aside class="sidebar">
-        <div class="logo">⚡ Nexus<span>.</span></div>
+        <div class="logo">⚡ Quantum<span>.</span></div>
         <div class="nav-links">
             <a href="#" class="nav-item active" onclick="changePage('dashboard', this)">📊 Dashboard</a>
             <a href="#" class="nav-item" onclick="changePage('habits', this)">✅ My Habits</a>
@@ -645,7 +645,7 @@
             document.getElementById('greetingText').innerText = `${greeting}, Achiever!`;
             document.getElementById('currentDate').innerText = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 
-            const savedData = localStorage.getItem('nexusHabitDataV5');
+            const savedData = localStorage.getItem('quantumHabitDataV1');
             if (savedData) {
                 appState = JSON.parse(savedData);
                 appState.habits.forEach(h => { if(!h.history) h.history = {}; });
@@ -661,7 +661,7 @@
         }
 
         function saveData() {
-            localStorage.setItem('nexusHabitDataV5', JSON.stringify(appState));
+            localStorage.setItem('quantumHabitDataV1', JSON.stringify(appState));
         }
 
         function syncTodayStatus() {
