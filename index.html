@@ -269,13 +269,13 @@
                     <span>Energy</span>
                     <span style="color: var(--neon-yellow); font-weight: 700;" id="energyValText">8</span>
                 </div>
-                <input type="range" id="energySlider" min="1" max="10" value="8" disabled>
+                <input type="range" id="energySlider" min="0" max="10" value="8" disabled>
 
                 <div class="mindset-row" style="margin-top: 20px;">
                     <span>Focus</span>
                     <span style="color: var(--neon-cyan); font-weight: 700;" id="focusValText">7</span>
                 </div>
-                <input type="range" id="focusSlider" min="1" max="10" value="7" disabled>
+                <input type="range" id="focusSlider" min="0" max="10" value="7" disabled>
                 <p style="font-size: 10px; color: var(--text-muted); margin-top: 10px; text-align: center;">(Automatically increases/decreases as you complete Tasks)</p>
             </div>
 
@@ -430,6 +430,8 @@
             updateMindsetSliderVisual('focus', state.focus);
             document.getElementById('energyValText').innerText = state.energy;
             document.getElementById('focusValText').innerText = state.focus;
+            document.getElementById('energySlider').value = state.energy;
+            document.getElementById('focusSlider').value = state.focus;
 
             renderAll();
         }
@@ -540,4 +542,17 @@
                         <h3>${h.name}</h3>
                         <p>Reward: +${h.xp} XP</p>
                     </div>
-                    <div style="color: var(--neon-red); cursor: pointer; font-size: 18px;" onclick="deleteH
+                    <div style="color: var(--neon-red); cursor: pointer; font-size: 18px;" onclick="deleteHabit('${h.id}')">🗑️</div>
+                `;
+                manageList.appendChild(manageItem);
+            });
+        }
+
+        function renderGoals() {
+            const list = document.getElementById('goalsList');
+            list.innerHTML = '';
+            state.goals.forEach(g => {
+                const pct = Math.min((g.current / g.target) * 100, 100);
+                const div = document.createElement('div');
+                div.className = 'goal-item';
+                div.innerHTML =
