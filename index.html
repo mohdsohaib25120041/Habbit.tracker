@@ -95,8 +95,13 @@
             display: flex;
             flex-direction: column;
             gap: 25px;
-            padding-bottom: 100px; /* Space for mobile nav */
+            padding-bottom: 100px;
         }
+
+        /* Page Sections (For Navigation) */
+        .page-section { display: none; animation: fadeIn 0.4s ease; }
+        .page-section.active { display: flex; flex-direction: column; gap: 25px; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Header */
         .top-header {
@@ -128,7 +133,7 @@
         /* Gamification Stats */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmaxne(200px, 1fr));
             gap: 20px;
         }
         .stat-card {
@@ -162,14 +167,8 @@
             transition: width 0.5s ease;
         }
 
-        /* Main Workspace Layout */
-        .workspace {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 25px;
-        }
-
-        /* Panels */
+        /* Layout Grids */
+        .workspace { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; }
         .panel {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -199,7 +198,6 @@
 
         /* Habit List */
         .habit-list { display: flex; flex-direction: column; gap: 12px; }
-        
         .habit-row {
             display: flex;
             align-items: center;
@@ -211,7 +209,6 @@
             animation: slideIn 0.3s ease-out;
         }
         @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
-        
         .habit-row:hover { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.1); }
         .habit-row.completed { opacity: 0.6; }
         .habit-row.completed h3 { text-decoration: line-through; color: var(--text-muted); }
@@ -221,7 +218,6 @@
         .habit-info p { font-size: 12px; color: var(--text-muted); display: flex; gap: 10px; align-items: center;}
         .habit-xp { color: var(--neon-yellow); font-weight: 600; font-size: 12px; background: rgba(255, 204, 0, 0.1); padding: 2px 8px; border-radius: 10px;}
 
-        /* Action Buttons (Edit/Delete) */
         .habit-actions { display: flex; gap: 8px; opacity: 0; transition: opacity 0.2s; margin-right: 15px;}
         .habit-row:hover .habit-actions { opacity: 1; }
         .action-btn { background: transparent; border: none; cursor: pointer; font-size: 16px; opacity: 0.5; transition: all 0.2s; }
@@ -252,9 +248,7 @@
         /* Big 3 Section */
         .big3-list { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
         .big3-item { display: flex; align-items: center; gap: 10px; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 12px; }
-        .big3-item input[type="text"] {
-            background: transparent; border: none; color: white; font-family: 'Outfit'; font-size: 14px; flex-grow: 1; outline: none;
-        }
+        .big3-item input[type="text"] { background: transparent; border: none; color: white; font-family: 'Outfit'; font-size: 14px; flex-grow: 1; outline: none; }
         .big3-item input[type="text"]:focus { border-bottom: 1px solid var(--neon-cyan); }
         .big3-item.checked input { text-decoration: line-through; color: var(--text-muted); }
 
@@ -266,11 +260,21 @@
         .circle-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 28px; font-weight: 700; }
 
         /* Analytics Chart */
-        .bars { display: flex; align-items: flex-end; gap: 8px; height: 100px; margin-top: 15px; width: 100%; justify-content: space-between;}
-        .bar-wrapper { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .bars { display: flex; align-items: flex-end; gap: 8px; height: 120px; margin-top: 15px; width: 100%; justify-content: space-between;}
+        .bar-wrapper { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; height: 100%; justify-content: flex-end;}
         .bar { width: 100%; background: rgba(255,255,255,0.1); border-radius: 5px 5px 0 0; transition: height 0.5s; min-height: 5px;}
         .bar.active { background: var(--neon-cyan); box-shadow: 0 0 10px var(--neon-cyan); }
         .bar-label { font-size: 10px; color: var(--text-muted); }
+
+        /* Achievements */
+        .achievements-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
+        .badge-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); padding: 20px; border-radius: 16px; text-align: center; transition: all 0.3s; }
+        .badge-card:hover { background: rgba(255,255,255,0.05); }
+        .badge-icon { font-size: 40px; margin-bottom: 10px; filter: grayscale(100%); opacity: 0.5; transition: all 0.3s;}
+        .badge-card.unlocked .badge-icon { filter: grayscale(0%); opacity: 1; text-shadow: 0 0 20px rgba(0,240,255,0.5); }
+        .badge-card.unlocked { border-color: rgba(0,240,255,0.3); box-shadow: 0 0 15px rgba(0,240,255,0.1); }
+        .badge-title { font-weight: 600; font-size: 14px; margin-bottom: 5px; }
+        .badge-desc { font-size: 11px; color: var(--text-muted); }
 
         /* Modal */
         .modal-overlay {
@@ -300,13 +304,13 @@
         /* Toast Notification */
         .toast {
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
-            background: var(--bg-card); border: 1px solid var(--neon-cyan); color: var(--neon-cyan);
+            background: var(--bg-card); border: 1px solid var(--neon-cyan); color: var(--on-cyan);
             padding: 12px 24px; border-radius: 50px; font-weight: 600; z-index: 2000;
             box-shadow: 0 0 20px rgba(0,240,255,0.3); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .toast.show { transform: translateX(-50%) translateY(0); }
 
-        /* Mobile Nav Bar */
+        /* Mobile Nav */
         .mobile-nav {
             display: none;
             position: fixed; bottom: 0; left: 0; right: 0;
@@ -314,14 +318,14 @@
             border-top: 1px solid var(--border-color);
             padding: 10px 20px; justify-content: space-around; z-index: 100;
         }
-        .mobile-nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: var(--text-muted); gap: 4px; }
+        .mobile-nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: var(--text-muted); gap: 4px; cursor: pointer;}
         .mobile-nav-item.active { color: var(--neon-cyan); }
         .mobile-nav-icon { font-size: 20px; }
 
         /* Responsive */
         @media (max-width: 1024px) {
             .workspace { grid-template-columns: 1fr; }
-            .habit-actions { opacity: 1; } /* Always show on touch devices */
+            .habit-actions { opacity: 1; }
         }
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
@@ -344,60 +348,83 @@
     <aside class="sidebar">
         <div class="logo">⚡ Nexus<span>.</span></div>
         <div class="nav-links">
-            <a href="#" class="nav-item active">📊 Dashboard</a>
-            <a href="#" class="nav-item">✅ My Habits</a>
-            <a href="#" class="nav-item">📅 Weekly Planner</a>
-            <a href="#" class="nav-item">📈 Analytics</a>
-            <a href="#" class="nav-item">🏆 Achievements</a>
+            <a href="#" class="nav-item active" onclick="changePage('dashboard', this)">📊 Dashboard</a>
+            <a href="#" class="nav-item" onclick="changePage('habits', this)">✅ My Habits</a>
+            <a href="#" class="nav-item" onclick="changePage('analytics', this)">📈 Analytics</a>
+            <a href="#" class="nav-item" onclick="changePage('achievements', this)">🏆 Achievements</a>
         </div>
     </aside>
 
     <!-- Main Content -->
     <main class="main-content">
         
-        <!-- Header -->
-        <header class="top-header">
-            <div>
-                <h1 id="greetingText">Hello!</h1>
-                <p id="currentDate">Loading date...</p>
-            </div>
-            <div class="user-profile">
-                <div class="avatar">U</div>
+        <!-- ================= DASHBOARD PAGE ================= -->
+        <div id="page-dashboard" class="page-section active">
+            <header class="top-header">
                 <div>
-                    <div style="font-weight: 600;">Achiever</div>
-                    <div style="font-size: 12px; color: var(--neon-cyan);">Level <span id="userLevelDisplay">1</span></div>
+                    <h1 id="greetingText">Hello!</h1>
+                    <p id="currentDate">Loading date...</p>
+                </div>
+                <div class="user-profile">
+                    <div class="avatar">U</div>
+                    <div>
+                        <div style="font-weight: 600;">Achiever</div>
+                        <div style="font-size: 12px; color: var(--neon-cyan);">Level <span id="userLevelDisplay">1</span></div>
+                    </div>
+                </div>
+            </header>
+
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-title">Total XP</div>
+                    <div class="stat-value" style="color: var(--neon-yellow);" id="totalXpDisplay">0</div>
+                    <div class="level-bar-container">
+                        <div class="level-bar-fill" id="xpProgressBar"></div>
+                    </div>
+                    <div style="font-size: 11px; color: var(--text-muted); margin-top: 5px; text-align: right;" id="nextLevelXpText">100 XP to Level Up</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Current Streak</div>
+                    <div class="stat-value" style="color: var(--neon-green);">🔥 <span id="streakDisplay">1</span> <span>Days</span></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Habits Completed</div>
+                    <div class="stat-value" id="habitsCompletedDisplay">0/0</div>
+                </div>
+            </section>
+
+            <div class="workspace">
+                <div class="panel" style="text-align: center;">
+                    <h2 class="panel-title" style="margin-bottom: 20px; text-align: left;">Daily Overview</h2>
+                    <div class="circle-wrap">
+                        <svg>
+                            <circle class="circle-bg" cx="70" cy="70" r="60"></circle>
+                            <circle class="circle-progress" cx="70" cy="70" r="60" id="progressRing"></circle>
+                        </svg>
+                        <div class="circle-text" id="progressText">0%</div>
+                    </div>
+                    <p style="color: var(--text-muted); font-size: 13px; margin-top: 15px;" id="progressMessage">Let's get started!</p>
+                </div>
+                
+                <div class="panel">
+                    <h2 class="panel-title" style="margin-bottom: 15px;">Weekly Performance</h2>
+                    <div class="bars" id="weeklyBars">
+                        <!-- Bars generated by JS -->
+                    </div>
                 </div>
             </div>
-        </header>
+        </div>
 
-        <!-- Gamification Stats -->
-        <section class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-title">Total XP</div>
-                <div class="stat-value" style="color: var(--neon-yellow);" id="totalXpDisplay">0</div>
-                <div class="level-bar-container">
-                    <div class="level-bar-fill" id="xpProgressBar"></div>
-                </div>
-                <div style="font-size: 11px; color: var(--text-muted); margin-top: 5px; text-align: right;" id="nextLevelXpText">100 XP to Level Up</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-title">Current Streak</div>
-                <div class="stat-value" style="color: var(--neon-green);">🔥 <span id="streakDisplay">1</span> <span>Days</span></div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-title">Habits Completed</div>
-                <div class="stat-value" id="habitsCompletedDisplay">0/0</div>
-            </div>
-        </section>
-
-        <!-- Main Workspace -->
-        <div class="workspace">
+        <!-- ================= HABITS PAGE ================= -->
+        <div id="page-habits" class="page-section">
+            <header class="top-header">
+                <h1>My Habits</h1>
+            </header>
             
-            <!-- Left Column: Habits -->
-            <div style="display: flex; flex-direction: column; gap: 25px;">
+            <div class="workspace">
                 <section class="panel">
                     <div class="panel-header">
-                        <h2 class="panel-title">Today's Habits</h2>
+                        <h2 class="panel-title">Today's Checklist</h2>
                         <button class="btn-primary" onclick="openModal()">+ Add Habit</button>
                     </div>
                     <div class="habit-list" id="habitList">
@@ -405,7 +432,6 @@
                     </div>
                 </section>
 
-                <!-- Today's Big 3 -->
                 <section class="panel">
                     <div class="panel-header">
                         <h2 class="panel-title">Today's Big 3 🎯</h2>
@@ -426,41 +452,58 @@
                     </div>
                 </section>
             </div>
+        </div>
 
-            <!-- Right Column: Daily Progress & Analytics -->
-            <section style="display: flex; flex-direction: column; gap: 25px;">
-                
-                <!-- Progress Ring -->
-                <div class="panel" style="text-align: center;">
-                    <h2 class="panel-title" style="margin-bottom: 20px; text-align: left;">Daily Progress</h2>
-                    <div class="circle-wrap">
-                        <svg>
-                            <circle class="circle-bg" cx="70" cy="70" r="60"></circle>
-                            <circle class="circle-progress" cx="70" cy="70" r="60" id="progressRing"></circle>
-                        </svg>
-                        <div class="circle-text" id="progressText">0%</div>
-                    </div>
-                    <p style="color: var(--text-muted); font-size: 13px; margin-top: 15px;" id="progressMessage">Let's get started!</p>
-                </div>
-
-                <!-- Weekly Analytics -->
-                <div class="panel">
-                    <h2 class="panel-title" style="margin-bottom: 15px;">Weekly Performance</h2>
-                    <div class="bars" id="weeklyBars">
-                        <!-- Bars generated by JS -->
-                    </div>
-                </div>
-
+        <!-- ================= ANALYTICS PAGE ================= -->
+        <div id="page-analytics" class="page-section">
+            <header class="top-header">
+                <h1>Analytics</h1>
+            </header>
+            <section class="panel">
+                <h2 class="panel-title">Coming Soon...</h2>
+                <p style="color: var(--text-muted); margin-top: 10px;">Detailed charts and heatmaps will be added here.</p>
             </section>
         </div>
+
+        <!-- ================= ACHIEVEMENTS PAGE ================= -->
+        <div id="page-achievements" class="page-section">
+            <header class="top-header">
+                <h1>Achievements</h1>
+            </header>
+            <section class="panel">
+                <div class="achievements-grid">
+                    <div class="badge-card unlocked">
+                        <div class="badge-icon">🚀</div>
+                        <div class="badge-title">First Step</div>
+                        <div class="badge-desc">Completed 1 habit</div>
+                    </div>
+                    <div class="badge-card">
+                        <div class="badge-icon">🔥</div>
+                        <div class="badge-title">On Fire</div>
+                        <div class="badge-desc">7 Day Streak</div>
+                    </div>
+                    <div class="badge-card">
+                        <div class="badge-icon">🏆</div>
+                        <div class="badge-title">Champion</div>
+                        <div class="badge-desc">30 Day Streak</div>
+                    </div>
+                    <div class="badge-card">
+                        <div class="badge-icon">💎</div>
+                        <div class="badge-title">Diamond</div>
+                        <div class="badge-desc">Reach Level 5</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
     </main>
 
     <!-- Mobile Bottom Navigation -->
     <nav class="mobile-nav">
-        <div class="mobile-nav-item active"><span class="mobile-nav-icon">📊</span>Home</div>
-        <div class="mobile-nav-item"><span class="mobile-nav-icon">✅</span>Habits</div>
-        <div class="mobile-nav-item"><span class="mobile-nav-icon">📅</span>Planner</div>
-        <div class="mobile-nav-item"><span class="mobile-nav-icon">📈</span>Stats</div>
+        <div class="mobile-nav-item active" onclick="changePage('dashboard', this)"><span class="mobile-nav-icon">📊</span>Home</div>
+        <div class="mobile-nav-item" onclick="changePage('habits', this)"><span class="mobile-nav-icon">✅</span>Habits</div>
+        <div class="mobile-nav-item" onclick="changePage('analytics', this)"><span class="mobile-nav-icon">📈</span>Stats</div>
+        <div class="mobile-nav-item" onclick="changePage('achievements', this)"><span class="mobile-nav-icon">🏆</span>Badges</div>
     </nav>
 
     <!-- Add/Edit Habit Modal -->
@@ -499,13 +542,38 @@
             { id: '1', name: 'Wake up at 06:00', xp: 10, completed: false },
             { id: '2', name: 'Meditation', xp: 10, completed: false },
             { id: '3', name: 'Read 10 pages', xp: 20, completed: false },
-            { id: '4', name: 'Workout', xp: 30, completed: false },
-            { id: '5', name: 'No Sugar', xp: 15, completed: false }
+            { id: '4', name: 'Workout', xp: 30, completed: false }
         ];
+
+        // --- Navigation Logic ---
+        function changePage(pageId, element) {
+            // Hide all pages
+            document.querySelectorAll('.page-section').forEach(page => {
+                page.classList.remove('active');
+            });
+            // Show selected page
+            document.getElementById(`page-${pageId}`).classList.add('active');
+
+            // Update active state in Sidebar
+            document.querySelectorAll('.sidebar .nav-item').forEach(nav => nav.classList.remove('active'));
+            if(element && element.classList.contains('nav-item')) {
+                element.classList.add('active');
+            } else {
+                // If clicked from mobile nav, highlight sidebar equivalent
+                document.querySelectorAll('.sidebar .nav-item').forEach(nav => {
+                    if(nav.innerText.toLowerCase().includes(pageId.substring(0,4))) nav.classList.add('active');
+                });
+            }
+
+            // Update active state in Mobile Nav
+            document.querySelectorAll('.mobile-nav-item').forEach(nav => nav.classList.remove('active'));
+            if(element && element.classList.contains('mobile-nav-item')) {
+                element.classList.add('active');
+            }
+        }
 
         // --- Initialization ---
         function init() {
-            // Set Greeting & Date
             const now = new Date();
             const hours = now.getHours();
             let greeting = "Good Evening";
@@ -515,8 +583,7 @@
             document.getElementById('greetingText').innerText = `${greeting}, Achiever!`;
             document.getElementById('currentDate').innerText = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 
-            // Load Data
-            const savedData = localStorage.getItem('nexusHabitDataV2');
+            const savedData = localStorage.getItem('nexusHabitDataV3');
             if (savedData) {
                 appState = JSON.parse(savedData);
             } else {
@@ -528,19 +595,16 @@
             updateUI();
         }
 
-        // --- Core Logic ---
         function saveData() {
-            localStorage.setItem('nexusHabitDataV2', JSON.stringify(appState));
+            localStorage.setItem('nexusHabitDataV3', JSON.stringify(appState));
         }
 
         function toggleHabit(id) {
             const habit = appState.habits.find(h => h.id === id);
             if (!habit) return;
 
-            // Toggle State
             habit.completed = !habit.completed;
 
-            // Update XP (Anti-Cheat logic)
             if (habit.completed) {
                 appState.totalXp += habit.xp;
                 showToast(`+${habit.xp} XP Earned! 🚀`);
@@ -573,11 +637,9 @@
             if (newLevel > appState.currentLevel) {
                 appState.currentLevel = newLevel;
                 showToast(`🎉 Level Up! You are now Level ${newLevel}`);
-                // Optional: Add confetti or sound effect here
             }
         }
 
-        // --- UI Rendering ---
         function renderHabits() {
             const container = document.getElementById('habitList');
             container.innerHTML = '';
@@ -606,31 +668,27 @@
             const totalHabits = appState.habits.length;
             const completedHabits = appState.habits.filter(h => h.completed).length;
             
-            // Text Stats
             document.getElementById('habitsCompletedDisplay').innerText = `${completedHabits}/${totalHabits}`;
             document.getElementById('totalXpDisplay').innerText = appState.totalXp;
 
-            // Level Bar
             const xpInCurrentLevel = appState.totalXp % 100;
             document.getElementById('userLevelDisplay').innerText = appState.currentLevel;
             document.getElementById('xpProgressBar').style.width = `${xpInCurrentLevel}%`;
             document.getElementById('nextLevelXpText').innerText = `${100 - xpInCurrentLevel} XP to Level ${appState.currentLevel + 1}`;
 
-            // Progress Ring (Circumference = 2 * pi * 60 = 377)
             const percentage = totalHabits === 0 ? 0 : Math.round((completedHabits / totalHabits) * 100);
             document.getElementById('progressText').innerText = `${percentage}%`;
             
             const ring = document.getElementById('progressRing');
-            const offset = 377 - ((percentage / 100) * 377);
+            const offset = 440 - ((percentage / 100) * 440); // Circumference for r=70 is ~440
             ring.style.strokeDashoffset = offset;
 
-            // Dynamic Ring Color
             if(percentage === 100) {
                 ring.style.stroke = 'var(--neon-green)';
-                document.getElementById('progressMessage').innerText = "Perfect Day! You crushed it. 🏆";
+                document.getElementById('progressMessage').innerText = "Perfect Day! 🏆";
             } else {
                 ring.style.stroke = 'var(--neon-cyan)';
-                document.getElementById('progressMessage').innerText = percentage > 50 ? "More than halfway there! Keep going." : "Let's build that momentum!";
+                document.getElementById('progressMessage').innerText = percentage > 50 ? "Halfway there!" : "Let's build momentum!";
             }
         }
 
@@ -639,11 +697,10 @@
             const container = document.getElementById('weeklyBars');
             container.innerHTML = '';
             
-            // Dummy data for past days, today's data is dynamic
             const todayIndex = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1; 
             
             days.forEach((day, index) => {
-                let height = Math.floor(Math.random() * 40) + 10; // Dummy past data
+                let height = Math.floor(Math.random() * 40) + 10;
                 let isActive = false;
 
                 if (index === todayIndex) {
@@ -652,7 +709,7 @@
                     height = total === 0 ? 5 : (completed / total) * 100;
                     isActive = true;
                 } else if (index > todayIndex) {
-                    height = 5; // Future days
+                    height = 5;
                 }
 
                 const wrapper = document.createElement('div');
@@ -665,7 +722,6 @@
             });
         }
 
-        // --- Modal & CRUD Operations ---
         function openModal() {
             document.getElementById('modalTitle').innerText = "Create New Habit";
             document.getElementById('editHabitId').value = "";
@@ -683,22 +739,15 @@
             const name = document.getElementById('habitNameInput').value;
             const xp = parseInt(document.getElementById('habitXpInput').value);
 
-            if (!name.trim()) return showToast("Please enter a habit name!", true);
+            if (!name.trim()) return showToast("Please enter a name!", true);
 
             if (id) {
-                // Edit Mode
                 const habit = appState.habits.find(h => h.id === id);
                 habit.name = name;
                 habit.xp = xp;
                 showToast("Habit updated! ✏️");
             } else {
-                // Add Mode
-                appState.habits.push({
-                    id: Date.now().toString(),
-                    name: name,
-                    xp: xp,
-                    completed: false
-                });
+                appState.habits.push({ id: Date.now().toString(), name: name, xp: xp, completed: false });
                 showToast("New habit created! ✨");
             }
 
@@ -712,7 +761,6 @@
         function editHabit(id) {
             const habit = appState.habits.find(h => h.id === id);
             if (!habit) return;
-
             document.getElementById('modalTitle').innerText = "Edit Habit";
             document.getElementById('editHabitId').value = habit.id;
             document.getElementById('habitNameInput').value = habit.name;
@@ -721,13 +769,9 @@
         }
 
         function deleteHabit(id) {
-            if (confirm("Are you sure you want to delete this habit? All progress for it will be lost.")) {
-                // XP subtract if it was completed today
+            if (confirm("Delete this habit?")) {
                 const habit = appState.habits.find(h => h.id === id);
-                if (habit && habit.completed) {
-                    appState.totalXp -= habit.xp;
-                }
-                
+                if (habit && habit.completed) appState.totalXp -= habit.xp;
                 appState.habits = appState.habits.filter(h => h.id !== id);
                 saveData();
                 renderHabits();
@@ -737,30 +781,17 @@
             }
         }
 
-        // --- Toast Notifications ---
         let toastTimeout;
         function showToast(message, isError = false) {
             const toast = document.getElementById('toastMsg');
             toast.innerText = message;
-            
-            if (isError) {
-                toast.style.borderColor = 'var(--neon-red)';
-                toast.style.color = 'var(--neon-red)';
-                toast.style.boxShadow = '0 0 20px rgba(255,51,102,0.3)';
-            } else {
-                toast.style.borderColor = 'var(--neon-cyan)';
-                toast.style.color = 'var(--neon-cyan)';
-                toast.style.boxShadow = '0 0 20px rgba(0,240,255,0.3)';
-            }
-
+            toast.style.borderColor = isError ? 'var(--neon-red)' : 'var(--neon-cyan)';
+            toast.style.color = isError ? 'var(--neon-red)' : 'var(--neon-cyan)';
             toast.classList.add('show');
             clearTimeout(toastTimeout);
-            toastTimeout = setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
+            toastTimeout = setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        // Start App
         window.onload = init;
     </script>
 </body>
