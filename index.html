@@ -31,6 +31,20 @@
             -webkit-tap-highlight-color: transparent;
         }
 
+        /* --- SVG Icon base --- */
+        .icon {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            flex-shrink: 0;
+            vertical-align: middle;
+        }
+        .icon-sm { width: 16px; height: 16px; }
+
         body {
             background-color: var(--bg-base);
             background-image: radial-gradient(circle at 15% 50%, rgba(0, 240, 255, 0.05), transparent 25%),
@@ -65,6 +79,12 @@
             display: flex;
             align-items: center;
             gap: 10px;
+        }
+        .logo .icon {
+            width: 26px;
+            height: 26px;
+            color: var(--neon-cyan);
+            filter: drop-shadow(0 0 6px rgba(0, 240, 255, 0.6));
         }
         .logo span { color: var(--neon-cyan); }
 
@@ -219,7 +239,7 @@
 
         .habit-actions { display: flex; gap: 8px; opacity: 0; transition: opacity 0.2s; margin-right: 15px;}
         .habit-row:hover .habit-actions { opacity: 1; }
-        .action-btn { background: transparent; border: none; cursor: pointer; font-size: 16px; opacity: 0.5; transition: all 0.2s; }
+        .action-btn { background: transparent; border: none; cursor: pointer; opacity: 0.5; transition: all 0.2s; display: flex; align-items: center; justify-content: center; padding: 4px; color: var(--text-main); }
         .action-btn:hover { opacity: 1; transform: scale(1.1); }
         .btn-edit:hover { color: var(--neon-cyan); }
         .btn-delete:hover { color: var(--neon-red); }
@@ -377,6 +397,7 @@
             background: var(--bg-card); border: 1px solid var(--neon-cyan); color: var(--neon-cyan);
             padding: 12px 24px; border-radius: 50px; font-weight: 600; z-index: 2000;
             box-shadow: 0 0 20px rgba(0,240,255,0.3); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex; align-items: center; gap: 8px;
         }
         .toast.show { transform: translateX(-50%) translateY(0); }
 
@@ -390,7 +411,7 @@
         }
         .mobile-nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: var(--text-muted); gap: 4px; cursor: pointer;}
         .mobile-nav-item.active { color: var(--neon-cyan); }
-        .mobile-nav-icon { font-size: 20px; }
+        .mobile-nav-icon { display: flex; align-items: center; justify-content: center; }
 
         /* Responsive */
         @media (max-width: 1024px) {
@@ -413,15 +434,30 @@
 </head>
 <body>
 
-    <div class="toast" id="toastMsg">Level Up! 🎉</div>
+    <div class="toast" id="toastMsg">Level Up!</div>
 
     <aside class="sidebar">
-        <div class="logo">⚡ Quantum<span>.</span></div>
+        <div class="logo">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M13 2L4.5 13h6L10 22l8.5-11h-6L13 2z"/></svg>
+            Quantum<span>.</span>
+        </div>
         <div class="nav-links">
-            <a href="#" class="nav-item active" onclick="changePage('dashboard', this)">📊 Dashboard</a>
-            <a href="#" class="nav-item" onclick="changePage('habits', this)">✅ My Habits</a>
-            <a href="#" class="nav-item" onclick="changePage('analytics', this)">📈 Analytics</a>
-            <a href="#" class="nav-item" onclick="changePage('achievements', this)">🏆 Achievements</a>
+            <a href="#" class="nav-item active" onclick="changePage('dashboard', this)">
+                <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+                Dashboard
+            </a>
+            <a href="#" class="nav-item" onclick="changePage('habits', this)">
+                <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                My Habits
+            </a>
+            <a href="#" class="nav-item" onclick="changePage('analytics', this)">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                Analytics
+            </a>
+            <a href="#" class="nav-item" onclick="changePage('achievements', this)">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                Achievements
+            </a>
         </div>
     </aside>
 
@@ -454,7 +490,10 @@
                 </div>
                 <div class="stat-card">
                     <div class="stat-title">Current Streak</div>
-                    <div class="stat-value" style="color: var(--neon-green);">🔥 <span id="streakDisplay">1</span> <span>Days</span></div>
+                    <div class="stat-value" style="color: var(--neon-green); align-items: center;">
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+                        <span id="streakDisplay">1</span> <span>Days</span>
+                    </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-title">Habits Completed</div>
@@ -485,7 +524,7 @@
             <section class="calendar-section">
                 <div class="panel-header" style="margin-bottom: 15px;">
                     <h2 class="panel-title">Monthly Tracker</h2>
-                    <span style="font-size: 12px; color: var(--text-muted);">Scroll right to see all days 👉</span>
+                    <span style="font-size: 12px; color: var(--text-muted);">Scroll right to see all days</span>
                 </div>
                 <div class="calendar-scroll-container">
                     <div class="calendar-grid" id="calendarGrid"></div>
@@ -519,14 +558,12 @@
                 <h2 class="panel-title" style="margin-bottom: 20px;">Progress Trend (Last 7 Days)</h2>
                 <div class="analytics-chart-container">
                     <svg id="analyticsChart">
-                        <!-- Definitions for gradients -->
                         <defs>
                             <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
                                 <stop offset="0%" stop-color="var(--neon-cyan)" stop-opacity="0.5"/>
                                 <stop offset="100%" stop-color="var(--neon-cyan)" stop-opacity="0"/>
                             </linearGradient>
                         </defs>
-                        <!-- Chart content will be injected here by JS -->
                     </svg>
                 </div>
             </section>
@@ -540,12 +577,16 @@
             <section class="panel">
                 <div class="achievements-grid">
                     <div class="badge-card unlocked">
-                        <div class="badge-icon">🚀</div>
+                        <div class="badge-icon">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+                        </div>
                         <div class="badge-title">First Step</div>
                         <div class="badge-desc">Completed 1 habit</div>
                     </div>
                     <div class="badge-card">
-                        <div class="badge-icon">🔥</div>
+                        <div class="badge-icon">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+                        </div>
                         <div class="badge-title">On Fire</div>
                         <div class="badge-desc">7 Day Streak</div>
                     </div>
@@ -556,10 +597,18 @@
     </main>
 
     <nav class="mobile-nav">
-        <div class="mobile-nav-item active" onclick="changePage('dashboard', this)"><span class="mobile-nav-icon">📊</span>Home</div>
-        <div class="mobile-nav-item" onclick="changePage('habits', this)"><span class="mobile-nav-icon">✅</span>Habits</div>
-        <div class="mobile-nav-item" onclick="changePage('analytics', this)"><span class="mobile-nav-icon">📈</span>Stats</div>
-        <div class="mobile-nav-item" onclick="changePage('achievements', this)"><span class="mobile-nav-icon">🏆</span>Badges</div>
+        <div class="mobile-nav-item active" onclick="changePage('dashboard', this)">
+            <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg></span>Home
+        </div>
+        <div class="mobile-nav-item" onclick="changePage('habits', this)">
+            <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg></span>Habits
+        </div>
+        <div class="mobile-nav-item" onclick="changePage('analytics', this)">
+            <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></span>Stats
+        </div>
+        <div class="mobile-nav-item" onclick="changePage('achievements', this)">
+            <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></span>Badges
+        </div>
     </nav>
 
     <div class="modal-overlay" id="habitModal">
@@ -598,6 +647,12 @@
             { id: '3', name: 'Read 10 pages', xp: 20, completed: false, history: {} },
             { id: '4', name: 'Workout', xp: 30, completed: false, history: {} }
         ];
+
+        // SVG icon snippets reused across toasts and habit rows
+        const ICON_CHECK = '<svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
+        const ICON_ALERT = '<svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+        const ICON_EDIT  = '<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
+        const ICON_TRASH = '<svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
 
         function getTodayStr() {
             const d = new Date();
@@ -681,7 +736,7 @@
 
             if (habit.completed) {
                 appState.totalXp += habit.xp;
-                showToast(`+${habit.xp} XP Earned! 🚀`);
+                showToast(`+${habit.xp} XP Earned!`);
             } else {
                 appState.totalXp -= habit.xp;
             }
@@ -691,7 +746,7 @@
             renderHabits();
             renderCalendar();
             updateUI();
-            renderAnalyticsChart(); // Update graph silently
+            renderAnalyticsChart();
         }
 
         function toggleCalendarCell(habitId, dateStr, cellElement) {
@@ -703,7 +758,7 @@
             
             if (isCompleted) {
                 appState.totalXp += habit.xp;
-                showToast(`+${habit.xp} XP (${dateStr}) 🚀`);
+                showToast(`+${habit.xp} XP (${dateStr})`);
             } else {
                 appState.totalXp -= habit.xp;
             }
@@ -718,14 +773,14 @@
             saveData();
             renderCalendar();
             renderWeeklyChart();
-            renderAnalyticsChart(); // Update graph silently
+            renderAnalyticsChart();
         }
 
         function checkLevelUp() {
             const newLevel = Math.floor(appState.totalXp / 100) + 1;
             if (newLevel > appState.currentLevel) {
                 appState.currentLevel = newLevel;
-                showToast(`🎉 Level Up! You are now Level ${newLevel}`);
+                showToast(`Level Up! You are now Level ${newLevel}`);
             }
         }
 
@@ -745,8 +800,8 @@
                         <p><span class="habit-xp">+${habit.xp} XP</span></p>
                     </div>
                     <div class="habit-actions">
-                        <button class="action-btn btn-edit" onclick="editHabit('${habit.id}')">✏️</button>
-                        <button class="action-btn btn-delete" onclick="deleteHabit('${habit.id}')">🗑️</button>
+                        <button class="action-btn btn-edit" onclick="editHabit('${habit.id}')" title="Edit">${ICON_EDIT}</button>
+                        <button class="action-btn btn-delete" onclick="deleteHabit('${habit.id}')" title="Delete">${ICON_TRASH}</button>
                     </div>
                 `;
                 container.appendChild(row);
@@ -788,7 +843,6 @@
         // --- Render Custom SVG Analytics Chart ---
         function renderAnalyticsChart() {
             const svg = document.getElementById('analyticsChart');
-            // Clear previous chart lines except defs
             const defs = svg.querySelector('defs');
             svg.innerHTML = '';
             svg.appendChild(defs);
@@ -805,7 +859,6 @@
 
             const totalHabits = appState.habits.length;
 
-            // Calculate data for the past 7 days
             for (let i = daysCount - 1; i >= 0; i--) {
                 const dateStr = getPastDateStr(i);
                 const dateObj = new Date();
@@ -823,12 +876,10 @@
                 }
             }
 
-            // 1. Draw Grid Lines & Y-Axis Labels
             for (let i = 0; i <= 4; i++) {
                 const y = padding.top + chartH - (i * (chartH / 4));
                 const percent = i * 25;
                 
-                // Grid line
                 const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
                 line.setAttribute('x1', padding.left);
                 line.setAttribute('y1', y);
@@ -837,7 +888,6 @@
                 line.setAttribute('class', 'chart-grid-line');
                 svg.appendChild(line);
 
-                // Label
                 const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                 text.setAttribute('x', padding.left - 10);
                 text.setAttribute('y', y + 4);
@@ -847,7 +897,6 @@
                 svg.appendChild(text);
             }
 
-            // 2. Generate Path coordinates
             let linePath = '';
             let areaPath = `M ${padding.left} ${padding.top + chartH} `;
 
@@ -862,7 +911,6 @@
                 
                 areaPath += `L ${x} ${y} `;
 
-                // X-Axis Label
                 const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                 text.setAttribute('x', x);
                 text.setAttribute('y', height - 10);
@@ -874,19 +922,16 @@
             
             areaPath += `L ${padding.left + chartW} ${padding.top + chartH} Z`;
 
-            // 3. Draw Area (Background Fill)
             const area = document.createElementNS('http://www.w3.org/2000/svg', 'path');
             area.setAttribute('d', areaPath);
             area.setAttribute('class', 'chart-area');
             svg.appendChild(area);
 
-            // 4. Draw Line
             const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
             line.setAttribute('d', linePath);
             line.setAttribute('class', 'chart-line');
             svg.appendChild(line);
 
-            // 5. Draw Dots on Data Points
             dataPoints.forEach((val, index) => {
                 const x = padding.left + (index * xStep);
                 const y = padding.top + chartH - ((val / 100) * chartH);
@@ -897,7 +942,6 @@
                 circle.setAttribute('r', 4);
                 circle.setAttribute('class', 'chart-dot');
                 
-                // Add tooltip
                 const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
                 title.textContent = `${labels[index]}: ${Math.round(val)}%`;
                 circle.appendChild(title);
@@ -906,7 +950,6 @@
             });
         }
 
-        // Handle window resize for the chart
         window.addEventListener('resize', () => {
             if(document.getElementById('page-analytics').classList.contains('active')) {
                 renderAnalyticsChart();
@@ -934,7 +977,7 @@
 
             if(percentage === 100) {
                 ring.style.stroke = 'var(--neon-green)';
-                document.getElementById('progressMessage').innerText = "Perfect Day! 🏆";
+                document.getElementById('progressMessage').innerText = "Perfect Day!";
             } else {
                 ring.style.stroke = 'var(--neon-cyan)';
                 document.getElementById('progressMessage').innerText = percentage > 50 ? "Halfway there!" : "Let's build momentum!";
@@ -994,7 +1037,7 @@
                 const habit = appState.habits.find(h => h.id === id);
                 habit.name = name;
                 habit.xp = xp;
-                showToast("Habit updated! ✏️");
+                showToast("Habit updated!");
             } else {
                 appState.habits.push({ 
                     id: Date.now().toString(), 
@@ -1003,7 +1046,7 @@
                     completed: false,
                     history: {} 
                 });
-                showToast("New habit created! ✨");
+                showToast("New habit created!");
             }
 
             saveData();
@@ -1032,14 +1075,15 @@
                 renderHabits();
                 renderCalendar();
                 updateUI();
-                showToast("Habit deleted 🗑️");
+                showToast("Habit deleted");
             }
         }
 
         let toastTimeout;
         function showToast(message, isError = false) {
             const toast = document.getElementById('toastMsg');
-            toast.innerText = message;
+            const icon = isError ? ICON_ALERT : ICON_CHECK;
+            toast.innerHTML = icon + '<span>' + message + '</span>';
             toast.style.borderColor = isError ? 'var(--neon-red)' : 'var(--neon-cyan)';
             toast.style.color = isError ? 'var(--neon-red)' : 'var(--neon-cyan)';
             toast.classList.add('show');
