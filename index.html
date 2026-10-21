@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nexus - Fully Functional App</title>
+    <title>Nexus - Personal Dashboard</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 
@@ -18,6 +18,7 @@
             --neon-pink: #ff6b9d;
             --neon-yellow: #ffcc00;
             --neon-purple: #9d4edd;
+            --neon-red: #ff5252;
             --border-color: rgba(255, 255, 255, 0.05);
         }
 
@@ -92,7 +93,6 @@
         .ring-bg { fill: none; stroke: #1f273d; stroke-width: 12; }
         .r1 { fill: none; stroke: var(--neon-cyan); stroke-width: 12; stroke-dasharray: 314; stroke-dashoffset: 314; stroke-linecap: round; filter: drop-shadow(0 0 6px rgba(0,229,160,0.4)); transition: stroke-dashoffset 0.5s; }
         .r2 { fill: none; stroke: var(--neon-pink); stroke-width: 12; stroke-dasharray: 238; stroke-dashoffset: 238; stroke-linecap: round; filter: drop-shadow(0 0 6px rgba(255,107,157,0.4)); transition: stroke-dashoffset 0.5s;}
-        .r3 { fill: none; stroke: var(--neon-yellow); stroke-width: 12; stroke-dasharray: 163; stroke-dashoffset: 163; stroke-linecap: round; filter: drop-shadow(0 0 6px rgba(255,204,0,0.4)); transition: stroke-dashoffset 0.5s;}
         
         .rings-stats { display: flex; flex-direction: column; gap: 15px; }
         .rs-item h4 { font-size: 14px; color: var(--text-muted); font-weight: 500; margin-bottom: 2px;}
@@ -120,14 +120,9 @@
         
         .checkbox { width: 30px; height: 30px; border-radius: 9px; border: 2px solid #2a3348; cursor: pointer; display: flex; justify-content: center; align-items: center; color: transparent; transition: all 0.2s; flex-shrink: 0; font-weight: bold; font-size: 14px;}
         .checkbox.checked { background: var(--neon-cyan); border-color: var(--neon-cyan); color: #000; box-shadow: 0 0 15px rgba(0,229,160,0.3);}
-
-        /* BIG 3 */
-        .big3-item { display: flex; align-items: center; gap: 12px; padding: 12px 15px; border-radius: 12px; margin: 10px 0; background: rgba(74, 124, 255, 0.1); border: 1px solid rgba(74, 124, 255, 0.2); cursor: pointer; transition: all 0.2s;}
-        .big3-item.done { background: var(--neon-cyan); border-color: var(--neon-cyan); color: #000; }
-        .big3-item.done .item-info h3 { text-decoration: line-through; opacity: 0.8; }
-        .big3-item.done .checkbox { background: transparent; border-color: transparent; color: #000; }
-        .big3-star { font-size: 16px; color: var(--neon-blue); }
-        .big3-item.done .big3-star { color: #000; }
+        
+        .delete-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 16px; padding: 5px; transition: 0.2s;}
+        .delete-btn:hover { color: var(--neon-red); }
 
         /* GOALS & MONEY & MINDSET */
         .goal-item { padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.03); display: flex; align-items: center; gap: 15px;}
@@ -220,32 +215,20 @@
                         <circle class="r1" cx="70" cy="70" r="50" id="ring1"></circle>
                         <circle class="ring-bg" cx="70" cy="70" r="38"></circle>
                         <circle class="r2" cx="70" cy="70" r="38" id="ring2"></circle>
-                        <circle class="ring-bg" cx="70" cy="70" r="26"></circle>
-                        <circle class="r3" cx="70" cy="70" r="26" id="ring3"></circle>
                     </svg>
                 </div>
                 <div class="rings-stats">
                     <div class="rs-item"><h4>Habits</h4><p class="stat-cyan" id="txtHabits">0/0</p></div>
-                    <div class="rs-item"><h4>Big 3</h4><p class="stat-pink" id="txtBig3">0/3</p></div>
-                    <div class="rs-item"><h4>XP</h4><p class="stat-yellow" id="txtXp">0/150</p></div>
+                    <div class="rs-item"><h4>XP Progress</h4><p class="stat-yellow" id="txtXp">0/150</p></div>
                 </div>
             </div>
 
-            <!-- Big 3 & Tasks -->
+            <!-- Tasks -->
             <div class="section-header">
-                <h3>TODAY'S PLAN</h3>
+                <h3>TODAY'S TASKS</h3>
             </div>
             
             <div class="card-container">
-                <div style="display: flex; justify-content: space-between; padding: 15px 0 5px; font-size: 11px; color: var(--text-muted); font-weight: 600; letter-spacing: 0.5px;">
-                    <span>BIG 3</span><span>+30 XP</span>
-                </div>
-                <div id="big3List"></div>
-                <div class="btn-add" onclick="addBig3()" style="padding: 10px 0 15px; font-size: 13px;">+ Add Big 3</div>
-                
-                <div style="display: flex; justify-content: space-between; padding: 15px 0 5px; font-size: 11px; color: var(--text-muted); font-weight: 600; letter-spacing: 0.5px; border-top: 1px solid rgba(255,255,255,0.05);">
-                    <span>TASKS</span><span>+10 XP</span>
-                </div>
                 <div id="tasksList"></div>
                 <div class="btn-add" onclick="addTask()" style="padding: 10px 0 15px; font-size: 13px;">+ Add Task</div>
             </div>
@@ -274,10 +257,10 @@
                     <span style="color: var(--neon-cyan); font-size: 14px; cursor: pointer;" onclick="switchTab('money')">Details</span>
                 </div>
                 <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">Left to spend</div>
-                <div class="money-amount" id="moneyLeft">$664</div>
+                <div class="money-amount" id="moneyLeft">$0</div>
                 <div style="display: flex; justify-content: space-between; font-size: 13px; color: var(--text-muted); margin-top: 8px;">
-                    <span id="moneyBudget">$60 a day · 11 days left</span>
-                    <span style="color: var(--text-main);">Spent today <strong id="moneySpent" style="font-size: 15px;">$41.29</strong></span>
+                    <span id="moneyBudget">Budget: $0</span>
+                    <span style="color: var(--text-main);">Spent today <strong id="moneySpent" style="font-size: 15px;">$0</strong></span>
                 </div>
             </div>
 
@@ -286,13 +269,14 @@
                     <span>Energy</span>
                     <span style="color: var(--neon-yellow); font-weight: 700;" id="energyValText">8</span>
                 </div>
-                <input type="range" id="energySlider" min="1" max="10" value="8" oninput="updateMindset('energy', this.value)">
+                <input type="range" id="energySlider" min="1" max="10" value="8" disabled>
 
                 <div class="mindset-row" style="margin-top: 20px;">
                     <span>Focus</span>
                     <span style="color: var(--neon-cyan); font-weight: 700;" id="focusValText">7</span>
                 </div>
-                <input type="range" id="focusSlider" min="1" max="10" value="7" oninput="updateMindset('focus', this.value)">
+                <input type="range" id="focusSlider" min="1" max="10" value="7" disabled>
+                <p style="font-size: 10px; color: var(--text-muted); margin-top: 10px; text-align: center;">(Automatically increases/decreases as you complete Tasks)</p>
             </div>
 
         </div>
@@ -344,18 +328,25 @@
         <!-- ================= MONEY TAB ================= -->
         <div id="tab-money" class="tab-content">
             <div class="header-title">Money</div>
+            
+            <!-- Set Budget Form -->
+            <div class="card-container" style="padding: 15px; margin-bottom: 15px;">
+                <h3 style="margin-bottom: 10px; font-size: 14px;">Set Your Budget</h3>
+                <div class="input-box" style="display: flex; gap: 10px;">
+                    <input type="number" id="budgetInput" placeholder="Enter amount ($)" style="flex:1; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-inner); color: white;">
+                    <button class="btn-primary" style="width: auto; padding: 0 15px;" onclick="setBudget()">Set</button>
+                </div>
+            </div>
+
             <div class="money-card">
                 <h3 style="margin-bottom: 15px;">Wallet</h3>
-                <div style="font-size: 30px; color: #a3ff47; font-weight: bold; margin-bottom: 15px;" id="moneyTotalVal">$664</div>
+                <div style="font-size: 30px; color: #a3ff47; font-weight: bold; margin-bottom: 15px;" id="moneyTotalVal">$0</div>
                 <button class="btn-primary" onclick="addExpense()" style="background: var(--neon-blue); color: white;">+ Add Expense</button>
             </div>
             <div class="card-container">
                 <h4 style="padding: 15px 0 5px; color: var(--text-muted); font-size: 12px;">RECENT TRANSACTIONS</h4>
                 <div id="expenseList">
-                    <div class="list-item">
-                        <div class="item-info"><h3>Lunch</h3><p>Today</p></div>
-                        <div style="color: var(--neon-pink); font-weight: bold;">-$41.29</div>
-                    </div>
+                    <!-- Expenses go here -->
                 </div>
             </div>
         </div>
@@ -406,17 +397,14 @@
             perfect: 21,
             energy: 8,
             focus: 7,
-            moneyLeft: 664,
-            moneySpentToday: 41.29,
+            totalBudget: 0,
+            moneySpentToday: 0,
+            moneyLeft: 0,
+            expenses: [],
             habits: [
                 { id: 'h1', name: 'Wake up at 06:00', xp: 10, done: true, icon: '⏰', color: '#b026ff' },
                 { id: 'h2', name: 'Meditation', xp: 10, done: false, icon: '🧠', color: '#4a7cff' },
                 { id: 'h3', name: 'Read 10 pages', xp: 20, done: false, icon: '📖', color: '#ffcc00' }
-            ],
-            big3: [
-                { id: 'b1', name: 'Finish client deck', done: true, xp: 30 },
-                { id: 'b2', name: 'Gym: push', done: false, xp: 30 },
-                { id: 'b3', name: 'Budget review', done: false, xp: 30 }
             ],
             tasks: [
                 { id: 't1', name: 'Book dentist', done: false, xp: 10 },
@@ -430,25 +418,25 @@
 
         // Load Data
         function loadData() {
-            const saved = localStorage.getItem('nexusProData');
+            const saved = localStorage.getItem('nexusProDataV2');
             if (saved) state = JSON.parse(saved);
             
             // Set Date
             const now = new Date();
             document.getElementById('currentDate').innerText = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }).toUpperCase();
             
-            // Set Sliders initial
-            document.getElementById('energySlider').value = state.energy;
-            document.getElementById('focusSlider').value = state.focus;
+            // Set Mindset Visuals
             updateMindsetSliderVisual('energy', state.energy);
             updateMindsetSliderVisual('focus', state.focus);
+            document.getElementById('energyValText').innerText = state.energy;
+            document.getElementById('focusValText').innerText = state.focus;
 
             renderAll();
         }
 
         // Save Data
         function saveData() {
-            localStorage.setItem('nexusProData', JSON.stringify(state));
+            localStorage.setItem('nexusProDataV2', JSON.stringify(state));
         }
 
         // --- 2. NAVIGATION ---
@@ -461,7 +449,6 @@
             
             if(tabId === 'month') renderMonthGrid();
             if(tabId === 'week') renderWeekBars();
-            if(tabId === 'money') renderMoneyTab();
             
             window.scrollTo(0,0);
         }
@@ -470,7 +457,6 @@
         function renderAll() {
             renderTopBar();
             renderRings();
-            renderBig3();
             renderTasks();
             renderHabits();
             renderGoals();
@@ -490,45 +476,26 @@
         }
 
         function renderRings() {
-            // Habits Ring (C=314)
+            // Habits Ring (Outer, C=314)
             const hTotal = state.habits.length;
             const hDone = state.habits.filter(h => h.done).length;
             const hPct = hTotal === 0 ? 0 : hDone / hTotal;
             document.getElementById('ring1').style.strokeDashoffset = 314 - (314 * hPct);
             document.getElementById('txtHabits').innerText = `${hDone}/${hTotal}`;
 
-            // Big3 Ring (C=238)
-            const bTotal = state.big3.length;
-            const bDone = state.big3.filter(b => b.done).length;
-            const bPct = bTotal === 0 ? 0 : bDone / bTotal;
-            document.getElementById('ring2').style.strokeDashoffset = 238 - (238 * bPct);
-            document.getElementById('txtBig3').innerText = `${bDone}/${bTotal}`;
-
-            // XP Ring (C=163) - Calculate based on 150 XP Goal
+            // XP Ring (Inner, C=238)
             const xpPct = Math.min((state.xp % 150) / 150, 1);
-            document.getElementById('ring3').style.strokeDashoffset = 163 - (163 * xpPct);
+            document.getElementById('ring2').style.strokeDashoffset = 238 - (238 * xpPct);
             document.getElementById('txtXp').innerText = `${state.xp % 150}/150`;
-        }
-
-        function renderBig3() {
-            const list = document.getElementById('big3List');
-            list.innerHTML = '';
-            state.big3.forEach((item, index) => {
-                const div = document.createElement('div');
-                div.className = `big3-item ${item.done ? 'done' : ''}`;
-                div.onclick = () => toggleBig3(item.id);
-                div.innerHTML = `
-                    <span class="big3-star">★</span>
-                    <div class="item-info"><h3>${item.name}</h3></div>
-                    <div class="checkbox ${item.done ? 'checked' : ''}">${item.done ? '✓' : ''}</div>
-                `;
-                list.appendChild(div);
-            });
         }
 
         function renderTasks() {
             const list = document.getElementById('tasksList');
             list.innerHTML = '';
+            if(state.tasks.length === 0) {
+                list.innerHTML = '<div style="padding: 15px 0; color: var(--text-muted); font-size: 13px;">No tasks for today.</div>';
+                return;
+            }
             state.tasks.forEach((item, index) => {
                 const div = document.createElement('div');
                 div.className = 'list-item';
@@ -537,6 +504,7 @@
                     <span style="color:var(--text-muted); font-size:14px; width: 15px;">${index+1}</span>
                     <div class="item-info"><h3>${item.name}</h3></div>
                     <div class="checkbox ${item.done ? 'checked' : ''}" onclick="toggleTask('${item.id}')">${item.done ? '✓' : ''}</div>
+                    <button class="delete-btn" onclick="deleteTask('${item.id}')">🗑️</button>
                 `;
                 list.appendChild(div);
             });
@@ -572,221 +540,4 @@
                         <h3>${h.name}</h3>
                         <p>Reward: +${h.xp} XP</p>
                     </div>
-                    <div style="color: var(--neon-red); cursor: pointer; font-size: 18px;" onclick="deleteHabit('${h.id}')">🗑️</div>
-                `;
-                manageList.appendChild(manageItem);
-            });
-        }
-
-        function renderGoals() {
-            const list = document.getElementById('goalsList');
-            list.innerHTML = '';
-            state.goals.forEach(g => {
-                const pct = Math.min((g.current / g.target) * 100, 100);
-                const div = document.createElement('div');
-                div.className = 'goal-item';
-                div.innerHTML = `
-                    <div class="icon-box" style="background: ${g.color}20; color: ${g.color};">🎯</div>
-                    <div style="flex-grow: 1;">
-                        <div style="display: flex; justify-content: space-between; font-size: 15px; font-weight: 600;">
-                            <span>${g.name}</span> <span>${g.current} / ${g.target}</span>
-                        </div>
-                        <div class="goal-progress"><div class="goal-fill" style="width: ${pct}%; background: ${g.color};"></div></div>
-                    </div>
-                    <div class="checkbox" style="border-radius: 50%; color: var(--text-main);" onclick="addGoalProgress('${g.id}')">+</div>
-                `;
-                list.appendChild(div);
-            });
-        }
-
-        function renderMoney() {
-            document.getElementById('moneyLeft').innerText = `$${state.moneyLeft.toFixed(2)}`;
-            document.getElementById('moneySpent').innerText = `$${state.moneySpentToday.toFixed(2)}`;
-            if(document.getElementById('moneyTotalVal')) {
-                document.getElementById('moneyTotalVal').innerText = `$${state.moneyLeft.toFixed(2)}`;
-            }
-        }
-
-        // --- 4. INTERACTION LOGIC ---
-        function toggleHabit(id) {
-            const h = state.habits.find(x => x.id === id);
-            h.done = !h.done;
-            
-            if(h.done) {
-                state.xp += h.xp;
-                showToast(`+${h.xp} XP Earned! 🚀`);
-                checkLevelUp();
-            } else {
-                state.xp -= h.xp;
-            }
-            
-            saveData(); renderAll();
-        }
-
-        function toggleBig3(id) {
-            const b = state.big3.find(x => x.id === id);
-            b.done = !b.done;
-            
-            if(b.done) {
-                state.xp += b.xp;
-                showToast(`+${b.xp} XP Big 3! 🎯`);
-                checkLevelUp();
-            } else {
-                state.xp -= b.xp;
-            }
-            
-            saveData(); renderAll();
-        }
-
-        function toggleTask(id) {
-            const t = state.tasks.find(x => x.id === id);
-            t.done = !t.done;
-            
-            if(t.done) {
-                state.xp += t.xp;
-                showToast(`+${t.xp} XP Task! ✅`);
-                checkLevelUp();
-            } else {
-                state.xp -= t.xp;
-            }
-            
-            saveData(); renderAll();
-        }
-
-        function addGoalProgress(id) {
-            const g = state.goals.find(x => x.id === id);
-            if(g.current < g.target) {
-                g.current++;
-                showToast(`Goal progress updated! 📈`);
-                saveData(); renderGoals();
-            } else {
-                showToast(`Goal already completed! 🏆`);
-            }
-        }
-
-        function checkLevelUp() {
-            const currentLevel = Math.floor((state.xp - (state.habits.find(h=>h.done)?.xp || 0)) / 100);
-            const newLevel = Math.floor(state.xp / 100);
-            if(newLevel > currentLevel) {
-                setTimeout(() => showToast(`🎉 LEVEL UP! You are now Level ${newLevel + 1}`), 500);
-            }
-        }
-
-        function updateMindset(type, val) {
-            state[type] = parseInt(val);
-            document.getElementById(type + 'ValText').innerText = val;
-            updateMindsetSliderVisual(type, val);
-            saveData();
-        }
-
-        function updateMindsetSliderVisual(type, val) {
-            const slider = document.getElementById(type + 'Slider');
-            const pct = (val / 10) * 100;
-            slider.style.setProperty('--val', `${pct}%`);
-        }
-
-        // --- 5. ADD / DELETE ITEMS ---
-        function addNewHabit() {
-            const name = document.getElementById('newHabitName').value;
-            const xp = parseInt(document.getElementById('newHabitXP').value);
-            if(!name) return showToast('Enter habit name!');
-            
-            state.habits.push({
-                id: Date.now().toString(),
-                name: name,
-                xp: xp,
-                done: false,
-                icon: '⭐',
-                color: '#00e5a0'
-            });
-            document.getElementById('newHabitName').value = '';
-            saveData(); renderAll();
-            showToast('Habit Added! ✨');
-        }
-
-        function deleteHabit(id) {
-            state.habits = state.habits.filter(h => h.id !== id);
-            saveData(); renderAll();
-            showToast('Habit deleted 🗑️');
-        }
-
-        function addBig3() {
-            const name = prompt("Enter Big 3 task:");
-            if(name) {
-                state.big3.push({ id: Date.now().toString(), name: name, done: false, xp: 30 });
-                saveData(); renderAll();
-            }
-        }
-
-        function addTask() {
-            const name = prompt("Enter Task:");
-            if(name) {
-                state.tasks.push({ id: Date.now().toString(), name: name, done: false, xp: 10 });
-                saveData(); renderAll();
-            }
-        }
-
-        function addExpense() {
-            const amount = prompt("Enter expense amount ($):");
-            if(amount && !isNaN(amount)) {
-                const amt = parseFloat(amount);
-                state.moneyLeft -= amt;
-                state.moneySpentToday += amt;
-                
-                const list = document.getElementById('expenseList');
-                const div = document.createElement('div');
-                div.className = 'list-item';
-                div.innerHTML = `
-                    <div class="item-info"><h3>Expense</h3><p>Just now</p></div>
-                    <div style="color: var(--neon-pink); font-weight: bold;">-$${amt.toFixed(2)}</div>
-                `;
-                list.prepend(div);
-                
-                saveData(); renderMoney();
-                showToast('Expense added! 💸');
-            }
-        }
-
-        // --- 6. VIEWS (Month & Week) ---
-        function renderMonthGrid() {
-            const grid = document.getElementById('monthGrid');
-            grid.innerHTML = '';
-            const days = ['S','M','T','W','T','F','S'];
-            days.forEach(d => grid.innerHTML += `<div style="color: var(--text-muted); font-size: 10px;">${d}</div>`);
-            for(let i=1; i<=31; i++) {
-                let isToday = i === new Date().getDate();
-                grid.innerHTML += `<div style="padding: 10px 0; border-radius: 8px; font-size: 13px; background: ${isToday ? 'var(--neon-cyan)' : 'var(--bg-inner)'}; color: ${isToday ? '#000' : '#fff'};">${i}</div>`;
-            }
-        }
-
-        function renderWeekBars() {
-            const bars = document.getElementById('weekBars');
-            bars.innerHTML = '';
-            const days = ['M','T','W','T','F','S','S'];
-            days.forEach((d, i) => {
-                let h = Math.floor(Math.random() * 60) + 20; 
-                if(i === 2) h = 80; // Wed
-                bars.innerHTML += `
-                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 5px;">
-                        <div style="width: 100%; height: ${h}%; background: ${i===2?'var(--neon-cyan)':'var(--bg-inner)'}; border-radius: 5px;"></div>
-                        <span style="font-size: 10px; color: var(--text-muted);">${d}</span>
-                    </div>
-                `;
-            });
-        }
-
-        // --- 7. TOAST ---
-        let toastTimeout;
-        function showToast(msg) {
-            const toast = document.getElementById('toastMsg');
-            toast.innerText = msg;
-            toast.classList.add('show');
-            clearTimeout(toastTimeout);
-            toastTimeout = setTimeout(() => toast.classList.remove('show'), 2000);
-        }
-
-        // Start App
-        window.onload = loadData;
-    </script>
-</body>
-</html>
+                    <div style="color: var(--neon-red); cursor: pointer; font-size: 18px;" onclick="deleteH
