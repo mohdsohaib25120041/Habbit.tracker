@@ -555,4 +555,229 @@
                 const pct = Math.min((g.current / g.target) * 100, 100);
                 const div = document.createElement('div');
                 div.className = 'goal-item';
-                div.innerHTML =
+                div.innerHTML = `
+                    <div class="icon-box" style="background: ${g.color}20; color: ${g.color};">🎯</div>
+                    <div style="flex-grow: 1;">
+                        <div style="display: flex; justify-content: space-between; font-size: 15px; font-weight: 600;">
+                            <span>${g.name}</span> <span>${g.current} / ${g.target}</span>
+                        </div>
+                        <div class="goal-progress"><div class="goal-fill" style="width: ${pct}%; background: ${g.color};"></div></div>
+                    </div>
+                    <div class="checkbox" style="border-radius: 50%; color: var(--text-main);" onclick="addGoalProgress('${g.id}')">+</div>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function renderMoney() {
+            document.getElementById('moneyLeft').innerText = `$${state.moneyLeft.toFixed(2)}`;
+            document.getElementById('moneySpent').innerText = `$${state.moneySpentToday.toFixed(2)}`;
+            document.getElementById('moneyBudget').innerText = `Budget: $${state.totalBudget.toFixed(2)}`;
+            
+            if(document.getElementById('moneyTotalVal')) {
+                document.getElementById('moneyTotalVal').innerText = `$${state.moneyLeft.toFixed(2)}`;
+            }
+            
+            // Render expenses
+            const list = document.getElementById('expenseList');
+            if(list) {
+                list.innerHTML = '';
+                if(state.expenses.length === 0) {
+                    list.innerHTML = '<div style="padding: 15px 0; color: var(--text-muted); font-size: 13px;">No expenses yet.</div>';
+                } else {
+                    state.expenses.forEach(exp => {
+                        list.innerHTML += `
+                            <div class="list-item">
+                                <div class="item-info"><h3>${exp.name}</h3><p>${exp.date}</p></div>
+                                <div style="color: var(--neon-pink); font-weight: bold;">-$${exp.amount.toFixed(2)}</div>
+                            </div>
+                        `;
+                    });
+                }
+            }
+        }
+
+        // --- 4. INTERACTION LOGIC ---
+        function toggleHabit(id) {
+            const h = state.habits.find(x => x.id === id);
+            h.done = !h.done;
+            
+            if(h.done) {
+                state.xp += h.xp;
+                showToast(`+${h.xp} XP Earned! 🚀`);
+                checkLevelUp();
+            } else {
+                state.xp -= h.xp;
+            }
+            
+            saveData(); renderAll();
+        }
+
+        function toggleTask(id) {
+            const t = state.tasks.find(x => x.id === id);
+            t.done = !t.done;
+            
+            if(t.done) {
+                state.xp += t.xp;
+                state.energy = Math.min(10, state.energy + 1);
+                state.focus = Math.min(10, state.focus + 1);
+                showToast(`+${t.xp} XP, Energy & Focus Up! ✅`);
+                checkLevelUp();
+            } else {
+                state.xp -= t.xp;
+                state.energy = Math.max(0, state.energy - 1);
+                state.focus = Math.max(0, state.focus - 1);
+            }
+            
+            // Update UI for sliders
+            document.getElementById('energySlider').value = state.energy;
+            document.getElementById('focusSlider').value = state.focus;
+            updateMindsetSliderVisual('energy', state.energy);
+            updateMindsetSliderVisual('focus', state.focus);
+            document.getElementById('energyValText').innerText = state.energy;
+            document.getElementById('focusValText').innerText = state.focus;
+
+            saveData(); renderAll();
+        }
+
+        function addGoalProgress(id) {
+            const g = state.goals.find(x => x.id === id);
+            if(g.current < g.target) {
+                g.current++;
+                showToast(`Goal progress updated! 📈`);
+                saveData(); renderGoals();
+            } else {
+                showToast(`Goal already completed! 🏆`);
+            }
+        }
+
+        function checkLevelUp() {
+            const currentLevel = Math.floor((state.xp - (state.habits.find(h=>h.done)?.xp || 0)) / 100);
+            const newLevel = Math.floor(state.xp / 100);
+            if(newLevel > currentLevel) {
+                setTimeout(() => showToast(`🎉 LEVEL UP! You are now Level ${newLevel + 1}`), 500);
+            }
+        }
+
+        function updateMindsetSliderVisual(type, val) {
+            const slider = document.getElementById(type + 'Slider');
+            const pct = (val / 10) * 100;
+            slider.style.setProperty('--val', `${pct}%`);
+        }
+
+        // --- 5. ADD / DELETE ITEMS ---
+        function addNewHabit() {
+            const name = document.getElementById('newHabitName').value;
+            const xp = parseInt(document.getElementById('newHabitXP').value);
+            if(!name) return showToast('Enter habit name!');
+            
+            state.habits.push({
+                id: Date.now().toString(),
+                name: name,
+                xp: xp,
+                done: false,
+                icon: '⭐',
+                color: '#00e5a0'
+            });
+            document.getElementById('newHabitName').value = '';
+            saveData(); renderAll();
+            showToast('Habit Added! ✨');
+        }
+
+        function deleteHabit(id) {
+            state.habits = state.habits.filter(h => h.id !== id);
+            saveData(); renderAll();
+            showToast('Habit deleted 🗑️');
+        }
+
+        function addTask() {
+            const name = prompt("Enter Task:");
+            if(name) {
+                state.tasks.push({ id: Date.now().toString(), name: name, done: false, xp: 10 });
+                saveData(); renderAll();
+            }
+        }
+
+        function deleteTask(id) {
+            state.tasks = state.tasks.filter(t => t.id !== id);
+            saveData(); renderAll();
+            showToast('Task deleted 🗑️');
+        }
+
+        function setBudget() {
+            const input = document.getElementById('budgetInput');
+            const amount = parseFloat(input.value);
+            if(!isNaN(amount) && amount >= 0) {
+                state.totalBudget = amount;
+                state.moneyLeft = amount - state.moneySpentToday; // Recalculate
+                saveData(); renderMoney();
+                showToast('Budget Updated! 💰');
+                input.value = '';
+            } else {
+                showToast('Enter a valid amount!');
+            }
+        }
+
+        function addExpense() {
+            const name = prompt("Enter expense name:");
+            if(!name) return;
+            const amount = prompt("Enter expense amount ($):");
+            if(amount && !isNaN(amount)) {
+                const amt = parseFloat(amount);
+                state.moneyLeft -= amt;
+                state.moneySpentToday += amt;
+                
+                state.expenses.unshift({
+                    name: name,
+                    amount: amt,
+                    date: 'Just now'
+                });
+                
+                saveData(); renderMoney();
+                showToast('Expense added! 💸');
+            }
+        }
+
+        // --- 6. VIEWS (Month & Week) ---
+        function renderMonthGrid() {
+            const grid = document.getElementById('monthGrid');
+            grid.innerHTML = '';
+            const days = ['S','M','T','W','T','F','S'];
+            days.forEach(d => grid.innerHTML += `<div style="color: var(--text-muted); font-size: 10px;">${d}</div>`);
+            for(let i=1; i<=31; i++) {
+                let isToday = i === new Date().getDate();
+                grid.innerHTML += `<div style="padding: 10px 0; border-radius: 8px; font-size: 13px; background: ${isToday ? 'var(--neon-cyan)' : 'var(--bg-inner)'}; color: ${isToday ? '#000' : '#fff'};">${i}</div>`;
+            }
+        }
+
+        function renderWeekBars() {
+            const bars = document.getElementById('weekBars');
+            bars.innerHTML = '';
+            const days = ['M','T','W','T','F','S','S'];
+            days.forEach((d, i) => {
+                let h = Math.floor(Math.random() * 60) + 20; 
+                if(i === 2) h = 80; // Wed
+                bars.innerHTML += `
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 5px;">
+                        <div style="width: 100%; height: ${h}%; background: ${i===2?'var(--neon-cyan)':'var(--bg-inner)'}; border-radius: 5px;"></div>
+                        <span style="font-size: 10px; color: var(--text-muted);">${d}</span>
+                    </div>
+                `;
+            });
+        }
+
+        // --- 7. TOAST ---
+        let toastTimeout;
+        function showToast(msg) {
+            const toast = document.getElementById('toastMsg');
+            toast.innerText = msg;
+            toast.classList.add('show');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        // Start App
+        window.onload = loadData;
+    </script>
+</body>
+</html>
