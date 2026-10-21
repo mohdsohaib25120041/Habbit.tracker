@@ -49,11 +49,10 @@
             left: 0; top: 0;
             background: rgba(10, 14, 26, 0.8);
             backdrop-filter: var(--glass-blur);
-            border-rightne: on1px solid var(---border-color);
-            padding:cyan 20px;
-            display: flex);
-;
-            flex-direction       : column;
+            border-right: 1px solid var(--border-color);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
             z-index: 100;
             transition: transform 0.3s ease;
         }
@@ -84,7 +83,8 @@
         }
         .nav-item:hover, .nav-item.active {
             background: rgba(0, 240, 255, 0.1);
-            color: var(-- }
+            color: var(--neon-cyan);
+        }
         .nav-item.active { border-left: 3px solid var(--neon-cyan); }
 
         /* --- MAIN CONTENT --- */
@@ -498,10 +498,10 @@
             <header class="top-header">
                 <h1>My Habits</h1>
             </header>
-            <div class="workspace" style const="grid date-template-columns: 1fr;">
+            <div class="workspace" style="grid-template-columns: 1fr;">
                 <section class="panel">
-                   Str <div class="panel-header =">
-                        <h2 class="panel-title"> `${Today's Checklist</h2>
+                    <div class="panel-header">
+                        <h2 class="panel-title">Today's Checklist</h2>
                         <button class="btn-primary" onclick="openModal()">+ Add Habit</button>
                     </div>
                     <div class="habit-list" id="habitList"></div>
@@ -510,7 +510,7 @@
         </div>
 
         <!-- ANALYTICS PAGE WITH NEW GRAPH -->
-        <div id="pageyear-analytics" class="page-section">
+        <div id="page-analytics" class="page-section">
             <header class="top-header">
                 <h1>Analytics</h1>
                 <p>Track your 7-day progress trend</p>
@@ -519,14 +519,12 @@
                 <h2 class="panel-title" style="margin-bottom: 20px;">Progress Trend (Last 7 Days)</h2>
                 <div class="analytics-chart-container">
                     <svg id="analyticsChart">
-                        <!-- Definitions for gradients -->
                         <defs>
                             <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
                                 <stop offset="0%" stop-color="var(--neon-cyan)" stop-opacity="0.5"/>
                                 <stop offset="100%" stop-color="var(--neon-cyan)" stop-opacity="0"/>
                             </linearGradient>
                         </defs>
-                        <!-- Chart content will be injected here by JS -->
                     </svg>
                 </div>
             </section>
@@ -604,7 +602,6 @@
             return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
         }
 
-        // Get date string for past N days
         function getPastDateStr(daysAgo) {
             const d = new Date();
             d.setDate(d.getDate() - daysAgo);
@@ -629,7 +626,6 @@
                 element.classList.add('active');
             }
 
-            // Re-draw chart when opening analytics
             if (pageId === 'analytics') {
                 renderAnalyticsChart();
             }
@@ -645,7 +641,7 @@
             document.getElementById('greetingText').innerText = `${greeting}, Achiever!`;
             document.getElementById('currentDate').innerText = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 
-            const savedData = localStorage.getItem('nexusHabitDataV5');
+            const savedData = localStorage.getItem('nexusHabitDataV6');
             if (savedData) {
                 appState = JSON.parse(savedData);
                 appState.habits.forEach(h => { if(!h.history) h.history = {}; });
@@ -661,7 +657,7 @@
         }
 
         function saveData() {
-            localStorage.setItem('nexusHabitDataV5', JSON.stringify(appState));
+            localStorage.setItem('nexusHabitDataV6', JSON.stringify(appState));
         }
 
         function syncTodayStatus() {
@@ -691,7 +687,7 @@
             renderHabits();
             renderCalendar();
             updateUI();
-            renderAnalyticsChart(); // Update graph silently
+            renderAnalyticsChart();
         }
 
         function toggleCalendarCell(habitId, dateStr, cellElement) {
@@ -718,7 +714,7 @@
             saveData();
             renderCalendar();
             renderWeeklyChart();
-            renderAnalyticsChart(); // Update graph silently
+            renderAnalyticsChart();
         }
 
         function checkLevelUp() {
@@ -773,7 +769,7 @@
             appState.habits.forEach(habit => {
                 grid.innerHTML += `<div class="cal-habit-name" title="${habit.name}">${habit.name}</div>`;
                 for (let i = 1; i <= daysInMonth; i++) {
-                   }-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+                    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
                     const isCompleted = habit.history[dateStr] === true;
                     const isToday = dateStr === todayStr;
                     grid.innerHTML += `
@@ -785,13 +781,13 @@
             });
         }
 
-        // --- Render Custom SVG Analytics Chart ---
         function renderAnalyticsChart() {
             const svg = document.getElementById('analyticsChart');
-            // Clear previous chart lines except defs
+            if(!svg) return;
+            
             const defs = svg.querySelector('defs');
             svg.innerHTML = '';
-            svg.appendChild(defs);
+            if (defs) svg.appendChild(defs);
 
             const width = svg.clientWidth || 600;
             const height = svg.clientHeight || 300;
@@ -802,10 +798,8 @@
             const daysCount = 7;
             const dataPoints = [];
             const labels = [];
-
             const totalHabits = appState.habits.length;
 
-            // Calculate data for the past 7 days
             for (let i = daysCount - 1; i >= 0; i--) {
                 const dateStr = getPastDateStr(i);
                 const dateObj = new Date();
@@ -823,12 +817,10 @@
                 }
             }
 
-            // 1. Draw Grid Lines & Y-Axis Labels
             for (let i = 0; i <= 4; i++) {
                 const y = padding.top + chartH - (i * (chartH / 4));
                 const percent = i * 25;
                 
-                // Grid line
                 const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
                 line.setAttribute('x1', padding.left);
                 line.setAttribute('y1', y);
@@ -837,7 +829,6 @@
                 line.setAttribute('class', 'chart-grid-line');
                 svg.appendChild(line);
 
-                // Label
                 const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                 text.setAttribute('x', padding.left - 10);
                 text.setAttribute('y', y + 4);
@@ -847,10 +838,8 @@
                 svg.appendChild(text);
             }
 
-            // 2. Generate Path coordinates
             let linePath = '';
             let areaPath = `M ${padding.left} ${padding.top + chartH} `;
-
             const xStep = chartW / (daysCount - 1);
 
             dataPoints.forEach((val, index) => {
@@ -862,7 +851,6 @@
                 
                 areaPath += `L ${x} ${y} `;
 
-                // X-Axis Label
                 const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                 text.setAttribute('x', x);
                 text.setAttribute('y', height - 10);
@@ -874,19 +862,16 @@
             
             areaPath += `L ${padding.left + chartW} ${padding.top + chartH} Z`;
 
-            // 3. Draw Area (Background Fill)
             const area = document.createElementNS('http://www.w3.org/2000/svg', 'path');
             area.setAttribute('d', areaPath);
             area.setAttribute('class', 'chart-area');
             svg.appendChild(area);
 
-            // 4. Draw Line
             const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
             line.setAttribute('d', linePath);
             line.setAttribute('class', 'chart-line');
             svg.appendChild(line);
 
-            // 5. Draw Dots on Data Points
             dataPoints.forEach((val, index) => {
                 const x = padding.left + (index * xStep);
                 const y = padding.top + chartH - ((val / 100) * chartH);
@@ -897,16 +882,13 @@
                 circle.setAttribute('r', 4);
                 circle.setAttribute('class', 'chart-dot');
                 
-                // Add tooltip
                 const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
                 title.textContent = `${labels[index]}: ${Math.round(val)}%`;
                 circle.appendChild(title);
-                
                 svg.appendChild(circle);
             });
         }
 
-        // Handle window resize for the chart
         window.addEventListener('resize', () => {
             if(document.getElementById('page-analytics').classList.contains('active')) {
                 renderAnalyticsChart();
