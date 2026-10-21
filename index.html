@@ -2,24 +2,24 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus - Gamified Habit Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nexus - Personal Dashboard</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 
         :root {
-            --bg-base: #060913;
-            --bg-card: rgba(20, 26, 46, 0.7);
-            --bg-card-hover: rgba(30, 38, 66, 0.9);
+            --bg-base: #0b0f19;
+            --bg-card: #141b2d;
+            --bg-inner: #1a2236;
             --text-main: #ffffff;
             --text-muted: #8b92a5;
-            --neon-cyan: #00f0ff;
-            --neon-purple: #b026ff;
-            --neon-green: #00ff88;
+            --neon-cyan: #00e5a0;
+            --neon-blue: #4a7cff;
+            --neon-pink: #ff6b9d;
             --neon-yellow: #ffcc00;
-            --neon-red: #ff3366;
-            --border-color: rgba(255, 255, 255, 0.08);
-            --glass-blur: blur(12px);
+            --neon-purple: #9d4edd;
+            --neon-red: #ff5252;
+            --border-color: rgba(255, 255, 255, 0.05);
         }
 
         * {
@@ -27,1027 +27,757 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Outfit', sans-serif;
-            user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
 
         body {
             background-color: var(--bg-base);
-            background-image: radial-gradient(circle at 15% 50%, rgba(0, 240, 255, 0.05), transparent 25%),
-                              radial-gradient(circle at 85% 30%, rgba(176, 38, 255, 0.05), transparent 25%);
             color: var(--text-main);
+            display: flex;
+            justify-content: center;
             min-height: 100vh;
-            display: flex;
-            overflow-x: hidden;
         }
 
-        /* --- SIDEBAR --- */
-        .sidebar {
-            width: 260px;
-            height: 100vh;
-            position: fixed;
-            left: 0; top: 0;
-            background: rgba(10, 14, 26, 0.8);
-            backdrop-filter: var(--glass-blur);
-            border-right: 1px solid var(--border-color);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            z-index: 100;
-            transition: transform 0.3s ease;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: 40px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .logo span { color: var(--neon-cyan); }
-
-        .nav-links { display: flex; flex-direction: column; gap: 10px; flex-grow: 1; }
-        .nav-item {
-            padding: 12px 15px;
-            border-radius: 12px;
-            color: var(--text-muted);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 500;
-        }
-        .nav-item:hover, .nav-item.active {
-            background: rgba(0, 240, 255, 0.1);
-            color: var(--neon-cyan);
-        }
-        .nav-item.active { border-left: 3px solid var(--neon-cyan); }
-
-        /* --- MAIN CONTENT --- */
-        .main-content {
-            margin-left: 260px;
-            padding: 30px 40px;
-            width: calc(100% - 260px);
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
+        /* App Container */
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            position: relative;
             padding-bottom: 100px;
         }
 
-        .page-section { display: none; animation: fadeIn 0.4s ease; }
-        .page-section.active { display: flex; flex-direction: column; gap: 25px; }
+        /* Tab Content */
+        .tab-content { display: none; padding: 20px; animation: fadeIn 0.3s ease; }
+        .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Header */
-        .top-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-        }
-        .top-header h1 { font-size: 32px; font-weight: 600; }
-        .top-header p { color: var(--text-muted); margin-top: 5px; }
+        .header-date { font-size: 11px; color: var(--text-muted); letter-spacing: 1.5px; font-weight: 600; text-transform: uppercase; margin-bottom: 5px; }
+        .header-title { font-size: 38px; font-weight: 700; letter-spacing: -1px; margin-bottom: 20px; }
 
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            background: var(--bg-card);
-            padding: 10px 20px;
-            border-radius: 50px;
-            border: 1px solid var(--border-color);
-            backdrop-filter: var(--glass-blur);
+        /* TOP STATS BAR */
+        .top-stats-bar {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 20px; padding: 15px; display: flex; align-items: center;
+            justify-content: space-between; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
         }
-        .avatar {
-            width: 40px; height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--neon-purple), var(--neon-cyan));
-            display: flex; justify-content: center; align-items: center;
-            font-weight: bold; font-size: 18px;
+        .level-section { display: flex; align-items: center; gap: 10px; }
+        .shield-icon {
+            width: 36px; height: 42px; background: linear-gradient(180deg, #ffd700, #b8860b);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            display: flex; justify-content: center; align-items: center; color: #000; font-weight: 800; font-size: 16px;
         }
-
-        /* Gamification Stats */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-        .stat-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 20px;
-            backdrop-filter: var(--glass-blur);
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s ease;
-        }
-        .stat-card:hover { transform: translateY(-5px); border-color: rgba(0, 240, 255, 0.3); }
-        .stat-title { color: var(--text-muted); font-size: 14px; margin-bottom: 10px; font-weight: 500; }
-        .stat-value { font-size: 28px; font-weight: 700; display: flex; align-items: baseline; gap: 5px; }
-        .stat-value span { font-size: 14px; color: var(--text-muted); font-weight: 400; }
+        .level-info span { font-size: 10px; color: var(--neon-yellow); font-weight: 700; letter-spacing: 1px; }
+        .level-info strong { font-size: 22px; color: var(--neon-cyan); line-height: 1; display: block; font-weight: 700;}
         
-        .level-bar-container {
-            margin-top: 15px;
-            height: 8px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        .level-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
-            width: 0%; 
-            border-radius: 10px;
-            box-shadow: 0 0 10px var(--neon-cyan);
-            transition: width 0.5s ease;
-        }
+        .xp-section { flex-grow: 1; margin: 0 15px; }
+        .xp-text { font-size: 12px; color: var(--text-muted); display: flex; gap: 5px; font-weight: 600;}
+        .xp-text span { color: var(--neon-cyan); }
+        .xp-bar-bg { height: 6px; background: #2a3348; border-radius: 10px; margin-top: 5px; overflow: hidden; }
+        .xp-bar-fill { height: 100%; background: var(--neon-cyan); border-radius: 10px; width: 0%; box-shadow: 0 0 10px rgba(0,229,160,0.5); transition: width 0.5s;}
 
-        /* Layout Grids */
-        .workspace { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; }
-        .panel {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 24px;
-            padding: 25px;
-            backdrop-filter: var(--glass-blur);
-        }
-        .panel-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .panel-title { font-size: 18px; font-weight: 600; }
+        .mini-stats { display: flex; gap: 15px; }
+        .mini-stat { display: flex; flex-direction: column; align-items: flex-end; }
+        .mini-stat span { font-size: 10px; color: var(--text-muted); font-weight: 600; letter-spacing: 0.5px;}
+        .mini-stat strong { font-size: 18px; display: flex; align-items: center; gap: 4px; font-weight: 700;}
 
-        .btn-primary {
-            background: rgba(0, 240, 255, 0.1);
-            color: var(--neon-cyan);
-            border: 1px solid var(--neon-cyan);
-            padding: 8px 16px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
+        /* RINGS CARD */
+        .progress-rings-card {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 24px; padding: 25px; display: flex; align-items: center;
+            justify-content: space-around; margin-bottom: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
         }
-        .btn-primary:hover { background: var(--neon-cyan); color: var(--bg-base); box-shadow: 0 0 15px var(--neon-cyan); }
-
-        /* Habit List */
-        .habit-list { display: flex; flex-direction: column; gap: 12px; }
-        .habit-row {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            background: rgba(255,255,255,0.02);
-            border-radius: 16px;
-            border: 1px solid transparent;
-            transition: all 0.3s;
-            animation: slideIn 0.3s ease-out;
-        }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
-        .habit-row:hover { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.1); }
-        .habit-row.completed { opacity: 0.6; }
-        .habit-row.completed h3 { text-decoration: line-through; color: var(--text-muted); }
-
-        .habit-info { flex-grow: 1; margin-left: 15px; }
-        .habit-info h3 { font-size: 16px; font-weight: 500; margin-bottom: 4px; transition: all 0.3s; }
-        .habit-info p { font-size: 12px; color: var(--text-muted); display: flex; gap: 10px; align-items: center;}
-        .habit-xp { color: var(--neon-yellow); font-weight: 600; font-size: 12px; background: rgba(255, 204, 0, 0.1); padding: 2px 8px; border-radius: 10px;}
-
-        .habit-actions { display: flex; gap: 8px; opacity: 0; transition: opacity 0.2s; margin-right: 15px;}
-        .habit-row:hover .habit-actions { opacity: 1; }
-        .action-btn { background: transparent; border: none; cursor: pointer; font-size: 16px; opacity: 0.5; transition: all 0.2s; }
-        .action-btn:hover { opacity: 1; transform: scale(1.1); }
-        .btn-edit:hover { color: var(--neon-cyan); }
-        .btn-delete:hover { color: var(--neon-red); }
-
-        .custom-checkbox {
-            width: 32px; height: 32px;
-            border-radius: 50%;
-            border: 2px solid var(--text-muted);
-            display: flex; justify-content: center; align-items: center;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            font-size: 16px;
-            color: transparent;
-            flex-shrink: 0;
-        }
-        .custom-checkbox:active { transform: scale(0.8); }
-        .custom-checkbox.checked {
-            background: var(--neon-green);
-            border-color: var(--neon-green);
-            color: var(--bg-base);
-            box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
-            transform: scale(1.1);
-        }
-
-        /* Circular Progress */
-        .circle-wrap { position: relative; width: 140px; height: 140px; margin: 0 auto; }
-        .circle-wrap svg { transform: rotate(-90deg); width: 140px; height: 140px; }
-        .circle-bg { fill: none; stroke: rgba(255,255,255,0.1); stroke-width: 10; }
-        .circle-progress { fill: none; stroke: var(--neon-cyan); stroke-width: 10; stroke-dasharray: 440; stroke-dashoffset: 440; stroke-linecap: round; transition: stroke-dashoffset 1s ease, stroke 0.5s; }
-        .circle-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 28px; font-weight: 700; }
-
-        /* Analytics Chart */
-        .bars { display: flex; align-items: flex-end; gap: 8px; height: 120px; margin-top: 15px; width: 100%; justify-content: space-between;}
-        .bar-wrapper { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; height: 100%; justify-content: flex-end;}
-        .bar { width: 100%; background: rgba(255,255,255,0.1); border-radius: 5px 5px 0 0; transition: height 0.5s; min-height: 5px;}
-        .bar.active { background: var(--neon-cyan); box-shadow: 0 0 10px var(--neon-cyan); }
-        .bar-label { font-size: 10px; color: var(--text-muted); }
-
-        /* --- MONTHLY CALENDAR GRID --- */
-        .calendar-section {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 24px;
-            padding: 25px;
-            backdrop-filter: var(--glass-blur);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-        .calendar-scroll-container {
-            overflow-x: auto;
-            padding-bottom: 10px;
-        }
-        .calendar-scroll-container::-webkit-scrollbar { height: 8px; }
-        .calendar-scroll-container::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
-        .calendar-scroll-container::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 10px; }
-        .calendar-scroll-container::-webkit-scrollbar-thumb:hover { background: var(--neon-cyan); }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: 150px repeat(31, 35px);
-            gap: 8px;
-            min-width: max-content;
-        }
+        .rings-container { position: relative; width: 140px; height: 140px; }
+        .rings-container svg { transform: rotate(-90deg); width: 140px; height: 140px; }
         
-        .cal-header-cell {
-            text-align: center;
-            font-size: 11px;
-            color: var(--text-muted);
-            font-weight: 500;
-            padding-bottom: 10px;
-        }
-        .cal-header-cell.today { color: var(--neon-cyan); font-weight: bold; }
-
-        .cal-habit-name {
-            font-size: 13px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            padding-right: 10px;
-        }
-
-        .cal-cell {
-            width: 35px; height: 35px;
-            border-radius: 8px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid var(--border-color);
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex; justify-content: center; align-items: center;
-            font-size: 12px;
-            color: transparent;
-        }
-        .cal-cell:hover { border-color: var(--neon-cyan); background: rgba(0, 240, 255, 0.1); }
+        .ring-bg { fill: none; stroke: #1f273d; stroke-width: 12; }
+        .r1 { fill: none; stroke: var(--neon-cyan); stroke-width: 12; stroke-dasharray: 314; stroke-dashoffset: 314; stroke-linecap: round; filter: drop-shadow(0 0 6px rgba(0,229,160,0.4)); transition: stroke-dashoffset 0.5s; }
+        .r2 { fill: none; stroke: var(--neon-pink); stroke-width: 12; stroke-dasharray: 238; stroke-dashoffset: 238; stroke-linecap: round; filter: drop-shadow(0 0 6px rgba(255,107,157,0.4)); transition: stroke-dashoffset 0.5s;}
         
-        .cal-cell.completed {
-            background: rgba(0, 255, 136, 0.2);
-            border-color: var(--neon-green);
-            color: var(--neon-green);
-            box-shadow: inset 0 0 10px rgba(0, 255, 136, 0.2);
-        }
-        .cal-cell.completed::after { content: '✓'; font-weight: bold; }
+        .rings-stats { display: flex; flex-direction: column; gap: 15px; }
+        .rs-item h4 { font-size: 14px; color: var(--text-muted); font-weight: 500; margin-bottom: 2px;}
+        .rs-item p { font-size: 24px; font-weight: 700; }
+        .stat-cyan { color: var(--neon-cyan); }
+        .stat-pink { color: var(--neon-pink); }
+        .stat-yellow { color: var(--neon-yellow); }
+
+        /* SECTION HEADERS */
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; margin-top: 25px;}
+        .section-header h3 { font-size: 12px; color: var(--text-muted); letter-spacing: 1px; font-weight: 600; text-transform: uppercase;}
+        .section-header a { color: var(--neon-cyan); font-size: 14px; text-decoration: none; font-weight: 500; cursor: pointer;}
+
+        /* LISTS */
+        .card-container { background: var(--bg-card); border-radius: 20px; padding: 5px 15px; border: 1px solid var(--border-color); }
         
-        .cal-cell.today { border: 2px solid var(--neon-purple); }
+        .list-item { display: flex; align-items: center; gap: 15px; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .list-item:last-child { border-bottom: none; }
+        
+        .icon-box { width: 44px; height: 44px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 20px; flex-shrink: 0; }
+        
+        .item-info { flex-grow: 1; }
+        .item-info h3 { font-size: 16px; font-weight: 500; margin-bottom: 4px; }
+        .item-info p { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 5px; }
+        
+        .checkbox { width: 30px; height: 30px; border-radius: 9px; border: 2px solid #2a3348; cursor: pointer; display: flex; justify-content: center; align-items: center; color: transparent; transition: all 0.2s; flex-shrink: 0; font-weight: bold; font-size: 14px;}
+        .checkbox.checked { background: var(--neon-cyan); border-color: var(--neon-cyan); color: #000; box-shadow: 0 0 15px rgba(0,229,160,0.3);}
+        
+        .delete-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 16px; padding: 5px; transition: 0.2s;}
+        .delete-btn:hover { color: var(--neon-red); }
 
-        /* --- ANALYTICS LINE CHART --- */
-        .analytics-chart-container {
-            position: relative;
-            width: 100%;
-            height: 300px;
-            margin-top: 20px;
-        }
-        .analytics-chart-container svg {
-            width: 100%; height: 100%;
-            overflow: visible;
-        }
-        .chart-grid-line { stroke: rgba(255,255,255,0.05); stroke-width: 1; stroke-dasharray: 4; }
-        .chart-axis-text { fill: var(--text-muted); font-size: 12px; font-family: 'Outfit'; }
-        .chart-line { fill: none; stroke: var(--neon-cyan); stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.6)); }
-        .chart-area { fill: url(#areaGradient); opacity: 0.3; }
-        .chart-dot { fill: var(--bg-base); stroke: var(--neon-cyan); stroke-width: 3; transition: all 0.3s; cursor: pointer; }
-        .chart-dot:hover { r: 6; fill: var(--neon-cyan); filter: drop-shadow(0 0 10px var(--neon-cyan)); }
+        /* GOALS & MONEY & MINDSET */
+        .goal-item { padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.03); display: flex; align-items: center; gap: 15px;}
+        .goal-item:last-child { border-bottom: none; }
+        .goal-progress { height: 6px; background: #1f273d; border-radius: 10px; margin-top: 8px; width: 100%; overflow: hidden;}
+        .goal-fill { height: 100%; border-radius: 10px; transition: width 0.3s;}
+        
+        .money-card, .mindset-card { background: var(--bg-card); border-radius: 20px; padding: 20px; border: 1px solid var(--border-color); margin-bottom: 15px; }
+        .money-header { display: flex; justify-content: space-between; margin-bottom: 15px; font-weight: 600; font-size: 16px;}
+        .money-amount { font-size: 34px; color: #a3ff47; font-weight: 700; text-shadow: 0 0 15px rgba(163, 255, 71, 0.2); }
+        
+        .mindset-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 16px; font-weight: 500;}
+        /* Custom Range Slider */
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+        input[type=range]:focus { outline: none; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 14px; cursor: pointer; background: #1f273d; border-radius: 10px; }
+        input[type=range]::-webkit-slider-thumb { height: 14px; width: 14px; border-radius: 50%; background: #fff; cursor: pointer; -webkit-appearance: none; margin-top: 0px; box-shadow: 0 0 10px rgba(255,255,255,0.5);}
+        
+        #energySlider::-webkit-slider-runnable-track { background: linear-gradient(to right, var(--neon-yellow) var(--val, 80%), #1f273d var(--val, 80%)); }
+        #focusSlider::-webkit-slider-runnable-track { background: linear-gradient(to right, var(--neon-cyan) var(--val, 70%), #1f273d var(--val, 70%)); }
 
-        /* Modal */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
-            display: none; justify-content: center; align-items: center;
-            z-index: 1000; opacity: 0; transition: opacity 0.3s;
-        }
-        .modal-overlay.show { display: flex; opacity: 1; }
-        .modal-content {
-            background: #0d1221;
-            border: 1px solid var(--border-color);
-            padding: 30px; border-radius: 20px; width: 90%; max-width: 400px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            transform: translateY(20px); transition: transform 0.3s;
-        }
-        .modal-overlay.show .modal-content { transform: translateY(0); }
+        /* HABITS PAGE & FORMS */
+        .btn-add { display: flex; align-items: center; gap: 10px; color: var(--neon-cyan); padding: 15px; font-weight: 500; cursor: pointer; font-size: 15px;}
+        .btn-add span { font-size: 22px; }
+        
         .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 5px; }
-        .input-group input, .input-group select {
-            width: 100%; padding: 12px; border-radius: 10px;
-            background: rgba(255,255,255,0.05); border: 1px solid var(--border-color);
-            color: white; outline: none; font-family: 'Outfit'; font-size: 14px;
+        .input-group label { font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 5px; }
+        .input-group input, .input-group select { width: 100%; padding: 12px; border-radius: 10px; background: var(--bg-inner); border: 1px solid var(--border-color); color: white; outline: none; font-family: 'Outfit'; font-size: 14px;}
+        .btn-primary { background: var(--neon-cyan); color: #000; border: none; padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; width: 100%; font-size: 15px;}
+
+        /* FLOATING BOTTOM NAV */
+        .bottom-nav {
+            position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%);
+            width: 92%; max-width: 450px;
+            background: rgba(20, 27, 45, 0.95); backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 30px; display: flex; justify-content: space-around; padding: 12px 10px;
+            z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        .input-group input:focus, .input-group select:focus { border-color: var(--neon-cyan); box-shadow: 0 0 10px rgba(0,240,255,0.2); }
-        
-        /* Toast Notification */
-        .toast {
-            position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
-            background: var(--bg-card); border: 1px solid var(--neon-cyan); color: var(--neon-cyan);
-            padding: 12px 24px; border-radius: 50px; font-weight: 600; z-index: 2000;
-            box-shadow: 0 0 20px rgba(0,240,255,0.3); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 10px; color: var(--text-muted); cursor: pointer; transition: 0.2s; font-weight: 500;}
+        .nav-item.active { color: var(--neon-cyan); }
+        .nav-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 20px; transition: 0.2s;}
+        .nav-item.active .nav-icon { background: rgba(0, 229, 160, 0.1); }
+
+        /* Toast */
+        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: var(--bg-card); border: 1px solid var(--neon-cyan); color: var(--neon-cyan); padding: 10px 20px; border-radius: 50px; z-index: 2000; transition: 0.3s; font-weight: 600; box-shadow: 0 5px 20px rgba(0,0,0,0.5); pointer-events: none;}
         .toast.show { transform: translateX(-50%) translateY(0); }
 
-        /* Mobile Nav */
-        .mobile-nav {
-            display: none;
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: rgba(10, 14, 26, 0.95); backdrop-filter: blur(10px);
-            border-top: 1px solid var(--border-color);
-            padding: 10px 20px; justify-content: space-around; z-index: 100;
-        }
-        .mobile-nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: var(--text-muted); gap: 4px; cursor: pointer;}
-        .mobile-nav-item.active { color: var(--neon-cyan); }
-        .mobile-nav-icon { font-size: 20px; }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .workspace { grid-template-columns: 1fr; }
-            .habit-actions { opacity: 1; }
-        }
-        @media (max-width: 768px) {
-            .sidebar { transform: translateX(-100%); }
-            .main-content { margin-left: 0; width: 100%; padding: 20px; padding-bottom: 80px; }
-            .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-            .stat-value { font-size: 22px; }
-            .top-header h1 { font-size: 24px; }
-            .user-profile { display: none; }
-            .mobile-nav { display: flex; }
-            .panel { padding: 15px; }
-            .calendar-grid { grid-template-columns: 120px repeat(31, 30px); }
-            .cal-cell { width: 30px; height: 30px; }
-        }
     </style>
 </head>
 <body>
 
-    <div class="toast" id="toastMsg">Level Up! 🎉</div>
+    <div class="toast" id="toastMsg">+10 XP</div>
 
-    <aside class="sidebar">
-        <div class="logo">⚡ Nexus<span>.</span></div>
-        <div class="nav-links">
-            <a href="#" class="nav-item active" onclick="changePage('dashboard', this)">📊 Dashboard</a>
-            <a href="#" class="nav-item" onclick="changePage('habits', this)">✅ My Habits</a>
-            <a href="#" class="nav-item" onclick="changePage('analytics', this)">📈 Analytics</a>
-            <a href="#" class="nav-item" onclick="changePage('achievements', this)">🏆 Achievements</a>
-        </div>
-    </aside>
-
-    <main class="main-content">
+    <div class="app-container">
         
-        <!-- DASHBOARD PAGE -->
-        <div id="page-dashboard" class="page-section active">
-            <header class="top-header">
-                <div>
-                    <h1 id="greetingText">Hello!</h1>
-                    <p id="currentDate">Loading date...</p>
-                </div>
-                <div class="user-profile">
-                    <div class="avatar">U</div>
-                    <div>
-                        <div style="font-weight: 600;">Achiever</div>
-                        <div style="font-size: 12px; color: var(--neon-cyan);">Level <span id="userLevelDisplay">1</span></div>
-                    </div>
-                </div>
-            </header>
+        <!-- ================= TODAY TAB ================= -->
+        <div id="tab-today" class="tab-content active">
+            <div class="header-date" id="currentDate">WEDNESDAY, OCTOBER 21</div>
+            <div class="header-title">Today</div>
 
-            <section class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-title">Total XP</div>
-                    <div class="stat-value" style="color: var(--neon-yellow);" id="totalXpDisplay">0</div>
-                    <div class="level-bar-container">
-                        <div class="level-bar-fill" id="xpProgressBar"></div>
+            <div class="top-stats-bar">
+                <div class="level-section">
+                    <div class="shield-icon" id="levelShield">1</div>
+                    <div class="level-info">
+                        <span>LEVEL</span>
+                        <strong id="levelVal">1</strong>
                     </div>
-                    <div style="font-size: 11px; color: var(--text-muted); margin-top: 5px; text-align: right;" id="nextLevelXpText">100 XP to Level Up</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-title">Current Streak</div>
-                    <div class="stat-value" style="color: var(--neon-green);">🔥 <span id="streakDisplay">1</span> <span>Days</span></div>
+                <div class="xp-section">
+                    <div class="xp-text">⚡ <span id="xpVal">0</span> XP</div>
+                    <div class="xp-bar-bg"><div class="xp-bar-fill" id="xpBar" style="width: 0%;"></div></div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-title">Habits Completed</div>
-                    <div class="stat-value" id="habitsCompletedDisplay">0/0</div>
-                </div>
-            </section>
-
-            <div class="workspace">
-                <div class="panel" style="text-align: center;">
-                    <h2 class="panel-title" style="margin-bottom: 20px; text-align: left;">Daily Overview</h2>
-                    <div class="circle-wrap">
-                        <svg>
-                            <circle class="circle-bg" cx="70" cy="70" r="60"></circle>
-                            <circle class="circle-progress" cx="70" cy="70" r="60" id="progressRing"></circle>
-                        </svg>
-                        <div class="circle-text" id="progressText">0%</div>
+                <div class="mini-stats">
+                    <div class="mini-stat">
+                        <span>STREAK</span>
+                        <strong style="color: var(--neon-cyan);">🔥 <span id="streakVal">9</span></strong>
                     </div>
-                    <p style="color: var(--text-muted); font-size: 13px; margin-top: 15px;" id="progressMessage">Let's get started!</p>
-                </div>
-                
-                <div class="panel">
-                    <h2 class="panel-title" style="margin-bottom: 15px;">Weekly Performance</h2>
-                    <div class="bars" id="weeklyBars"></div>
+                    <div class="mini-stat">
+                        <span>PERFECT</span>
+                        <strong style="color: var(--neon-yellow);">⭐ <span id="perfectVal">21</span></strong>
+                    </div>
                 </div>
             </div>
 
-            <!-- MONTHLY CALENDAR SECTION -->
-            <section class="calendar-section">
-                <div class="panel-header" style="margin-bottom: 15px;">
-                    <h2 class="panel-title">Monthly Tracker</h2>
-                    <span style="font-size: 12px; color: var(--text-muted);">Scroll right to see all days 👉</span>
-                </div>
-                <div class="calendar-scroll-container">
-                    <div class="calendar-grid" id="calendarGrid"></div>
-                </div>
-            </section>
-        </div>
-
-        <!-- HABITS PAGE -->
-        <div id="page-habits" class="page-section">
-            <header class="top-header">
-                <h1>My Habits</h1>
-            </header>
-            <div class="workspace" style="grid-template-columns: 1fr;">
-                <section class="panel">
-                    <div class="panel-header">
-                        <h2 class="panel-title">Today's Checklist</h2>
-                        <button class="btn-primary" onclick="openModal()">+ Add Habit</button>
-                    </div>
-                    <div class="habit-list" id="habitList"></div>
-                </section>
-            </div>
-        </div>
-
-        <!-- ANALYTICS PAGE WITH NEW GRAPH -->
-        <div id="page-analytics" class="page-section">
-            <header class="top-header">
-                <h1>Analytics</h1>
-                <p>Track your 7-day progress trend</p>
-            </header>
-            <section class="panel">
-                <h2 class="panel-title" style="margin-bottom: 20px;">Progress Trend (Last 7 Days)</h2>
-                <div class="analytics-chart-container">
-                    <svg id="analyticsChart">
-                        <!-- Definitions for gradients -->
-                        <defs>
-                            <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stop-color="var(--neon-cyan)" stop-opacity="0.5"/>
-                                <stop offset="100%" stop-color="var(--neon-cyan)" stop-opacity="0"/>
-                            </linearGradient>
-                        </defs>
-                        <!-- Chart content will be injected here by JS -->
+            <div class="progress-rings-card">
+                <div class="rings-container">
+                    <svg>
+                        <circle class="ring-bg" cx="70" cy="70" r="50"></circle>
+                        <circle class="r1" cx="70" cy="70" r="50" id="ring1"></circle>
+                        <circle class="ring-bg" cx="70" cy="70" r="38"></circle>
+                        <circle class="r2" cx="70" cy="70" r="38" id="ring2"></circle>
                     </svg>
                 </div>
-            </section>
-        </div>
-
-        <!-- ACHIEVEMENTS PAGE -->
-        <div id="page-achievements" class="page-section">
-            <header class="top-header">
-                <h1>Achievements</h1>
-            </header>
-            <section class="panel">
-                <div class="achievements-grid">
-                    <div class="badge-card unlocked">
-                        <div class="badge-icon">🚀</div>
-                        <div class="badge-title">First Step</div>
-                        <div class="badge-desc">Completed 1 habit</div>
-                    </div>
-                    <div class="badge-card">
-                        <div class="badge-icon">🔥</div>
-                        <div class="badge-title">On Fire</div>
-                        <div class="badge-desc">7 Day Streak</div>
-                    </div>
+                <div class="rings-stats">
+                    <div class="rs-item"><h4>Habits</h4><p class="stat-cyan" id="txtHabits">0/0</p></div>
+                    <div class="rs-item"><h4>XP Progress</h4><p class="stat-yellow" id="txtXp">0/150</p></div>
                 </div>
-            </section>
+            </div>
+
+            <!-- Tasks -->
+            <div class="section-header">
+                <h3>TODAY'S TASKS</h3>
+            </div>
+            
+            <div class="card-container">
+                <div id="tasksList"></div>
+                <div class="btn-add" onclick="addTask()" style="padding: 10px 0 15px; font-size: 13px;">+ Add Task</div>
+            </div>
+
+            <!-- Habits List -->
+            <div class="section-header">
+                <h3>HABITS</h3>
+                <a onclick="switchTab('habits')">Manage</a>
+            </div>
+            <div class="card-container" id="todayHabitList"></div>
+
+            <!-- Goals -->
+            <div class="section-header">
+                <h3>GOALS</h3>
+            </div>
+            <div class="card-container" id="goalsList"></div>
+
+            <!-- Money & Mindset -->
+            <div class="section-header">
+                <h3>MONEY & MINDSET</h3>
+            </div>
+            
+            <div class="money-card">
+                <div class="money-header">
+                    <span>💰 Money</span>
+                    <span style="color: var(--neon-cyan); font-size: 14px; cursor: pointer;" onclick="switchTab('money')">Details</span>
+                </div>
+                <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">Left to spend</div>
+                <div class="money-amount" id="moneyLeft">$0</div>
+                <div style="display: flex; justify-content: space-between; font-size: 13px; color: var(--text-muted); margin-top: 8px;">
+                    <span id="moneyBudget">Budget: $0</span>
+                    <span style="color: var(--text-main);">Spent today <strong id="moneySpent" style="font-size: 15px;">$0</strong></span>
+                </div>
+            </div>
+
+            <div class="mindset-card">
+                <div class="mindset-row">
+                    <span>Energy</span>
+                    <span style="color: var(--neon-yellow); font-weight: 700;" id="energyValText">8</span>
+                </div>
+                <input type="range" id="energySlider" min="0" max="10" value="8" disabled>
+
+                <div class="mindset-row" style="margin-top: 20px;">
+                    <span>Focus</span>
+                    <span style="color: var(--neon-cyan); font-weight: 700;" id="focusValText">7</span>
+                </div>
+                <input type="range" id="focusSlider" min="0" max="10" value="7" disabled>
+                <p style="font-size: 10px; color: var(--text-muted); margin-top: 10px; text-align: center;">(Automatically increases/decreases as you complete Tasks)</p>
+            </div>
+
         </div>
 
-    </main>
-
-    <nav class="mobile-nav">
-        <div class="mobile-nav-item active" onclick="changePage('dashboard', this)"><span class="mobile-nav-icon">📊</span>Home</div>
-        <div class="mobile-nav-item" onclick="changePage('habits', this)"><span class="mobile-nav-icon">✅</span>Habits</div>
-        <div class="mobile-nav-item" onclick="changePage('analytics', this)"><span class="mobile-nav-icon">📈</span>Stats</div>
-        <div class="mobile-nav-item" onclick="changePage('achievements', this)"><span class="mobile-nav-icon">🏆</span>Badges</div>
-    </nav>
-
-    <div class="modal-overlay" id="habitModal">
-        <div class="modal-content">
-            <h2 style="margin-bottom: 20px;" id="modalTitle">Create New Habit</h2>
-            <input type="hidden" id="editHabitId" value="">
-            <div class="input-group">
-                <label>Habit Name</label>
-                <input type="text" id="habitNameInput" placeholder="e.g. Read 10 pages">
-            </div>
-            <div class="input-group">
-                <label>XP Reward</label>
-                <select id="habitXpInput">
-                    <option value="10">10 XP (Easy)</option>
-                    <option value="20">20 XP (Medium)</option>
-                    <option value="30">30 XP (Hard)</option>
-                </select>
-            </div>
-            <div style="display: flex; gap: 10px; margin-top: 25px;">
-                <button class="btn-primary" style="flex: 1; background: transparent; border-color: var(--text-muted); color: var(--text-muted);" onclick="closeModal()">Cancel</button>
-                <button class="btn-primary" style="flex: 2;" onclick="saveHabit()">Save Habit</button>
+        <!-- ================= HABITS TAB ================= -->
+        <div id="tab-habits" class="tab-content">
+            <div class="header-title">Manage Habits</div>
+            <div class="card-container" id="allHabitsList"></div>
+            
+            <div class="card-container" style="margin-top: 20px; padding: 15px;">
+                <h3 style="margin-bottom: 15px; font-size: 16px;">Add New Habit</h3>
+                <div class="input-group">
+                    <label>Habit Name</label>
+                    <input type="text" id="newHabitName" placeholder="e.g. Drink Water">
+                </div>
+                <div class="input-group">
+                    <label>XP Reward</label>
+                    <select id="newHabitXP">
+                        <option value="10">10 XP (Easy)</option>
+                        <option value="20">20 XP (Medium)</option>
+                        <option value="30">30 XP (Hard)</option>
+                    </select>
+                </div>
+                <button class="btn-primary" onclick="addNewHabit()">Save Habit</button>
             </div>
         </div>
+
+        <!-- ================= MONTH TAB ================= -->
+        <div id="tab-month" class="tab-content">
+            <div class="header-title">Monthly View</div>
+            <div class="card-container" style="padding: 15px; text-align: center;">
+                <h3 style="margin-bottom: 15px; color: var(--text-muted);">Current Month Grid</h3>
+                <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px;" id="monthGrid">
+                    <!-- JS injects calendar -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= WEEK TAB ================= -->
+        <div id="tab-week" class="tab-content">
+            <div class="header-title">Weekly View</div>
+            <div class="card-container" style="padding: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; height: 150px; gap: 10px;" id="weekBars">
+                    <!-- JS injects bars -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= MONEY TAB ================= -->
+        <div id="tab-money" class="tab-content">
+            <div class="header-title">Money</div>
+            
+            <!-- Set Budget Form -->
+            <div class="card-container" style="padding: 15px; margin-bottom: 15px;">
+                <h3 style="margin-bottom: 10px; font-size: 14px;">Set Your Budget</h3>
+                <div class="input-box" style="display: flex; gap: 10px;">
+                    <input type="number" id="budgetInput" placeholder="Enter amount ($)" style="flex:1; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-inner); color: white;">
+                    <button class="btn-primary" style="width: auto; padding: 0 15px;" onclick="setBudget()">Set</button>
+                </div>
+            </div>
+
+            <div class="money-card">
+                <h3 style="margin-bottom: 15px;">Wallet</h3>
+                <div style="font-size: 30px; color: #a3ff47; font-weight: bold; margin-bottom: 15px;" id="moneyTotalVal">$0</div>
+                <button class="btn-primary" onclick="addExpense()" style="background: var(--neon-blue); color: white;">+ Add Expense</button>
+            </div>
+            <div class="card-container">
+                <h4 style="padding: 15px 0 5px; color: var(--text-muted); font-size: 12px;">RECENT TRANSACTIONS</h4>
+                <div id="expenseList">
+                    <!-- Expenses go here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= RANKS TAB ================= -->
+        <div id="tab-ranks" class="tab-content">
+            <div class="header-title">Ranks & Badges</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="card-container" style="text-align: center; padding: 20px; border-color: var(--neon-cyan);">
+                    <div style="font-size: 40px; margin-bottom: 10px;">🚀</div>
+                    <h3>First Step</h3>
+                    <p style="font-size: 12px; color: var(--neon-cyan);">Unlocked</p>
+                </div>
+                <div class="card-container" style="text-align: center; padding: 20px; opacity: 0.5;">
+                    <div style="font-size: 40px; margin-bottom: 10px; filter: grayscale(100%);">🔥</div>
+                    <h3>On Fire</h3>
+                    <p style="font-size: 12px; color: var(--text-muted);">Locked</p>
+                </div>
+            </div>
+        </div>
+
     </div>
 
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('today', this)">
+            <div class="nav-icon">🎯</div><span>Today</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('month', this)">
+            <div class="nav-icon">📅</div><span>Month</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('week', this)">
+            <div class="nav-icon">📊</div><span>Week</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('money', this)">
+            <div class="nav-icon">💰</div><span>Money</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('ranks', this)">
+            <div class="nav-icon">🏆</div><span>Ranks</span>
+        </div>
+    </nav>
+
     <script>
-        let appState = {
-            totalXp: 0,
-            currentLevel: 1,
-            habits: []
+        // --- 1. STATE MANAGEMENT ---
+        let state = {
+            xp: 0,
+            streak: 9,
+            perfect: 21,
+            energy: 8,
+            focus: 7,
+            totalBudget: 0,
+            moneySpentToday: 0,
+            moneyLeft: 0,
+            expenses: [],
+            habits: [
+                { id: 'h1', name: 'Wake up at 06:00', xp: 10, done: true, icon: '⏰', color: '#b026ff' },
+                { id: 'h2', name: 'Meditation', xp: 10, done: false, icon: '🧠', color: '#4a7cff' },
+                { id: 'h3', name: 'Read 10 pages', xp: 20, done: false, icon: '📖', color: '#ffcc00' }
+            ],
+            tasks: [
+                { id: 't1', name: 'Book dentist', done: false, xp: 10 },
+                { id: 't2', name: 'Clean desk', done: false, xp: 10 }
+            ],
+            goals: [
+                { id: 'g1', name: 'Read 24 books', current: 17, target: 24, color: '#4a7cff' },
+                { id: 'g2', name: 'Run 300 miles', current: 212, target: 300, color: '#00e5a0' }
+            ]
         };
 
-        const defaultHabits = [
-            { id: '1', name: 'Wake up at 06:00', xp: 10, completed: false, history: {} },
-            { id: '2', name: 'Meditation', xp: 10, completed: false, history: {} },
-            { id: '3', name: 'Read 10 pages', xp: 20, completed: false, history: {} },
-            { id: '4', name: 'Workout', xp: 30, completed: false, history: {} }
-        ];
-
-        function getTodayStr() {
-            const d = new Date();
-            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-        }
-
-        // Get date string for past N days
-        function getPastDateStr(daysAgo) {
-            const d = new Date();
-            d.setDate(d.getDate() - daysAgo);
-            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-        }
-
-        function changePage(pageId, element) {
-            document.querySelectorAll('.page-section').forEach(page => page.classList.remove('active'));
-            document.getElementById(`page-${pageId}`).classList.add('active');
-
-            document.querySelectorAll('.sidebar .nav-item').forEach(nav => nav.classList.remove('active'));
-            if(element && element.classList.contains('nav-item')) {
-                element.classList.add('active');
-            } else {
-                document.querySelectorAll('.sidebar .nav-item').forEach(nav => {
-                    if(nav.innerText.toLowerCase().includes(pageId.substring(0,4))) nav.classList.add('active');
-                });
-            }
-
-            document.querySelectorAll('.mobile-nav-item').forEach(nav => nav.classList.remove('active'));
-            if(element && element.classList.contains('mobile-nav-item')) {
-                element.classList.add('active');
-            }
-
-            // Re-draw chart when opening analytics
-            if (pageId === 'analytics') {
-                renderAnalyticsChart();
-            }
-        }
-
-        function init() {
+        // Load Data
+        function loadData() {
+            const saved = localStorage.getItem('nexusProDataV2');
+            if (saved) state = JSON.parse(saved);
+            
+            // Set Date
             const now = new Date();
-            const hours = now.getHours();
-            let greeting = "Good Evening";
-            if (hours < 12) greeting = "Good Morning";
-            else if (hours < 18) greeting = "Good Afternoon";
+            document.getElementById('currentDate').innerText = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }).toUpperCase();
             
-            document.getElementById('greetingText').innerText = `${greeting}, Achiever!`;
-            document.getElementById('currentDate').innerText = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+            // Set Mindset Visuals
+            updateMindsetSliderVisual('energy', state.energy);
+            updateMindsetSliderVisual('focus', state.focus);
+            document.getElementById('energyValText').innerText = state.energy;
+            document.getElementById('focusValText').innerText = state.focus;
+            document.getElementById('energySlider').value = state.energy;
+            document.getElementById('focusSlider').value = state.focus;
 
-            const savedData = localStorage.getItem('nexusHabitDataV5');
-            if (savedData) {
-                appState = JSON.parse(savedData);
-                appState.habits.forEach(h => { if(!h.history) h.history = {}; });
-            } else {
-                appState.habits = defaultHabits;
-            }
-
-            syncTodayStatus();
-            renderHabits();
-            renderWeeklyChart();
-            renderCalendar();
-            updateUI();
+            renderAll();
         }
 
+        // Save Data
         function saveData() {
-            localStorage.setItem('nexusHabitDataV5', JSON.stringify(appState));
+            localStorage.setItem('nexusProDataV2', JSON.stringify(state));
         }
 
-        function syncTodayStatus() {
-            const today = getTodayStr();
-            appState.habits.forEach(h => {
-                h.completed = h.history[today] || false;
-            });
-        }
-
-        function toggleHabit(id) {
-            const habit = appState.habits.find(h => h.id === id);
-            if (!habit) return;
-
-            const today = getTodayStr();
-            habit.completed = !habit.completed;
-            habit.history[today] = habit.completed;
-
-            if (habit.completed) {
-                appState.totalXp += habit.xp;
-                showToast(`+${habit.xp} XP Earned! 🚀`);
-            } else {
-                appState.totalXp -= habit.xp;
-            }
-
-            checkLevelUp();
-            saveData();
-            renderHabits();
-            renderCalendar();
-            updateUI();
-            renderAnalyticsChart(); // Update graph silently
-        }
-
-        function toggleCalendarCell(habitId, dateStr, cellElement) {
-            const habit = appState.habits.find(h => h.id === habitId);
-            if (!habit) return;
-
-            const isCompleted = !habit.history[dateStr];
-            habit.history[dateStr] = isCompleted;
+        // --- 2. NAVIGATION ---
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
             
-            if (isCompleted) {
-                appState.totalXp += habit.xp;
-                showToast(`+${habit.xp} XP (${dateStr}) 🚀`);
-            } else {
-                appState.totalXp -= habit.xp;
-            }
-
-            if (dateStr === getTodayStr()) {
-                habit.completed = isCompleted;
-                renderHabits();
-                updateUI();
-            }
-
-            checkLevelUp();
-            saveData();
-            renderCalendar();
-            renderWeeklyChart();
-            renderAnalyticsChart(); // Update graph silently
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            if(element) element.classList.add('active');
+            
+            if(tabId === 'month') renderMonthGrid();
+            if(tabId === 'week') renderWeekBars();
+            
+            window.scrollTo(0,0);
         }
 
-        function checkLevelUp() {
-            const newLevel = Math.floor(appState.totalXp / 100) + 1;
-            if (newLevel > appState.currentLevel) {
-                appState.currentLevel = newLevel;
-                showToast(`🎉 Level Up! You are now Level ${newLevel}`);
+        // --- 3. RENDER FUNCTIONS ---
+        function renderAll() {
+            renderTopBar();
+            renderRings();
+            renderTasks();
+            renderHabits();
+            renderGoals();
+            renderMoney();
+        }
+
+        function renderTopBar() {
+            let level = Math.floor(state.xp / 100) + 1;
+            let xpInLevel = state.xp % 100;
+            
+            document.getElementById('levelVal').innerText = level;
+            document.getElementById('levelShield').innerText = level;
+            document.getElementById('xpVal').innerText = state.xp;
+            document.getElementById('xpBar').style.width = `${xpInLevel}%`;
+            document.getElementById('streakVal').innerText = state.streak;
+            document.getElementById('perfectVal').innerText = state.perfect;
+        }
+
+        function renderRings() {
+            // Habits Ring (Outer, C=314)
+            const hTotal = state.habits.length;
+            const hDone = state.habits.filter(h => h.done).length;
+            const hPct = hTotal === 0 ? 0 : hDone / hTotal;
+            document.getElementById('ring1').style.strokeDashoffset = 314 - (314 * hPct);
+            document.getElementById('txtHabits').innerText = `${hDone}/${hTotal}`;
+
+            // XP Ring (Inner, C=238)
+            const xpPct = Math.min((state.xp % 150) / 150, 1);
+            document.getElementById('ring2').style.strokeDashoffset = 238 - (238 * xpPct);
+            document.getElementById('txtXp').innerText = `${state.xp % 150}/150`;
+        }
+
+        function renderTasks() {
+            const list = document.getElementById('tasksList');
+            list.innerHTML = '';
+            if(state.tasks.length === 0) {
+                list.innerHTML = '<div style="padding: 15px 0; color: var(--text-muted); font-size: 13px;">No tasks for today.</div>';
+                return;
             }
+            state.tasks.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'list-item';
+                div.style.padding = '12px 0';
+                div.innerHTML = `
+                    <span style="color:var(--text-muted); font-size:14px; width: 15px;">${index+1}</span>
+                    <div class="item-info"><h3>${item.name}</h3></div>
+                    <div class="checkbox ${item.done ? 'checked' : ''}" onclick="toggleTask('${item.id}')">${item.done ? '✓' : ''}</div>
+                    <button class="delete-btn" onclick="deleteTask('${item.id}')">🗑️</button>
+                `;
+                list.appendChild(div);
+            });
         }
 
         function renderHabits() {
-            const container = document.getElementById('habitList');
-            container.innerHTML = '';
+            const todayList = document.getElementById('todayHabitList');
+            const manageList = document.getElementById('allHabitsList');
+            
+            todayList.innerHTML = '';
+            manageList.innerHTML = '';
 
-            appState.habits.forEach(habit => {
-                const row = document.createElement('div');
-                row.className = `habit-row ${habit.completed ? 'completed' : ''}`;
-                row.innerHTML = `
-                    <div class="custom-checkbox ${habit.completed ? 'checked' : ''}" onclick="toggleHabit('${habit.id}')">
-                        ${habit.completed ? '✓' : ''}
+            state.habits.forEach(h => {
+                // Today View
+                const item = document.createElement('div');
+                item.className = 'list-item';
+                item.innerHTML = `
+                    <div class="icon-box" style="background: ${h.color}20; color: ${h.color};">${h.icon}</div>
+                    <div class="item-info">
+                        <h3>${h.name}</h3>
+                        <p>🔥 ${h.streak || 0} · ${h.percent || 0}% this month</p>
                     </div>
-                    <div class="habit-info">
-                        <h3>${habit.name}</h3>
-                        <p><span class="habit-xp">+${habit.xp} XP</span></p>
-                    </div>
-                    <div class="habit-actions">
-                        <button class="action-btn btn-edit" onclick="editHabit('${habit.id}')">✏️</button>
-                        <button class="action-btn btn-delete" onclick="deleteHabit('${habit.id}')">🗑️</button>
-                    </div>
+                    <div class="checkbox ${h.done ? 'checked' : ''}" onclick="toggleHabit('${h.id}')">${h.done ? '✓' : ''}</div>
                 `;
-                container.appendChild(row);
+                todayList.appendChild(item);
+
+                // Manage View
+                const manageItem = document.createElement('div');
+                manageItem.className = 'list-item';
+                manageItem.innerHTML = `
+                    <div class="icon-box" style="background: ${h.color}20; color: ${h.color};">${h.icon}</div>
+                    <div class="item-info">
+                        <h3>${h.name}</h3>
+                        <p>Reward: +${h.xp} XP</p>
+                    </div>
+                    <div style="color: var(--neon-red); cursor: pointer; font-size: 18px;" onclick="deleteHabit('${h.id}')">🗑️</div>
+                `;
+                manageList.appendChild(manageItem);
             });
         }
 
-        function renderCalendar() {
-            const grid = document.getElementById('calendarGrid');
-            grid.innerHTML = '';
-
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = today.getMonth();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            const todayStr = getTodayStr();
-
-            grid.innerHTML += `<div class="cal-header-cell" style="text-align: left;">Habit Name</div>`;
-            for (let i = 1; i <= daysInMonth; i++) {
-                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
-                const isToday = dateStr === todayStr;
-                grid.innerHTML += `<div class="cal-header-cell ${isToday ? 'today' : ''}">${i}</div>`;
-            }
-
-            appState.habits.forEach(habit => {
-                grid.innerHTML += `<div class="cal-habit-name" title="${habit.name}">${habit.name}</div>`;
-                for (let i = 1; i <= daysInMonth; i++) {
-                    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
-                    const isCompleted = habit.history[dateStr] === true;
-                    const isToday = dateStr === todayStr;
-                    grid.innerHTML += `
-                        <div class="cal-cell ${isCompleted ? 'completed' : ''} ${isToday ? 'today' : ''}" 
-                             onclick="toggleCalendarCell('${habit.id}', '${dateStr}')">
+        function renderGoals() {
+            const list = document.getElementById('goalsList');
+            list.innerHTML = '';
+            state.goals.forEach(g => {
+                const pct = Math.min((g.current / g.target) * 100, 100);
+                const div = document.createElement('div');
+                div.className = 'goal-item';
+                div.innerHTML = `
+                    <div class="icon-box" style="background: ${g.color}20; color: ${g.color};">🎯</div>
+                    <div style="flex-grow: 1;">
+                        <div style="display: flex; justify-content: space-between; font-size: 15px; font-weight: 600;">
+                            <span>${g.name}</span> <span>${g.current} / ${g.target}</span>
                         </div>
-                    `;
-                }
-            });
-        }
-
-        // --- Render Custom SVG Analytics Chart ---
-        function renderAnalyticsChart() {
-            const svg = document.getElementById('analyticsChart');
-            // Clear previous chart lines except defs
-            const defs = svg.querySelector('defs');
-            svg.innerHTML = '';
-            svg.appendChild(defs);
-
-            const width = svg.clientWidth || 600;
-            const height = svg.clientHeight || 300;
-            const padding = { top: 20, right: 20, bottom: 40, left: 40 };
-            const chartW = width - padding.left - padding.right;
-            const chartH = height - padding.top - padding.bottom;
-
-            const daysCount = 7;
-            const dataPoints = [];
-            const labels = [];
-
-            const totalHabits = appState.habits.length;
-
-            // Calculate data for the past 7 days
-            for (let i = daysCount - 1; i >= 0; i--) {
-                const dateStr = getPastDateStr(i);
-                const dateObj = new Date();
-                dateObj.setDate(dateObj.getDate() - i);
-                labels.push(dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
-
-                if (totalHabits === 0) {
-                    dataPoints.push(0);
-                } else {
-                    let completedOnDay = 0;
-                    appState.habits.forEach(h => {
-                        if (h.history[dateStr]) completedOnDay++;
-                    });
-                    dataPoints.push((completedOnDay / totalHabits) * 100);
-                }
-            }
-
-            // 1. Draw Grid Lines & Y-Axis Labels
-            for (let i = 0; i <= 4; i++) {
-                const y = padding.top + chartH - (i * (chartH / 4));
-                const percent = i * 25;
-                
-                // Grid line
-                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                line.setAttribute('x1', padding.left);
-                line.setAttribute('y1', y);
-                line.setAttribute('x2', width - padding.right);
-                line.setAttribute('y2', y);
-                line.setAttribute('class', 'chart-grid-line');
-                svg.appendChild(line);
-
-                // Label
-                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                text.setAttribute('x', padding.left - 10);
-                text.setAttribute('y', y + 4);
-                text.setAttribute('text-anchor', 'end');
-                text.setAttribute('class', 'chart-axis-text');
-                text.textContent = `${percent}%`;
-                svg.appendChild(text);
-            }
-
-            // 2. Generate Path coordinates
-            let linePath = '';
-            let areaPath = `M ${padding.left} ${padding.top + chartH} `;
-
-            const xStep = chartW / (daysCount - 1);
-
-            dataPoints.forEach((val, index) => {
-                const x = padding.left + (index * xStep);
-                const y = padding.top + chartH - ((val / 100) * chartH);
-                
-                if (index === 0) linePath += `M ${x} ${y} `;
-                else linePath += `L ${x} ${y} `;
-                
-                areaPath += `L ${x} ${y} `;
-
-                // X-Axis Label
-                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                text.setAttribute('x', x);
-                text.setAttribute('y', height - 10);
-                text.setAttribute('text-anchor', 'middle');
-                text.setAttribute('class', 'chart-axis-text');
-                text.textContent = labels[index];
-                svg.appendChild(text);
-            });
-            
-            areaPath += `L ${padding.left + chartW} ${padding.top + chartH} Z`;
-
-            // 3. Draw Area (Background Fill)
-            const area = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-            area.setAttribute('d', areaPath);
-            area.setAttribute('class', 'chart-area');
-            svg.appendChild(area);
-
-            // 4. Draw Line
-            const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-            line.setAttribute('d', linePath);
-            line.setAttribute('class', 'chart-line');
-            svg.appendChild(line);
-
-            // 5. Draw Dots on Data Points
-            dataPoints.forEach((val, index) => {
-                const x = padding.left + (index * xStep);
-                const y = padding.top + chartH - ((val / 100) * chartH);
-                
-                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                circle.setAttribute('cx', x);
-                circle.setAttribute('cy', y);
-                circle.setAttribute('r', 4);
-                circle.setAttribute('class', 'chart-dot');
-                
-                // Add tooltip
-                const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
-                title.textContent = `${labels[index]}: ${Math.round(val)}%`;
-                circle.appendChild(title);
-                
-                svg.appendChild(circle);
-            });
-        }
-
-        // Handle window resize for the chart
-        window.addEventListener('resize', () => {
-            if(document.getElementById('page-analytics').classList.contains('active')) {
-                renderAnalyticsChart();
-            }
-        });
-
-        function updateUI() {
-            const totalHabits = appState.habits.length;
-            const completedHabits = appState.habits.filter(h => h.completed).length;
-            
-            document.getElementById('habitsCompletedDisplay').innerText = `${completedHabits}/${totalHabits}`;
-            document.getElementById('totalXpDisplay').innerText = appState.totalXp;
-
-            const xpInCurrentLevel = appState.totalXp % 100;
-            document.getElementById('userLevelDisplay').innerText = appState.currentLevel;
-            document.getElementById('xpProgressBar').style.width = `${xpInCurrentLevel}%`;
-            document.getElementById('nextLevelXpText').innerText = `${100 - xpInCurrentLevel} XP to Level ${appState.currentLevel + 1}`;
-
-            const percentage = totalHabits === 0 ? 0 : Math.round((completedHabits / totalHabits) * 100);
-            document.getElementById('progressText').innerText = `${percentage}%`;
-            
-            const ring = document.getElementById('progressRing');
-            const offset = 440 - ((percentage / 100) * 440);
-            ring.style.strokeDashoffset = offset;
-
-            if(percentage === 100) {
-                ring.style.stroke = 'var(--neon-green)';
-                document.getElementById('progressMessage').innerText = "Perfect Day! 🏆";
-            } else {
-                ring.style.stroke = 'var(--neon-cyan)';
-                document.getElementById('progressMessage').innerText = percentage > 50 ? "Halfway there!" : "Let's build momentum!";
-            }
-        }
-
-        function renderWeeklyChart() {
-            const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-            const container = document.getElementById('weeklyBars');
-            container.innerHTML = '';
-            
-            const todayIndex = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1; 
-            
-            days.forEach((day, index) => {
-                let height = Math.floor(Math.random() * 40) + 10;
-                let isActive = false;
-
-                if (index === todayIndex) {
-                    const total = appState.habits.length;
-                    const completed = appState.habits.filter(h => h.completed).length;
-                    height = total === 0 ? 5 : (completed / total) * 100;
-                    isActive = true;
-                } else if (index > todayIndex) {
-                    height = 5;
-                }
-
-                const wrapper = document.createElement('div');
-                wrapper.className = 'bar-wrapper';
-                wrapper.innerHTML = `
-                    <div class="bar ${isActive ? 'active' : ''}" style="height: ${height}%"></div>
-                    <div class="bar-label">${day}</div>
+                        <div class="goal-progress"><div class="goal-fill" style="width: ${pct}%; background: ${g.color};"></div></div>
+                    </div>
+                    <div class="checkbox" style="border-radius: 50%; color: var(--text-main);" onclick="addGoalProgress('${g.id}')">+</div>
                 `;
-                container.appendChild(wrapper);
+                list.appendChild(div);
             });
         }
 
-        function openModal() {
-            document.getElementById('modalTitle').innerText = "Create New Habit";
-            document.getElementById('editHabitId').value = "";
-            document.getElementById('habitNameInput').value = "";
-            document.getElementById('habitXpInput').value = "10";
-            document.getElementById('habitModal').classList.add('show');
-        }
-
-        function closeModal() {
-            document.getElementById('habitModal').classList.remove('show');
-        }
-
-        function saveHabit() {
-            const id = document.getElementById('editHabitId').value;
-            const name = document.getElementById('habitNameInput').value;
-            const xp = parseInt(document.getElementById('habitXpInput').value);
-
-            if (!name.trim()) return showToast("Please enter a name!", true);
-
-            if (id) {
-                const habit = appState.habits.find(h => h.id === id);
-                habit.name = name;
-                habit.xp = xp;
-                showToast("Habit updated! ✏️");
-            } else {
-                appState.habits.push({ 
-                    id: Date.now().toString(), 
-                    name: name, 
-                    xp: xp, 
-                    completed: false,
-                    history: {} 
-                });
-                showToast("New habit created! ✨");
+        function renderMoney() {
+            document.getElementById('moneyLeft').innerText = `$${state.moneyLeft.toFixed(2)}`;
+            document.getElementById('moneySpent').innerText = `$${state.moneySpentToday.toFixed(2)}`;
+            document.getElementById('moneyBudget').innerText = `Budget: $${state.totalBudget.toFixed(2)}`;
+            
+            if(document.getElementById('moneyTotalVal')) {
+                document.getElementById('moneyTotalVal').innerText = `$${state.moneyLeft.toFixed(2)}`;
             }
-
-            saveData();
-            renderHabits();
-            renderCalendar();
-            updateUI();
-            closeModal();
+            
+            // Render expenses
+            const list = document.getElementById('expenseList');
+            if(list) {
+                list.innerHTML = '';
+                if(state.expenses.length === 0) {
+                    list.innerHTML = '<div style="padding: 15px 0; color: var(--text-muted); font-size: 13px;">No expenses yet.</div>';
+                } else {
+                    state.expenses.forEach(exp => {
+                        list.innerHTML += `
+                            <div class="list-item">
+                                <div class="item-info"><h3>${exp.name}</h3><p>${exp.date}</p></div>
+                                <div style="color: var(--neon-pink); font-weight: bold;">-$${exp.amount.toFixed(2)}</div>
+                            </div>
+                        `;
+                    });
+                }
+            }
         }
 
-        function editHabit(id) {
-            const habit = appState.habits.find(h => h.id === id);
-            if (!habit) return;
-            document.getElementById('modalTitle').innerText = "Edit Habit";
-            document.getElementById('editHabitId').value = habit.id;
-            document.getElementById('habitNameInput').value = habit.name;
-            document.getElementById('habitXpInput').value = habit.xp;
-            document.getElementById('habitModal').classList.add('show');
+        // --- 4. INTERACTION LOGIC ---
+        function toggleHabit(id) {
+            const h = state.habits.find(x => x.id === id);
+            h.done = !h.done;
+            
+            if(h.done) {
+                state.xp += h.xp;
+                showToast(`+${h.xp} XP Earned! 🚀`);
+                checkLevelUp();
+            } else {
+                state.xp -= h.xp;
+            }
+            
+            saveData(); renderAll();
+        }
+
+        function toggleTask(id) {
+            const t = state.tasks.find(x => x.id === id);
+            t.done = !t.done;
+            
+            if(t.done) {
+                state.xp += t.xp;
+                state.energy = Math.min(10, state.energy + 1);
+                state.focus = Math.min(10, state.focus + 1);
+                showToast(`+${t.xp} XP, Energy & Focus Up! ✅`);
+                checkLevelUp();
+            } else {
+                state.xp -= t.xp;
+                state.energy = Math.max(0, state.energy - 1);
+                state.focus = Math.max(0, state.focus - 1);
+            }
+            
+            // Update UI for sliders
+            document.getElementById('energySlider').value = state.energy;
+            document.getElementById('focusSlider').value = state.focus;
+            updateMindsetSliderVisual('energy', state.energy);
+            updateMindsetSliderVisual('focus', state.focus);
+            document.getElementById('energyValText').innerText = state.energy;
+            document.getElementById('focusValText').innerText = state.focus;
+
+            saveData(); renderAll();
+        }
+
+        function addGoalProgress(id) {
+            const g = state.goals.find(x => x.id === id);
+            if(g.current < g.target) {
+                g.current++;
+                showToast(`Goal progress updated! 📈`);
+                saveData(); renderGoals();
+            } else {
+                showToast(`Goal already completed! 🏆`);
+            }
+        }
+
+        function checkLevelUp() {
+            const currentLevel = Math.floor((state.xp - (state.habits.find(h=>h.done)?.xp || 0)) / 100);
+            const newLevel = Math.floor(state.xp / 100);
+            if(newLevel > currentLevel) {
+                setTimeout(() => showToast(`🎉 LEVEL UP! You are now Level ${newLevel + 1}`), 500);
+            }
+        }
+
+        function updateMindsetSliderVisual(type, val) {
+            const slider = document.getElementById(type + 'Slider');
+            const pct = (val / 10) * 100;
+            slider.style.setProperty('--val', `${pct}%`);
+        }
+
+        // --- 5. ADD / DELETE ITEMS ---
+        function addNewHabit() {
+            const name = document.getElementById('newHabitName').value;
+            const xp = parseInt(document.getElementById('newHabitXP').value);
+            if(!name) return showToast('Enter habit name!');
+            
+            state.habits.push({
+                id: Date.now().toString(),
+                name: name,
+                xp: xp,
+                done: false,
+                icon: '⭐',
+                color: '#00e5a0'
+            });
+            document.getElementById('newHabitName').value = '';
+            saveData(); renderAll();
+            showToast('Habit Added! ✨');
         }
 
         function deleteHabit(id) {
-            if (confirm("Delete this habit? All history for it will be lost.")) {
-                const habit = appState.habits.find(h => h.id === id);
-                if (habit && habit.completed) appState.totalXp -= habit.xp;
-                appState.habits = appState.habits.filter(h => h.id !== id);
-                saveData();
-                renderHabits();
-                renderCalendar();
-                updateUI();
-                showToast("Habit deleted 🗑️");
+            state.habits = state.habits.filter(h => h.id !== id);
+            saveData(); renderAll();
+            showToast('Habit deleted 🗑️');
+        }
+
+        function addTask() {
+            const name = prompt("Enter Task:");
+            if(name) {
+                state.tasks.push({ id: Date.now().toString(), name: name, done: false, xp: 10 });
+                saveData(); renderAll();
             }
         }
 
-        let toastTimeout;
-        function showToast(message, isError = false) {
-            const toast = document.getElementById('toastMsg');
-            toast.innerText = message;
-            toast.style.borderColor = isError ? 'var(--neon-red)' : 'var(--neon-cyan)';
-            toast.style.color = isError ? 'var(--neon-red)' : 'var(--neon-cyan)';
-            toast.classList.add('show');
-            clearTimeout(toastTimeout);
-            toastTimeout = setTimeout(() => toast.classList.remove('show'), 3000);
+        function deleteTask(id) {
+            state.tasks = state.tasks.filter(t => t.id !== id);
+            saveData(); renderAll();
+            showToast('Task deleted 🗑️');
         }
 
-        window.onload = init;
+        function setBudget() {
+            const input = document.getElementById('budgetInput');
+            const amount = parseFloat(input.value);
+            if(!isNaN(amount) && amount >= 0) {
+                state.totalBudget = amount;
+                state.moneyLeft = amount - state.moneySpentToday; // Recalculate
+                saveData(); renderMoney();
+                showToast('Budget Updated! 💰');
+                input.value = '';
+            } else {
+                showToast('Enter a valid amount!');
+            }
+        }
+
+        function addExpense() {
+            const name = prompt("Enter expense name:");
+            if(!name) return;
+            const amount = prompt("Enter expense amount ($):");
+            if(amount && !isNaN(amount)) {
+                const amt = parseFloat(amount);
+                state.moneyLeft -= amt;
+                state.moneySpentToday += amt;
+                
+                state.expenses.unshift({
+                    name: name,
+                    amount: amt,
+                    date: 'Just now'
+                });
+                
+                saveData(); renderMoney();
+                showToast('Expense added! 💸');
+            }
+        }
+
+        // --- 6. VIEWS (Month & Week) ---
+        function renderMonthGrid() {
+            const grid = document.getElementById('monthGrid');
+            grid.innerHTML = '';
+            const days = ['S','M','T','W','T','F','S'];
+            days.forEach(d => grid.innerHTML += `<div style="color: var(--text-muted); font-size: 10px;">${d}</div>`);
+            for(let i=1; i<=31; i++) {
+                let isToday = i === new Date().getDate();
+                grid.innerHTML += `<div style="padding: 10px 0; border-radius: 8px; font-size: 13px; background: ${isToday ? 'var(--neon-cyan)' : 'var(--bg-inner)'}; color: ${isToday ? '#000' : '#fff'};">${i}</div>`;
+            }
+        }
+
+        function renderWeekBars() {
+            const bars = document.getElementById('weekBars');
+            bars.innerHTML = '';
+            const days = ['M','T','W','T','F','S','S'];
+            days.forEach((d, i) => {
+                let h = Math.floor(Math.random() * 60) + 20; 
+                if(i === 2) h = 80; // Wed
+                bars.innerHTML += `
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 5px;">
+                        <div style="width: 100%; height: ${h}%; background: ${i===2?'var(--neon-cyan)':'var(--bg-inner)'}; border-radius: 5px;"></div>
+                        <span style="font-size: 10px; color: var(--text-muted);">${d}</span>
+                    </div>
+                `;
+            });
+        }
+
+        // --- 7. TOAST ---
+        let toastTimeout;
+        function showToast(msg) {
+            const toast = document.getElementById('toastMsg');
+            toast.innerText = msg;
+            toast.classList.add('show');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        // Start App
+        window.onload = loadData;
     </script>
 </body>
 </html>
