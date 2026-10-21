@@ -2,791 +2,249 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nexus - Fully Functional App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Habit Tracker</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
-
-        :root {
-            --bg-base: #0b0f19;
-            --bg-card: #141b2d;
-            --bg-inner: #1a2236;
-            --text-main: #ffffff;
-            --text-muted: #8b92a5;
-            --neon-cyan: #00e5a0;
-            --neon-blue: #4a7cff;
-            --neon-pink: #ff6b9d;
-            --neon-yellow: #ffcc00;
-            --neon-purple: #9d4edd;
-            --border-color: rgba(255, 255, 255, 0.05);
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Outfit', sans-serif;
-            -webkit-tap-highlight-color: transparent;
+            font-family: 'Inter', sans-serif;
         }
 
         body {
-            background-color: var(--bg-base);
-            color: var(--text-main);
+            background-color: #121212;
+            color: #ffffff;
             display: flex;
             justify-content: center;
+            align-items: flex-start;
             min-height: 100vh;
+            padding: 40px 20px;
         }
 
-        /* App Container */
-        .app-container {
+        .container {
             width: 100%;
-            max-width: 480px;
-            position: relative;
-            padding-bottom: 100px;
+            max-width: 400px;
+            background: #1e1e1e;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
-        /* Tab Content */
-        .tab-content { display: none; padding: 20px; animation: fadeIn 0.3s ease; }
-        .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Header */
-        .header-date { font-size: 11px; color: var(--text-muted); letter-spacing: 1.5px; font-weight: 600; text-transform: uppercase; margin-bottom: 5px; }
-        .header-title { font-size: 38px; font-weight: 700; letter-spacing: -1px; margin-bottom: 20px; }
-
-        /* TOP STATS BAR */
-        .top-stats-bar {
-            background: var(--bg-card); border: 1px solid var(--border-color);
-            border-radius: 20px; padding: 15px; display: flex; align-items: center;
-            justify-content: space-between; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 25px;
+            color: #ffffff;
         }
-        .level-section { display: flex; align-items: center; gap: 10px; }
-        .shield-icon {
-            width: 36px; height: 42px; background: linear-gradient(180deg, #ffd700, #b8860b);
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-            display: flex; justify-content: center; align-items: center; color: #000; font-weight: 800; font-size: 16px;
+
+        .input-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
         }
-        .level-info span { font-size: 10px; color: var(--neon-yellow); font-weight: 700; letter-spacing: 1px; }
-        .level-info strong { font-size: 22px; color: var(--neon-cyan); line-height: 1; display: block; font-weight: 700;}
-        
-        .xp-section { flex-grow: 1; margin: 0 15px; }
-        .xp-text { font-size: 12px; color: var(--text-muted); display: flex; gap: 5px; font-weight: 600;}
-        .xp-text span { color: var(--neon-cyan); }
-        .xp-bar-bg { height: 6px; background: #2a3348; border-radius: 10px; margin-top: 5px; overflow: hidden; }
-        .xp-bar-fill { height: 100%; background: var(--neon-cyan); border-radius: 10px; width: 0%; box-shadow: 0 0 10px rgba(0,229,160,0.5); transition: width 0.5s;}
 
-        .mini-stats { display: flex; gap: 15px; }
-        .mini-stat { display: flex; flex-direction: column; align-items: flex-end; }
-        .mini-stat span { font-size: 10px; color: var(--text-muted); font-weight: 600; letter-spacing: 0.5px;}
-        .mini-stat strong { font-size: 18px; display: flex; align-items: center; gap: 4px; font-weight: 700;}
-
-        /* RINGS CARD */
-        .progress-rings-card {
-            background: var(--bg-card); border: 1px solid var(--border-color);
-            border-radius: 24px; padding: 25px; display: flex; align-items: center;
-            justify-content: space-around; margin-bottom: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        .input-box input {
+            flex: 1;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            background: #2a2a2a;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            transition: border 0.2s;
         }
-        .rings-container { position: relative; width: 140px; height: 140px; }
-        .rings-container svg { transform: rotate(-90deg); width: 140px; height: 140px; }
-        
-        .ring-bg { fill: none; stroke: #1f273d; stroke-width: 12; }
-        .r1 { fill: none; stroke: var(--neon-cyan); stroke-width: 12; stroke-dasharray: 314; stroke-dashoffset: 314; stroke-linecap: round; filter: drop-shadow(0 0 6px rgba(0,229,160,0.4)); transition: stroke-dashoffset 0.5s; }
-        .r2 { fill: none; stroke: var(--neon-pink); stroke-width: 12; stroke-dasharray: 238; stroke-dashoffset: 238; stroke-linecap: round; filter: drop-shadow(0 0 6px rgba(255,107,157,0.4)); transition: stroke-dashoffset 0.5s;}
-        .r3 { fill: none; stroke: var(--neon-yellow); stroke-width: 12; stroke-dasharray: 163; stroke-dashoffset: 163; stroke-linecap: round; filter: drop-shadow(0 0 6px rgba(255,204,0,0.4)); transition: stroke-dashoffset 0.5s;}
-        
-        .rings-stats { display: flex; flex-direction: column; gap: 15px; }
-        .rs-item h4 { font-size: 14px; color: var(--text-muted); font-weight: 500; margin-bottom: 2px;}
-        .rs-item p { font-size: 24px; font-weight: 700; }
-        .stat-cyan { color: var(--neon-cyan); }
-        .stat-pink { color: var(--neon-pink); }
-        .stat-yellow { color: var(--neon-yellow); }
 
-        /* SECTION HEADERS */
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; margin-top: 25px;}
-        .section-header h3 { font-size: 12px; color: var(--text-muted); letter-spacing: 1px; font-weight: 600; text-transform: uppercase;}
-        .section-header a { color: var(--neon-cyan); font-size: 14px; text-decoration: none; font-weight: 500; cursor: pointer;}
-
-        /* LISTS */
-        .card-container { background: var(--bg-card); border-radius: 20px; padding: 5px 15px; border: 1px solid var(--border-color); }
-        
-        .list-item { display: flex; align-items: center; gap: 15px; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
-        .list-item:last-child { border-bottom: none; }
-        
-        .icon-box { width: 44px; height: 44px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 20px; flex-shrink: 0; }
-        
-        .item-info { flex-grow: 1; }
-        .item-info h3 { font-size: 16px; font-weight: 500; margin-bottom: 4px; }
-        .item-info p { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 5px; }
-        
-        .checkbox { width: 30px; height: 30px; border-radius: 9px; border: 2px solid #2a3348; cursor: pointer; display: flex; justify-content: center; align-items: center; color: transparent; transition: all 0.2s; flex-shrink: 0; font-weight: bold; font-size: 14px;}
-        .checkbox.checked { background: var(--neon-cyan); border-color: var(--neon-cyan); color: #000; box-shadow: 0 0 15px rgba(0,229,160,0.3);}
-
-        /* BIG 3 */
-        .big3-item { display: flex; align-items: center; gap: 12px; padding: 12px 15px; border-radius: 12px; margin: 10px 0; background: rgba(74, 124, 255, 0.1); border: 1px solid rgba(74, 124, 255, 0.2); cursor: pointer; transition: all 0.2s;}
-        .big3-item.done { background: var(--neon-cyan); border-color: var(--neon-cyan); color: #000; }
-        .big3-item.done .item-info h3 { text-decoration: line-through; opacity: 0.8; }
-        .big3-item.done .checkbox { background: transparent; border-color: transparent; color: #000; }
-        .big3-star { font-size: 16px; color: var(--neon-blue); }
-        .big3-item.done .big3-star { color: #000; }
-
-        /* GOALS & MONEY & MINDSET */
-        .goal-item { padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.03); display: flex; align-items: center; gap: 15px;}
-        .goal-item:last-child { border-bottom: none; }
-        .goal-progress { height: 6px; background: #1f273d; border-radius: 10px; margin-top: 8px; width: 100%; overflow: hidden;}
-        .goal-fill { height: 100%; border-radius: 10px; transition: width 0.3s;}
-        
-        .money-card, .mindset-card { background: var(--bg-card); border-radius: 20px; padding: 20px; border: 1px solid var(--border-color); margin-bottom: 15px; }
-        .money-header { display: flex; justify-content: space-between; margin-bottom: 15px; font-weight: 600; font-size: 16px;}
-        .money-amount { font-size: 34px; color: #a3ff47; font-weight: 700; text-shadow: 0 0 15px rgba(163, 255, 71, 0.2); }
-        
-        .mindset-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 16px; font-weight: 500;}
-        /* Custom Range Slider */
-        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
-        input[type=range]:focus { outline: none; }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 14px; cursor: pointer; background: #1f273d; border-radius: 10px; }
-        input[type=range]::-webkit-slider-thumb { height: 14px; width: 14px; border-radius: 50%; background: #fff; cursor: pointer; -webkit-appearance: none; margin-top: 0px; box-shadow: 0 0 10px rgba(255,255,255,0.5);}
-        
-        #energySlider::-webkit-slider-runnable-track { background: linear-gradient(to right, var(--neon-yellow) var(--val, 80%), #1f273d var(--val, 80%)); }
-        #focusSlider::-webkit-slider-runnable-track { background: linear-gradient(to right, var(--neon-cyan) var(--val, 70%), #1f273d var(--val, 70%)); }
-
-        /* HABITS PAGE & FORMS */
-        .btn-add { display: flex; align-items: center; gap: 10px; color: var(--neon-cyan); padding: 15px; font-weight: 500; cursor: pointer; font-size: 15px;}
-        .btn-add span { font-size: 22px; }
-        
-        .input-group { margin-bottom: 15px; }
-        .input-group label { font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 5px; }
-        .input-group input, .input-group select { width: 100%; padding: 12px; border-radius: 10px; background: var(--bg-inner); border: 1px solid var(--border-color); color: white; outline: none; font-family: 'Outfit'; font-size: 14px;}
-        .btn-primary { background: var(--neon-cyan); color: #000; border: none; padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; width: 100%; font-size: 15px;}
-
-        /* FLOATING BOTTOM NAV */
-        .bottom-nav {
-            position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%);
-            width: 92%; max-width: 450px;
-            background: rgba(20, 27, 45, 0.95); backdrop-filter: blur(15px);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 30px; display: flex; justify-content: space-around; padding: 12px 10px;
-            z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        .input-box input:focus {
+            border-color: #4CAF50;
         }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 10px; color: var(--text-muted); cursor: pointer; transition: 0.2s; font-weight: 500;}
-        .nav-item.active { color: var(--neon-cyan); }
-        .nav-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 20px; transition: 0.2s;}
-        .nav-item.active .nav-icon { background: rgba(0, 229, 160, 0.1); }
 
-        /* Toast */
-        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: var(--bg-card); border: 1px solid var(--neon-cyan); color: var(--neon-cyan); padding: 10px 20px; border-radius: 50px; z-index: 2000; transition: 0.3s; font-weight: 600; box-shadow: 0 5px 20px rgba(0,0,0,0.5); pointer-events: none;}
-        .toast.show { transform: translateX(-50%) translateY(0); }
+        .input-box button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
 
+        .input-box button:hover {
+            background: #45a049;
+        }
+
+        ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        li {
+            display: flex;
+            align-items: center;
+            background: #2a2a2a;
+            padding: 12px 15px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        li:hover {
+            background: #333;
+        }
+
+        .checkbox {
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            border: 2px solid #555;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            margin-right: 15px;
+            transition: all 0.2s;
+            color: transparent;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .checkbox.checked {
+            background: #4CAF50;
+            border-color: #4CAF50;
+            color: white;
+        }
+
+        .habit-text {
+            flex: 1;
+            font-size: 15px;
+            transition: color 0.3s;
+        }
+
+        .habit-text.completed {
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        .delete-btn {
+            background: transparent;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 5px;
+            transition: color 0.2s;
+        }
+
+        .delete-btn:hover {
+            color: #ff5252;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
 
-    <div class="toast" id="toastMsg">+10 XP</div>
-
-    <div class="app-container">
+    <div class="container">
+        <h1>My Daily Habits</h1>
         
-        <!-- ================= TODAY TAB ================= -->
-        <div id="tab-today" class="tab-content active">
-            <div class="header-date" id="currentDate">WEDNESDAY, OCTOBER 21</div>
-            <div class="header-title">Today</div>
-
-            <div class="top-stats-bar">
-                <div class="level-section">
-                    <div class="shield-icon" id="levelShield">1</div>
-                    <div class="level-info">
-                        <span>LEVEL</span>
-                        <strong id="levelVal">1</strong>
-                    </div>
-                </div>
-                <div class="xp-section">
-                    <div class="xp-text">⚡ <span id="xpVal">0</span> XP</div>
-                    <div class="xp-bar-bg"><div class="xp-bar-fill" id="xpBar" style="width: 0%;"></div></div>
-                </div>
-                <div class="mini-stats">
-                    <div class="mini-stat">
-                        <span>STREAK</span>
-                        <strong style="color: var(--neon-cyan);">🔥 <span id="streakVal">9</span></strong>
-                    </div>
-                    <div class="mini-stat">
-                        <span>PERFECT</span>
-                        <strong style="color: var(--neon-yellow);">⭐ <span id="perfectVal">21</span></strong>
-                    </div>
-                </div>
-            </div>
-
-            <div class="progress-rings-card">
-                <div class="rings-container">
-                    <svg>
-                        <circle class="ring-bg" cx="70" cy="70" r="50"></circle>
-                        <circle class="r1" cx="70" cy="70" r="50" id="ring1"></circle>
-                        <circle class="ring-bg" cx="70" cy="70" r="38"></circle>
-                        <circle class="r2" cx="70" cy="70" r="38" id="ring2"></circle>
-                        <circle class="ring-bg" cx="70" cy="70" r="26"></circle>
-                        <circle class="r3" cx="70" cy="70" r="26" id="ring3"></circle>
-                    </svg>
-                </div>
-                <div class="rings-stats">
-                    <div class="rs-item"><h4>Habits</h4><p class="stat-cyan" id="txtHabits">0/0</p></div>
-                    <div class="rs-item"><h4>Big 3</h4><p class="stat-pink" id="txtBig3">0/3</p></div>
-                    <div class="rs-item"><h4>XP</h4><p class="stat-yellow" id="txtXp">0/150</p></div>
-                </div>
-            </div>
-
-            <!-- Big 3 & Tasks -->
-            <div class="section-header">
-                <h3>TODAY'S PLAN</h3>
-            </div>
-            
-            <div class="card-container">
-                <div style="display: flex; justify-content: space-between; padding: 15px 0 5px; font-size: 11px; color: var(--text-muted); font-weight: 600; letter-spacing: 0.5px;">
-                    <span>BIG 3</span><span>+30 XP</span>
-                </div>
-                <div id="big3List"></div>
-                <div class="btn-add" onclick="addBig3()" style="padding: 10px 0 15px; font-size: 13px;">+ Add Big 3</div>
-                
-                <div style="display: flex; justify-content: space-between; padding: 15px 0 5px; font-size: 11px; color: var(--text-muted); font-weight: 600; letter-spacing: 0.5px; border-top: 1px solid rgba(255,255,255,0.05);">
-                    <span>TASKS</span><span>+10 XP</span>
-                </div>
-                <div id="tasksList"></div>
-                <div class="btn-add" onclick="addTask()" style="padding: 10px 0 15px; font-size: 13px;">+ Add Task</div>
-            </div>
-
-            <!-- Habits List -->
-            <div class="section-header">
-                <h3>HABITS</h3>
-                <a onclick="switchTab('habits')">Manage</a>
-            </div>
-            <div class="card-container" id="todayHabitList"></div>
-
-            <!-- Goals -->
-            <div class="section-header">
-                <h3>GOALS</h3>
-            </div>
-            <div class="card-container" id="goalsList"></div>
-
-            <!-- Money & Mindset -->
-            <div class="section-header">
-                <h3>MONEY & MINDSET</h3>
-            </div>
-            
-            <div class="money-card">
-                <div class="money-header">
-                    <span>💰 Money</span>
-                    <span style="color: var(--neon-cyan); font-size: 14px; cursor: pointer;" onclick="switchTab('money')">Details</span>
-                </div>
-                <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">Left to spend</div>
-                <div class="money-amount" id="moneyLeft">$664</div>
-                <div style="display: flex; justify-content: space-between; font-size: 13px; color: var(--text-muted); margin-top: 8px;">
-                    <span id="moneyBudget">$60 a day · 11 days left</span>
-                    <span style="color: var(--text-main);">Spent today <strong id="moneySpent" style="font-size: 15px;">$41.29</strong></span>
-                </div>
-            </div>
-
-            <div class="mindset-card">
-                <div class="mindset-row">
-                    <span>Energy</span>
-                    <span style="color: var(--neon-yellow); font-weight: 700;" id="energyValText">8</span>
-                </div>
-                <input type="range" id="energySlider" min="1" max="10" value="8" oninput="updateMindset('energy', this.value)">
-
-                <div class="mindset-row" style="margin-top: 20px;">
-                    <span>Focus</span>
-                    <span style="color: var(--neon-cyan); font-weight: 700;" id="focusValText">7</span>
-                </div>
-                <input type="range" id="focusSlider" min="1" max="10" value="7" oninput="updateMindset('focus', this.value)">
-            </div>
-
+        <div class="input-box">
+            <input type="text" id="habitInput" placeholder="e.g. Drink 2L Water..." onkeypress="handleKeyPress(event)">
+            <button onclick="addHabit()">Add</button>
         </div>
 
-        <!-- ================= HABITS TAB ================= -->
-        <div id="tab-habits" class="tab-content">
-            <div class="header-title">Manage Habits</div>
-            <div class="card-container" id="allHabitsList"></div>
-            
-            <div class="card-container" style="margin-top: 20px; padding: 15px;">
-                <h3 style="margin-bottom: 15px; font-size: 16px;">Add New Habit</h3>
-                <div class="input-group">
-                    <label>Habit Name</label>
-                    <input type="text" id="newHabitName" placeholder="e.g. Drink Water">
-                </div>
-                <div class="input-group">
-                    <label>XP Reward</label>
-                    <select id="newHabitXP">
-                        <option value="10">10 XP (Easy)</option>
-                        <option value="20">20 XP (Medium)</option>
-                        <option value="30">30 XP (Hard)</option>
-                    </select>
-                </div>
-                <button class="btn-primary" onclick="addNewHabit()">Save Habit</button>
-            </div>
-        </div>
-
-        <!-- ================= MONTH TAB ================= -->
-        <div id="tab-month" class="tab-content">
-            <div class="header-title">Monthly View</div>
-            <div class="card-container" style="padding: 15px; text-align: center;">
-                <h3 style="margin-bottom: 15px; color: var(--text-muted);">Current Month Grid</h3>
-                <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px;" id="monthGrid">
-                    <!-- JS injects calendar -->
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= WEEK TAB ================= -->
-        <div id="tab-week" class="tab-content">
-            <div class="header-title">Weekly View</div>
-            <div class="card-container" style="padding: 20px;">
-                <div style="display: flex; justify-content: space-between; align-items: flex-end; height: 150px; gap: 10px;" id="weekBars">
-                    <!-- JS injects bars -->
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= MONEY TAB ================= -->
-        <div id="tab-money" class="tab-content">
-            <div class="header-title">Money</div>
-            <div class="money-card">
-                <h3 style="margin-bottom: 15px;">Wallet</h3>
-                <div style="font-size: 30px; color: #a3ff47; font-weight: bold; margin-bottom: 15px;" id="moneyTotalVal">$664</div>
-                <button class="btn-primary" onclick="addExpense()" style="background: var(--neon-blue); color: white;">+ Add Expense</button>
-            </div>
-            <div class="card-container">
-                <h4 style="padding: 15px 0 5px; color: var(--text-muted); font-size: 12px;">RECENT TRANSACTIONS</h4>
-                <div id="expenseList">
-                    <div class="list-item">
-                        <div class="item-info"><h3>Lunch</h3><p>Today</p></div>
-                        <div style="color: var(--neon-pink); font-weight: bold;">-$41.29</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= RANKS TAB ================= -->
-        <div id="tab-ranks" class="tab-content">
-            <div class="header-title">Ranks & Badges</div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <div class="card-container" style="text-align: center; padding: 20px; border-color: var(--neon-cyan);">
-                    <div style="font-size: 40px; margin-bottom: 10px;">🚀</div>
-                    <h3>First Step</h3>
-                    <p style="font-size: 12px; color: var(--neon-cyan);">Unlocked</p>
-                </div>
-                <div class="card-container" style="text-align: center; padding: 20px; opacity: 0.5;">
-                    <div style="font-size: 40px; margin-bottom: 10px; filter: grayscale(100%);">🔥</div>
-                    <h3>On Fire</h3>
-                    <p style="font-size: 12px; color: var(--text-muted);">Locked</p>
-                </div>
-            </div>
-        </div>
-
+        <ul id="habitList">
+            <!-- Habits will appear here -->
+        </ul>
+        
+        <div id="emptyState" class="empty-state">No habits added yet. Start by adding one above!</div>
     </div>
 
-    <!-- Bottom Navigation -->
-    <nav class="bottom-nav">
-        <div class="nav-item active" onclick="switchTab('today', this)">
-            <div class="nav-icon">🎯</div><span>Today</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('month', this)">
-            <div class="nav-icon">📅</div><span>Month</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('week', this)">
-            <div class="nav-icon">📊</div><span>Week</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('money', this)">
-            <div class="nav-icon">💰</div><span>Money</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('ranks', this)">
-            <div class="nav-icon">🏆</div><span>Ranks</span>
-        </div>
-    </nav>
-
     <script>
-        // --- 1. STATE MANAGEMENT ---
-        let state = {
-            xp: 0,
-            streak: 9,
-            perfect: 21,
-            energy: 8,
-            focus: 7,
-            moneyLeft: 664,
-            moneySpentToday: 41.29,
-            habits: [
-                { id: 'h1', name: 'Wake up at 06:00', xp: 10, done: true, icon: '⏰', color: '#b026ff' },
-                { id: 'h2', name: 'Meditation', xp: 10, done: false, icon: '🧠', color: '#4a7cff' },
-                { id: 'h3', name: 'Read 10 pages', xp: 20, done: false, icon: '📖', color: '#ffcc00' }
-            ],
-            big3: [
-                { id: 'b1', name: 'Finish client deck', done: true, xp: 30 },
-                { id: 'b2', name: 'Gym: push', done: false, xp: 30 },
-                { id: 'b3', name: 'Budget review', done: false, xp: 30 }
-            ],
-            tasks: [
-                { id: 't1', name: 'Book dentist', done: false, xp: 10 },
-                { id: 't2', name: 'Clean desk', done: false, xp: 10 }
-            ],
-            goals: [
-                { id: 'g1', name: 'Read 24 books', current: 17, target: 24, color: '#4a7cff' },
-                { id: 'g2', name: 'Run 300 miles', current: 212, target: 300, color: '#00e5a0' }
-            ]
-        };
+        // Load habits from local storage
+        let habits = JSON.parse(localStorage.getItem('simpleHabits')) || [];
 
-        // Load Data
-        function loadData() {
-            const saved = localStorage.getItem('nexusProData');
-            if (saved) state = JSON.parse(saved);
-            
-            // Set Date
-            const now = new Date();
-            document.getElementById('currentDate').innerText = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }).toUpperCase();
-            
-            // Set Sliders initial
-            document.getElementById('energySlider').value = state.energy;
-            document.getElementById('focusSlider').value = state.focus;
-            updateMindsetSliderVisual('energy', state.energy);
-            updateMindsetSliderVisual('focus', state.focus);
-
-            renderAll();
-        }
-
-        // Save Data
-        function saveData() {
-            localStorage.setItem('nexusProData', JSON.stringify(state));
-        }
-
-        // --- 2. NAVIGATION ---
-        function switchTab(tabId, element) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.getElementById('tab-' + tabId).classList.add('active');
-            
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            if(element) element.classList.add('active');
-            
-            if(tabId === 'month') renderMonthGrid();
-            if(tabId === 'week') renderWeekBars();
-            if(tabId === 'money') renderMoneyTab();
-            
-            window.scrollTo(0,0);
-        }
-
-        // --- 3. RENDER FUNCTIONS ---
-        function renderAll() {
-            renderTopBar();
-            renderRings();
-            renderBig3();
-            renderTasks();
-            renderHabits();
-            renderGoals();
-            renderMoney();
-        }
-
-        function renderTopBar() {
-            let level = Math.floor(state.xp / 100) + 1;
-            let xpInLevel = state.xp % 100;
-            
-            document.getElementById('levelVal').innerText = level;
-            document.getElementById('levelShield').innerText = level;
-            document.getElementById('xpVal').innerText = state.xp;
-            document.getElementById('xpBar').style.width = `${xpInLevel}%`;
-            document.getElementById('streakVal').innerText = state.streak;
-            document.getElementById('perfectVal').innerText = state.perfect;
-        }
-
-        function renderRings() {
-            // Habits Ring (C=314)
-            const hTotal = state.habits.length;
-            const hDone = state.habits.filter(h => h.done).length;
-            const hPct = hTotal === 0 ? 0 : hDone / hTotal;
-            document.getElementById('ring1').style.strokeDashoffset = 314 - (314 * hPct);
-            document.getElementById('txtHabits').innerText = `${hDone}/${hTotal}`;
-
-            // Big3 Ring (C=238)
-            const bTotal = state.big3.length;
-            const bDone = state.big3.filter(b => b.done).length;
-            const bPct = bTotal === 0 ? 0 : bDone / bTotal;
-            document.getElementById('ring2').style.strokeDashoffset = 238 - (238 * bPct);
-            document.getElementById('txtBig3').innerText = `${bDone}/${bTotal}`;
-
-            // XP Ring (C=163) - Calculate based on 150 XP Goal
-            const xpPct = Math.min((state.xp % 150) / 150, 1);
-            document.getElementById('ring3').style.strokeDashoffset = 163 - (163 * xpPct);
-            document.getElementById('txtXp').innerText = `${state.xp % 150}/150`;
-        }
-
-        function renderBig3() {
-            const list = document.getElementById('big3List');
-            list.innerHTML = '';
-            state.big3.forEach((item, index) => {
-                const div = document.createElement('div');
-                div.className = `big3-item ${item.done ? 'done' : ''}`;
-                div.onclick = () => toggleBig3(item.id);
-                div.innerHTML = `
-                    <span class="big3-star">★</span>
-                    <div class="item-info"><h3>${item.name}</h3></div>
-                    <div class="checkbox ${item.done ? 'checked' : ''}">${item.done ? '✓' : ''}</div>
-                `;
-                list.appendChild(div);
-            });
-        }
-
-        function renderTasks() {
-            const list = document.getElementById('tasksList');
-            list.innerHTML = '';
-            state.tasks.forEach((item, index) => {
-                const div = document.createElement('div');
-                div.className = 'list-item';
-                div.style.padding = '12px 0';
-                div.innerHTML = `
-                    <span style="color:var(--text-muted); font-size:14px; width: 15px;">${index+1}</span>
-                    <div class="item-info"><h3>${item.name}</h3></div>
-                    <div class="checkbox ${item.done ? 'checked' : ''}" onclick="toggleTask('${item.id}')">${item.done ? '✓' : ''}</div>
-                `;
-                list.appendChild(div);
-            });
-        }
-
+        // Function to display habits on screen
         function renderHabits() {
-            const todayList = document.getElementById('todayHabitList');
-            const manageList = document.getElementById('allHabitsList');
-            
-            todayList.innerHTML = '';
-            manageList.innerHTML = '';
-
-            state.habits.forEach(h => {
-                // Today View
-                const item = document.createElement('div');
-                item.className = 'list-item';
-                item.innerHTML = `
-                    <div class="icon-box" style="background: ${h.color}20; color: ${h.color};">${h.icon}</div>
-                    <div class="item-info">
-                        <h3>${h.name}</h3>
-                        <p>🔥 ${h.streak || 0} · ${h.percent || 0}% this month</p>
-                    </div>
-                    <div class="checkbox ${h.done ? 'checked' : ''}" onclick="toggleHabit('${h.id}')">${h.done ? '✓' : ''}</div>
-                `;
-                todayList.appendChild(item);
-
-                // Manage View
-                const manageItem = document.createElement('div');
-                manageItem.className = 'list-item';
-                manageItem.innerHTML = `
-                    <div class="icon-box" style="background: ${h.color}20; color: ${h.color};">${h.icon}</div>
-                    <div class="item-info">
-                        <h3>${h.name}</h3>
-                        <p>Reward: +${h.xp} XP</p>
-                    </div>
-                    <div style="color: var(--neon-red); cursor: pointer; font-size: 18px;" onclick="deleteHabit('${h.id}')">🗑️</div>
-                `;
-                manageList.appendChild(manageItem);
-            });
-        }
-
-        function renderGoals() {
-            const list = document.getElementById('goalsList');
+            const list = document.getElementById('habitList');
+            const emptyState = document.getElementById('emptyState');
             list.innerHTML = '';
-            state.goals.forEach(g => {
-                const pct = Math.min((g.current / g.target) * 100, 100);
-                const div = document.createElement('div');
-                div.className = 'goal-item';
-                div.innerHTML = `
-                    <div class="icon-box" style="background: ${g.color}20; color: ${g.color};">🎯</div>
-                    <div style="flex-grow: 1;">
-                        <div style="display: flex; justify-content: space-between; font-size: 15px; font-weight: 600;">
-                            <span>${g.name}</span> <span>${g.current} / ${g.target}</span>
-                        </div>
-                        <div class="goal-progress"><div class="goal-fill" style="width: ${pct}%; background: ${g.color};"></div></div>
-                    </div>
-                    <div class="checkbox" style="border-radius: 50%; color: var(--text-main);" onclick="addGoalProgress('${g.id}')">+</div>
-                `;
-                list.appendChild(div);
-            });
-        }
 
-        function renderMoney() {
-            document.getElementById('moneyLeft').innerText = `$${state.moneyLeft.toFixed(2)}`;
-            document.getElementById('moneySpent').innerText = `$${state.moneySpentToday.toFixed(2)}`;
-            if(document.getElementById('moneyTotalVal')) {
-                document.getElementById('moneyTotalVal').innerText = `$${state.moneyLeft.toFixed(2)}`;
-            }
-        }
-
-        // --- 4. INTERACTION LOGIC ---
-        function toggleHabit(id) {
-            const h = state.habits.find(x => x.id === id);
-            h.done = !h.done;
-            
-            if(h.done) {
-                state.xp += h.xp;
-                showToast(`+${h.xp} XP Earned! 🚀`);
-                checkLevelUp();
+            if (habits.length === 0) {
+                emptyState.style.display = 'block';
             } else {
-                state.xp -= h.xp;
+                emptyState.style.display = 'none';
             }
-            
-            saveData(); renderAll();
-        }
 
-        function toggleBig3(id) {
-            const b = state.big3.find(x => x.id === id);
-            b.done = !b.done;
-            
-            if(b.done) {
-                state.xp += b.xp;
-                showToast(`+${b.xp} XP Big 3! 🎯`);
-                checkLevelUp();
-            } else {
-                state.xp -= b.xp;
-            }
-            
-            saveData(); renderAll();
-        }
-
-        function toggleTask(id) {
-            const t = state.tasks.find(x => x.id === id);
-            t.done = !t.done;
-            
-            if(t.done) {
-                state.xp += t.xp;
-                showToast(`+${t.xp} XP Task! ✅`);
-                checkLevelUp();
-            } else {
-                state.xp -= t.xp;
-            }
-            
-            saveData(); renderAll();
-        }
-
-        function addGoalProgress(id) {
-            const g = state.goals.find(x => x.id === id);
-            if(g.current < g.target) {
-                g.current++;
-                showToast(`Goal progress updated! 📈`);
-                saveData(); renderGoals();
-            } else {
-                showToast(`Goal already completed! 🏆`);
-            }
-        }
-
-        function checkLevelUp() {
-            const currentLevel = Math.floor((state.xp - (state.habits.find(h=>h.done)?.xp || 0)) / 100);
-            const newLevel = Math.floor(state.xp / 100);
-            if(newLevel > currentLevel) {
-                setTimeout(() => showToast(`🎉 LEVEL UP! You are now Level ${newLevel + 1}`), 500);
-            }
-        }
-
-        function updateMindset(type, val) {
-            state[type] = parseInt(val);
-            document.getElementById(type + 'ValText').innerText = val;
-            updateMindsetSliderVisual(type, val);
-            saveData();
-        }
-
-        function updateMindsetSliderVisual(type, val) {
-            const slider = document.getElementById(type + 'Slider');
-            const pct = (val / 10) * 100;
-            slider.style.setProperty('--val', `${pct}%`);
-        }
-
-        // --- 5. ADD / DELETE ITEMS ---
-        function addNewHabit() {
-            const name = document.getElementById('newHabitName').value;
-            const xp = parseInt(document.getElementById('newHabitXP').value);
-            if(!name) return showToast('Enter habit name!');
-            
-            state.habits.push({
-                id: Date.now().toString(),
-                name: name,
-                xp: xp,
-                done: false,
-                icon: '⭐',
-                color: '#00e5a0'
-            });
-            document.getElementById('newHabitName').value = '';
-            saveData(); renderAll();
-            showToast('Habit Added! ✨');
-        }
-
-        function deleteHabit(id) {
-            state.habits = state.habits.filter(h => h.id !== id);
-            saveData(); renderAll();
-            showToast('Habit deleted 🗑️');
-        }
-
-        function addBig3() {
-            const name = prompt("Enter Big 3 task:");
-            if(name) {
-                state.big3.push({ id: Date.now().toString(), name: name, done: false, xp: 30 });
-                saveData(); renderAll();
-            }
-        }
-
-        function addTask() {
-            const name = prompt("Enter Task:");
-            if(name) {
-                state.tasks.push({ id: Date.now().toString(), name: name, done: false, xp: 10 });
-                saveData(); renderAll();
-            }
-        }
-
-        function addExpense() {
-            const amount = prompt("Enter expense amount ($):");
-            if(amount && !isNaN(amount)) {
-                const amt = parseFloat(amount);
-                state.moneyLeft -= amt;
-                state.moneySpentToday += amt;
+            habits.forEach((habit, index) => {
+                const li = document.createElement('li');
                 
-                const list = document.getElementById('expenseList');
-                const div = document.createElement('div');
-                div.className = 'list-item';
-                div.innerHTML = `
-                    <div class="item-info"><h3>Expense</h3><p>Just now</p></div>
-                    <div style="color: var(--neon-pink); font-weight: bold;">-$${amt.toFixed(2)}</div>
-                `;
-                list.prepend(div);
-                
-                saveData(); renderMoney();
-                showToast('Expense added! 💸');
-            }
-        }
-
-        // --- 6. VIEWS (Month & Week) ---
-        function renderMonthGrid() {
-            const grid = document.getElementById('monthGrid');
-            grid.innerHTML = '';
-            const days = ['S','M','T','W','T','F','S'];
-            days.forEach(d => grid.innerHTML += `<div style="color: var(--text-muted); font-size: 10px;">${d}</div>`);
-            for(let i=1; i<=31; i++) {
-                let isToday = i === new Date().getDate();
-                grid.innerHTML += `<div style="padding: 10px 0; border-radius: 8px; font-size: 13px; background: ${isToday ? 'var(--neon-cyan)' : 'var(--bg-inner)'}; color: ${isToday ? '#000' : '#fff'};">${i}</div>`;
-            }
-        }
-
-        function renderWeekBars() {
-            const bars = document.getElementById('weekBars');
-            bars.innerHTML = '';
-            const days = ['M','T','W','T','F','S','S'];
-            days.forEach((d, i) => {
-                let h = Math.floor(Math.random() * 60) + 20; 
-                if(i === 2) h = 80; // Wed
-                bars.innerHTML += `
-                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 5px;">
-                        <div style="width: 100%; height: ${h}%; background: ${i===2?'var(--neon-cyan)':'var(--bg-inner)'}; border-radius: 5px;"></div>
-                        <span style="font-size: 10px; color: var(--text-muted);">${d}</span>
+                li.innerHTML = `
+                    <div class="checkbox ${habit.completed ? 'checked' : ''}" onclick="toggleHabit(${index})">
+                        ✓
                     </div>
+                    <span class="habit-text ${habit.completed ? 'completed' : ''}">${habit.name}</span>
+                    <button class="delete-btn" onclick="deleteHabit(${index})">🗑️</button>
                 `;
+                
+                list.appendChild(li);
             });
         }
 
-        // --- 7. TOAST ---
-        let toastTimeout;
-        function showToast(msg) {
-            const toast = document.getElementById('toastMsg');
-            toast.innerText = msg;
-            toast.classList.add('show');
-            clearTimeout(toastTimeout);
-            toastTimeout = setTimeout(() => toast.classList.remove('show'), 2000);
+        // Function to add a new habit
+        function addHabit() {
+            const input = document.getElementById('habitInput');
+            const habitName = input.value.trim();
+
+            if (habitName === '') {
+                alert('Please enter a habit!');
+                return;
+            }
+
+            habits.push({ name: habitName, completed: false });
+            input.value = '';
+            
+            saveAndRender();
         }
 
-        // Start App
-        window.onload = loadData;
+        // Function to toggle tick (complete/incomplete)
+        function toggleHabit(index) {
+            habits[index].completed = !habits[index].completed;
+            saveAndRender();
+        }
+
+        // Function to delete a habit
+        function deleteHabit(index) {
+            habits.splice(index, 1);
+            saveAndRender();
+        }
+
+        // Save to local storage and re-render
+        function saveAndRender() {
+            localStorage.setItem('simpleHabits', JSON.stringify(habits));
+            renderHabits();
+        }
+
+        // Add habit when pressing "Enter" key
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                addHabit();
+            }
+        }
+
+        // Initial render on page load
+        renderHabits();
     </script>
 </body>
 </html>
