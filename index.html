@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simple Habit Tracker</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -19,232 +20,327 @@
             color: #ffffff;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
             min-height: 100vh;
-            padding: 40px 20px;
         }
 
-        .container {
+        .app-container {
             width: 100%;
-            max-width: 400px;
+            max-width: 450px;
+            padding: 30px 20px;
+            padding-bottom: 100px;
+            position: relative;
+        }
+
+        /* Page Views */
+        .view { display: none; animation: fadeIn 0.3s ease; }
+        .view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- HOME PAGE STYLES --- */
+        .greeting { font-size: 14px; color: #888; margin-bottom: 5px; }
+        .header-title { font-size: 32px; font-weight: 700; margin-bottom: 30px; }
+
+        .summary-card {
             background: #1e1e1e;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+            padding: 30px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            margin-bottom: 30px;
         }
 
-        h1 {
-            font-size: 24px;
-            font-weight: 600;
+        /* Circular Progress */
+        .progress-circle {
+            position: relative;
+            width: 120px;
+            height: 120px;
+        }
+        .progress-circle svg {
+            transform: rotate(-90deg);
+            width: 120px;
+            height: 120px;
+        }
+        .circle-bg { fill: none; stroke: #333; stroke-width: 10; }
+        .circle-fill { 
+            fill: none; 
+            stroke: #4CAF50; 
+            stroke-width: 10; 
+            stroke-dasharray: 314; 
+            stroke-dashoffset: 314; 
+            stroke-linecap: round; 
+            transition: stroke-dashoffset 0.5s ease; 
+        }
+        .progress-text {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
             text-align: center;
-            margin-bottom: 25px;
-            color: #ffffff;
         }
+        .progress-text h2 { font-size: 24px; color: #4CAF50; }
+        
+        .stats-info h3 { font-size: 16px; color: #888; margin-bottom: 8px; font-weight: 500;}
+        .stats-info h1 { font-size: 36px; font-weight: 700; }
+        .stats-info p { font-size: 14px; color: #aaa; margin-top: 5px; }
 
+        .btn-primary {
+            display: block;
+            width: 100%;
+            background: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: background 0.2s;
+        }
+        .btn-primary:hover { background: #45a049; }
+
+        /* --- TRACKER PAGE STYLES --- */
+        .back-btn {
+            background: transparent; border: none; color: #888; 
+            font-size: 24px; cursor: pointer; margin-bottom: 20px;
+        }
+        
         .input-box {
             display: flex;
             gap: 10px;
             margin-bottom: 25px;
         }
-
         .input-box input {
             flex: 1;
-            padding: 12px 15px;
-            border-radius: 8px;
+            padding: 14px 15px;
+            border-radius: 10px;
             border: 1px solid #333;
-            background: #2a2a2a;
+            background: #1e1e1e;
             color: #fff;
-            font-size: 14px;
-            outline: none;
-            transition: border 0.2s;
-        }
-
-        .input-box input:focus {
-            border-color: #4CAF50;
-        }
-
-        .input-box button {
-            background: #4CAF50;
-            color: white;
-            border: none;
-            padding: 0 20px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .input-box button:hover {
-            background: #45a049;
-        }
-
-        ul {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        li {
-            display: flex;
-            align-items: center;
-            background: #2a2a2a;
-            padding: 12px 15px;
-            border-radius: 8px;
-            transition: background 0.2s;
-        }
-
-        li:hover {
-            background: #333;
-        }
-
-        .checkbox {
-            width: 22px;
-            height: 22px;
-            border-radius: 6px;
-            border: 2px solid #555;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            margin-right: 15px;
-            transition: all 0.2s;
-            color: transparent;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        .checkbox.checked {
-            background: #4CAF50;
-            border-color: #4CAF50;
-            color: white;
-        }
-
-        .habit-text {
-            flex: 1;
             font-size: 15px;
-            transition: color 0.3s;
+            outline: none;
+        }
+        .input-box input:focus { border-color: #4CAF50; }
+        .input-box button {
+            background: #4CAF50; color: white; border: none;
+            padding: 0 20px; border-radius: 10px; font-weight: 600; cursor: pointer;
         }
 
-        .habit-text.completed {
-            text-decoration: line-through;
-            color: #888;
+        ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+        li {
+            display: flex; align-items: center;
+            background: #1e1e1e; padding: 15px; border-radius: 12px;
         }
-
+        .checkbox {
+            width: 24px; height: 24px; border-radius: 8px;
+            border: 2px solid #555;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; margin-right: 15px; color: transparent;
+            transition: all 0.2s; font-size: 14px; font-weight: bold;
+        }
+        .checkbox.checked {
+            background: #4CAF50; border-color: #4CAF50; color: white;
+        }
+        .habit-text { flex: 1; font-size: 16px; transition: 0.3s; }
+        .habit-text.completed { text-decoration: line-through; color: #666; }
+        
         .delete-btn {
-            background: transparent;
-            border: none;
-            color: #888;
-            cursor: pointer;
-            font-size: 18px;
-            padding: 5px;
-            transition: color 0.2s;
+            background: transparent; border: none; color: #666;
+            cursor: pointer; font-size: 18px; padding: 5px;
         }
+        .delete-btn:hover { color: #ff5252; }
 
-        .delete-btn:hover {
-            color: #ff5252;
-        }
+        .empty-state { text-align: center; color: #666; margin-top: 30px; font-size: 14px; }
 
-        .empty-state {
-            text-align: center;
-            color: #666;
-            font-size: 14px;
-            margin-top: 20px;
+        /* --- BOTTOM NAVIGATION --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: #1e1e1e;
+            border-top: 1px solid #333;
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            z-index: 100;
+            max-width: 450px;
+            margin: 0 auto;
         }
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center; gap: 5px;
+            color: #666; cursor: pointer; font-size: 11px; font-weight: 500;
+            transition: 0.3s;
+        }
+        .nav-item.active { color: #4CAF50; }
+        .nav-item .icon { font-size: 20px; }
+
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>My Daily Habits</h1>
+    <div class="app-container">
         
-        <div class="input-box">
-            <input type="text" id="habitInput" placeholder="e.g. Drink 2L Water..." onkeypress="handleKeyPress(event)">
-            <button onclick="addHabit()">Add</button>
+        <!-- ================= HOME VIEW ================= -->
+        <div id="view-home" class="view active">
+            <div class="greeting" id="greetingText">Good Morning</div>
+            <div class="header-title">My Dashboard</div>
+
+            <!-- Summary Card -->
+            <div class="summary-card">
+                <div class="progress-circle">
+                    <svg>
+                        <circle class="circle-bg" cx="60" cy="60" r="50"></circle>
+                        <circle class="circle-fill" cx="60" cy="60" r="50" id="homeRing"></circle>
+                    </svg>
+                    <div class="progress-text">
+                        <h2 id="homePercent">0%</h2>
+                    </div>
+                </div>
+                <div class="stats-info">
+                    <h3>Today's Progress</h3>
+                    <h1 id="homeCompleted">0/0</h1>
+                    <p>Habits Completed</p>
+                </div>
+            </div>
+
+            <button class="btn-primary" onclick="switchView('tracker')">Go to Tracker</button>
         </div>
 
-        <ul id="habitList">
-            <!-- Habits will appear here -->
-        </ul>
-        
-        <div id="emptyState" class="empty-state">No habits added yet. Start by adding one above!</div>
+        <!-- ================= TRACKER VIEW ================= -->
+        <div id="view-tracker" class="view">
+            <button class="back-btn" onclick="switchView('home')">←</button>
+            <div class="header-title" style="margin-bottom: 20px;">My Habits</div>
+
+            <div class="input-box">
+                <input type="text" id="habitInput" placeholder="e.g. Read a book..." onkeypress="handleKeyPress(event)">
+                <button onclick="addHabit()">Add</button>
+            </div>
+
+            <ul id="habitList"></ul>
+            <div id="emptyState" class="empty-state">No habits yet. Add one above!</div>
+        </div>
+
     </div>
 
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" id="nav-home" onclick="switchView('home')">
+            <span class="icon">🏠</span>
+            <span>Home</span>
+        </div>
+        <div class="nav-item" id="nav-tracker" onclick="switchView('tracker')">
+            <span class="icon">✅</span>
+            <span>Tracker</span>
+        </div>
+    </nav>
+
     <script>
-        // Load habits from local storage
+        // --- STATE ---
         let habits = JSON.parse(localStorage.getItem('simpleHabits')) || [];
 
-        // Function to display habits on screen
-        function renderHabits() {
+        // --- INIT ---
+        function init() {
+            // Set Greeting based on time
+            const hour = new Date().getHours();
+            let greet = "Good Evening";
+            if (hour < 12) greet = "Good Morning";
+            else if (hour < 18) greet = "Good Afternoon";
+            document.getElementById('greetingText').innerText = greet;
+
+            render();
+        }
+
+        // --- NAVIGATION ---
+        function switchView(viewName) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById('view-' + viewName).classList.add('active');
+
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById('nav-' + viewName).classList.add('active');
+
+            if(viewName === 'home') updateHomeStats();
+            window.scrollTo(0, 0);
+        }
+
+        // --- RENDER TRACKER LIST ---
+        function render() {
             const list = document.getElementById('habitList');
-            const emptyState = document.getElementById('emptyState');
+            const empty = document.getElementById('emptyState');
             list.innerHTML = '';
 
-            if (habits.length === 0) {
-                emptyState.style.display = 'block';
-            } else {
-                emptyState.style.display = 'none';
-            }
+            empty.style.display = habits.length === 0 ? 'block' : 'none';
 
             habits.forEach((habit, index) => {
                 const li = document.createElement('li');
-                
                 li.innerHTML = `
-                    <div class="checkbox ${habit.completed ? 'checked' : ''}" onclick="toggleHabit(${index})">
-                        ✓
-                    </div>
+                    <div class="checkbox ${habit.completed ? 'checked' : ''}" onclick="toggleHabit(${index})">✓</div>
                     <span class="habit-text ${habit.completed ? 'completed' : ''}">${habit.name}</span>
                     <button class="delete-btn" onclick="deleteHabit(${index})">🗑️</button>
                 `;
-                
                 list.appendChild(li);
             });
+
+            updateHomeStats();
         }
 
-        // Function to add a new habit
+        // --- UPDATE HOME PAGE STATS ---
+        function updateHomeStats() {
+            const total = habits.length;
+            const completed = habits.filter(h => h.completed).length;
+            
+            document.getElementById('homeCompleted').innerText = `${completed}/${total}`;
+            
+            const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+            document.getElementById('homePercent').innerText = `${percent}%`;
+
+            // Circle animation (Circumference = 2 * pi * 50 = 314)
+            const ring = document.getElementById('homeRing');
+            const offset = 314 - ((percent / 100) * 314);
+            ring.style.strokeDashoffset = offset;
+            
+            // Change color if 100%
+            if(percent === 100 && total > 0) {
+                ring.style.stroke = '#FFD700'; // Gold if perfect
+            } else {
+                ring.style.stroke = '#4CAF50'; // Green default
+            }
+        }
+
+        // --- ACTIONS ---
         function addHabit() {
             const input = document.getElementById('habitInput');
-            const habitName = input.value.trim();
+            const name = input.value.trim();
+            if(name === '') return;
 
-            if (habitName === '') {
-                alert('Please enter a habit!');
-                return;
-            }
-
-            habits.push({ name: habitName, completed: false });
+            habits.push({ name: name, completed: false });
             input.value = '';
-            
             saveAndRender();
         }
 
-        // Function to toggle tick (complete/incomplete)
         function toggleHabit(index) {
             habits[index].completed = !habits[index].completed;
             saveAndRender();
         }
 
-        // Function to delete a habit
         function deleteHabit(index) {
-            habits.splice(index, 1);
-            saveAndRender();
-        }
-
-        // Save to local storage and re-render
-        function saveAndRender() {
-            localStorage.setItem('simpleHabits', JSON.stringify(habits));
-            renderHabits();
-        }
-
-        // Add habit when pressing "Enter" key
-        function handleKeyPress(event) {
-            if (event.key === 'Enter') {
-                addHabit();
+            if(confirm('Delete this habit?')) {
+                habits.splice(index, 1);
+                saveAndRender();
             }
         }
 
-        // Initial render on page load
-        renderHabits();
+        function handleKeyPress(e) {
+            if(e.key === 'Enter') addHabit();
+        }
+
+        function saveAndRender() {
+            localStorage.setItem('simpleHabits', JSON.stringify(habits));
+            render();
+        }
+
+        // Start
+        init();
     </script>
 </body>
 </html>
