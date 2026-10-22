@@ -496,6 +496,38 @@
         .journal-entry-text { font-size: 14px; line-height: 1.5; margin-top: 2px; word-break: break-word; user-select: text; }
         .journal-empty { color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px 0; }
 
+        /* --- TASKS --- */
+        input[type="date"] { color-scheme: dark; }
+        .task-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+        .tab-btn {
+            padding: 8px 16px; border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 13px;
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); color: var(--text-muted);
+            transition: all 0.2s;
+        }
+        .tab-btn:hover { color: var(--neon-cyan); border-color: var(--neon-cyan); }
+        .tab-btn.active { color: var(--neon-cyan); border-color: var(--neon-cyan); background: rgba(0,240,255,0.1); }
+        .task-tag {
+            --tc: var(--neon-cyan);
+            font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 10px;
+            color: var(--tc); border: 1px solid var(--tc); background: rgba(255,255,255,0.04);
+        }
+        .task-row-actions { display: flex; gap: 8px; }
+        .task-empty { color: var(--text-muted); font-size: 13px; text-align: center; padding: 25px 0; }
+        .quick-row { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+        .quick-chip {
+            padding: 4px 12px; border-radius: 20px; cursor: pointer; font-size: 12px;
+            color: var(--neon-cyan); border: 1px solid var(--neon-cyan); background: rgba(0,240,255,0.1);
+            transition: all 0.2s;
+        }
+        .quick-chip:hover { background: var(--neon-cyan); color: var(--bg-base); }
+        .weekday-row { display: flex; gap: 6px; flex-wrap: wrap; }
+        .weekday-btn {
+            flex: 1; min-width: 44px; padding: 8px 0; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 12px;
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); color: var(--text-muted);
+            transition: all 0.2s;
+        }
+        .weekday-btn.selected { color: var(--neon-purple); border-color: var(--neon-purple); background: rgba(176,38,255,0.15); }
+
         /* Responsive */
         @media (max-width: 1024px) {
             .workspace { grid-template-columns: 1fr; }
@@ -536,9 +568,13 @@
                 <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
                 My Habits
             </a>
+            <a href="#" class="nav-item" onclick="changePage('tasks', this)">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                Tasks
+            </a>
             <a href="#" class="nav-item" onclick="changePage('journal', this)">
                 <svg class="icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-                Journal
+                Notes
             </a>
             <a href="#" class="nav-item" onclick="changePage('achievements', this)">
                 <svg class="icon" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
@@ -627,6 +663,15 @@
                 </div>
             </div>
 
+            <!-- TODAY'S TASKS (HOME) -->
+            <section class="panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">Today's Tasks <span style="font-size: 12px; color: var(--text-muted); font-weight: 400; margin-left: 8px;" id="homeTasksCount"></span></h2>
+                    <button class="btn-primary" onclick="openTaskModal()">+ Add Task</button>
+                </div>
+                <div class="habit-list" id="homeTasks"></div>
+            </section>
+
             <!-- STATISTICS (HOME) -->
             <section class="panel">
                 <h2 class="panel-title" style="margin-bottom: 5px;">Statistics</h2>
@@ -671,11 +716,26 @@
             </div>
         </div>
 
+        <!-- TASKS PAGE -->
+        <div id="page-tasks" class="page-section">
+            <header class="top-header">
+                <div>
+                    <h1>Tasks</h1>
+                    <p>Plan ahead - tasks show up on their day</p>
+                </div>
+                <button class="btn-primary" onclick="openTaskModal()">+ Add Task</button>
+            </header>
+            <section class="panel">
+                <div class="task-tabs" id="taskTabs"></div>
+                <div class="habit-list" id="tasksContent"></div>
+            </section>
+        </div>
+
         <!-- JOURNAL PAGE -->
         <div id="page-journal" class="page-section">
             <header class="top-header">
                 <div>
-                    <h1>Daily Journal</h1>
+                    <h1>Notes</h1>
                     <p id="journalDate"></p>
                 </div>
             </header>
@@ -700,10 +760,10 @@
                     <label>Why did you miss it?</label>
                     <textarea id="journalWhy" rows="3" placeholder="What stopped you? How can you fix it tomorrow?"></textarea>
                 </div>
-                <button class="btn-primary" style="width: 100%; padding: 12px;" onclick="saveJournal()">Save Today's Entry</button>
+                <button class="btn-primary" style="width: 100%; padding: 12px;" onclick="saveJournal()">Save Today's Note</button>
             </section>
             <section class="panel">
-                <h2 class="panel-title" style="margin-bottom: 15px;">Past Entries</h2>
+                <h2 class="panel-title" style="margin-bottom: 15px;">Past Notes</h2>
                 <div id="journalHistory"></div>
             </section>
         </div>
@@ -737,8 +797,11 @@
         <div class="mobile-nav-item" onclick="changePage('habits', this)">
             <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg></span>Habits
         </div>
+        <div class="mobile-nav-item" onclick="changePage('tasks', this)">
+            <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>Tasks
+        </div>
         <div class="mobile-nav-item" onclick="changePage('journal', this)">
-            <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>Journal
+            <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>Notes
         </div>
         <div class="mobile-nav-item" onclick="changePage('achievements', this)">
             <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></span>Badges
@@ -768,12 +831,63 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="taskModal">
+        <div class="modal-content" style="max-height: 90vh; overflow-y: auto;">
+            <h2 style="margin-bottom: 20px;" id="taskModalTitle">Add Task</h2>
+            <input type="hidden" id="editTaskId" value="">
+            <div class="input-group">
+                <label>Task</label>
+                <input type="text" id="taskTitleInput" placeholder="e.g. Pay electricity bill">
+            </div>
+            <div class="input-group">
+                <label>Repeat</label>
+                <select id="taskTypeInput" onchange="updateTaskFormFields()">
+                    <option value="once">One time (pick a date)</option>
+                    <option value="weekly">Weekly (pick days)</option>
+                    <option value="monthly">Monthly (pick a day of month)</option>
+                </select>
+            </div>
+            <div class="input-group" id="taskOnceGroup">
+                <label>Date</label>
+                <input type="date" id="taskDateInput">
+                <div class="quick-row">
+                    <span class="quick-chip" onclick="setTaskDateOffset(1)">Tomorrow</span>
+                    <span class="quick-chip" onclick="setTaskDateOffset(7)">+7 days</span>
+                    <span class="quick-chip" onclick="setTaskDateOffset(15)">+15 days</span>
+                    <span class="quick-chip" onclick="setTaskDateOffset(30)">+30 days</span>
+                </div>
+            </div>
+            <div class="input-group" id="taskWeeklyGroup" style="display: none;">
+                <label>Days of the week</label>
+                <div class="weekday-row" id="weekdayRow">
+                    <button type="button" class="weekday-btn" data-day="1" onclick="toggleWeekday(this)">Mon</button>
+                    <button type="button" class="weekday-btn" data-day="2" onclick="toggleWeekday(this)">Tue</button>
+                    <button type="button" class="weekday-btn" data-day="3" onclick="toggleWeekday(this)">Wed</button>
+                    <button type="button" class="weekday-btn" data-day="4" onclick="toggleWeekday(this)">Thu</button>
+                    <button type="button" class="weekday-btn" data-day="5" onclick="toggleWeekday(this)">Fri</button>
+                    <button type="button" class="weekday-btn" data-day="6" onclick="toggleWeekday(this)">Sat</button>
+                    <button type="button" class="weekday-btn" data-day="0" onclick="toggleWeekday(this)">Sun</button>
+                </div>
+            </div>
+            <div class="input-group" id="taskMonthlyGroup" style="display: none;">
+                <label>Day of the month</label>
+                <select id="taskMonthDayInput"></select>
+                <p style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">In shorter months it shows on the last day.</p>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 25px;">
+                <button class="btn-primary" style="flex: 1; background: transparent; border-color: var(--text-muted); color: var(--text-muted);" onclick="closeTaskModal()">Cancel</button>
+                <button class="btn-primary" style="flex: 2;" onclick="saveTask()">Save Task</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let appState = {
             totalXp: 0,
             currentLevel: 1,
             badges: {},
             journal: {},
+            tasks: [],
             habits: []
         };
 
@@ -821,6 +935,10 @@
             }
 
             // Re-draw chart when opening analytics
+            if (pageId === 'tasks') {
+                renderTasksPage();
+            }
+
             if (pageId === 'journal') {
                 renderJournal();
             }
@@ -846,6 +964,7 @@
                 appState.habits.forEach(h => { if(!h.history) h.history = {}; });
                 if(!appState.badges) appState.badges = {};
                 if(!appState.journal) appState.journal = {};
+                if(!appState.tasks) appState.tasks = [];
             } else {
                 appState.habits = defaultHabits;
             }
@@ -1335,7 +1454,7 @@
             const today = getTodayStr();
             const dates = Object.keys(appState.journal || {}).filter(d => d !== today).sort().reverse();
             if (!dates.length) {
-                container.innerHTML = '<div class="journal-empty">No past entries yet. Your earlier days will show up here.</div>';
+                container.innerHTML = '<div class="journal-empty">No past notes yet. Your earlier days will show up here.</div>';
                 return;
             }
             container.innerHTML = dates.map(d => {
@@ -1367,15 +1486,270 @@
             if (!appState.journal) appState.journal = {};
             appState.journal[getTodayStr()] = { mood: journalMood, day, missed, why };
             saveData();
-            showToast("Journal saved!");
+            showToast("Note saved!");
         }
 
         function deleteJournalEntry(dateStr) {
-            if (confirm("Delete this journal entry?")) {
+            if (confirm("Delete this note?")) {
                 delete appState.journal[dateStr];
                 saveData();
                 renderJournalHistory();
-                showToast("Entry deleted");
+                showToast("Note deleted");
+            }
+        }
+
+        // ================= TASKS =================
+        const WEEKDAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const WEEKDAY_ORDER = [1, 2, 3, 4, 5, 6, 0];
+        const TASK_TYPES = {
+            once:    { label: 'One-time', color: 'var(--neon-cyan)' },
+            weekly:  { label: 'Weekly',   color: 'var(--neon-purple)' },
+            monthly: { label: 'Monthly',  color: 'var(--neon-yellow)' }
+        };
+        let taskTab = 'today';
+
+        function dateParts(str) {
+            const [y, m, d] = str.split('-').map(Number);
+            return { y, m, d };
+        }
+        function weekdayOf(str) { const t = dateParts(str); return new Date(t.y, t.m - 1, t.d).getDay(); }
+        function daysInMonthOf(str) { const t = dateParts(str); return new Date(t.y, t.m, 0).getDate(); }
+        function daysBetween(a, b) {
+            const pa = dateParts(a), pb = dateParts(b);
+            return Math.round((Date.UTC(pb.y, pb.m - 1, pb.d) - Date.UTC(pa.y, pa.m - 1, pa.d)) / 86400000);
+        }
+        function formatTaskDate(str) {
+            const t = dateParts(str);
+            return new Date(t.y, t.m - 1, t.d).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+        }
+        function relativeDayText(str) {
+            const diff = daysBetween(getTodayStr(), str);
+            if (diff === 0) return 'Today';
+            if (diff === 1) return 'Tomorrow';
+            if (diff === -1) return 'Yesterday';
+            return diff > 0 ? `in ${diff} days` : `${-diff} days ago`;
+        }
+
+        function taskOccursOn(t, dateStr) {
+            if (t.type === 'once') return t.date === dateStr;
+            if (t.type === 'weekly') return (t.weekdays || []).includes(weekdayOf(dateStr));
+            if (t.type === 'monthly') {
+                const day = dateParts(dateStr).d;
+                return day === Math.min(t.monthDay, daysInMonthOf(dateStr));
+            }
+            return false;
+        }
+
+        function nextOccurrence(t) {
+            const today = getTodayStr();
+            if (t.type === 'once') return t.date >= today ? t.date : null;
+            for (let i = 0; i <= 62; i++) {
+                const d = dateAdd(today, i);
+                if (taskOccursOn(t, d)) return d;
+            }
+            return null;
+        }
+
+        function getTasksDueToday() {
+            const today = getTodayStr();
+            const list = [];
+            (appState.tasks || []).forEach(t => {
+                if (taskOccursOn(t, today)) list.push({ task: t, date: today, overdue: false });
+                else if (t.type === 'once' && t.date < today && !t.done[t.date]) list.push({ task: t, date: t.date, overdue: true });
+            });
+            list.sort((a, b) => (b.overdue ? 1 : 0) - (a.overdue ? 1 : 0));
+            return list;
+        }
+
+        function typeTag(t) {
+            const ty = TASK_TYPES[t.type];
+            return `<span class="task-tag" style="--tc:${ty.color};">${ty.label}</span>`;
+        }
+
+        function taskCheckRow(item) {
+            const t = item.task;
+            const done = t.done[item.date] === true;
+            return `
+                <div class="habit-row ${done ? 'completed' : ''}">
+                    <div class="custom-checkbox ${done ? 'checked' : ''}" onclick="toggleTask('${t.id}', '${item.date}')">${done ? '✓' : ''}</div>
+                    <div class="habit-info">
+                        <h3>${escapeHtml(t.title)}</h3>
+                        <p>${typeTag(t)}${item.overdue ? `<span class="task-tag" style="--tc:var(--neon-red);">Overdue - ${formatTaskDate(item.date)}</span>` : ''}</p>
+                    </div>
+                </div>`;
+        }
+
+        function toggleTask(id, dateKey) {
+            const t = (appState.tasks || []).find(x => x.id === id);
+            if (!t) return;
+            t.done[dateKey] = !t.done[dateKey];
+            if (t.done[dateKey]) showToast('Task completed!');
+            saveData();
+            renderHomeTasks();
+            if (document.getElementById('page-tasks').classList.contains('active')) renderTasksPage();
+        }
+
+        function renderHomeTasks() {
+            const box = document.getElementById('homeTasks');
+            if (!box) return;
+            const items = getTasksDueToday();
+            const doneCount = items.filter(i => i.task.done[i.date]).length;
+            document.getElementById('homeTasksCount').innerText = items.length ? `${doneCount}/${items.length} done` : '';
+            box.innerHTML = items.length
+                ? items.map(taskCheckRow).join('')
+                : '<div class="task-empty">No tasks for today. Tap "+ Add Task" to plan something.</div>';
+        }
+
+        function setTaskTab(tab) {
+            taskTab = tab;
+            renderTasksPage();
+        }
+
+        function taskManageRow(t) {
+            const today = getTodayStr();
+            let detail = '';
+            let tags = typeTag(t);
+            const next = nextOccurrence(t);
+            let rowClass = '';
+
+            if (t.type === 'once') {
+                if (t.done[t.date]) { tags += '<span class="task-tag" style="--tc:var(--neon-green);">Done</span>'; rowClass = 'completed'; }
+                else if (t.date < today) tags += '<span class="task-tag" style="--tc:var(--neon-red);">Overdue</span>';
+                detail = `${formatTaskDate(t.date)} (${relativeDayText(t.date)})`;
+            } else if (t.type === 'weekly') {
+                const days = WEEKDAY_ORDER.filter(d => (t.weekdays || []).includes(d)).map(d => WEEKDAY_NAMES[d]).join(', ');
+                detail = `Every ${days}` + (next ? ` - next: ${formatTaskDate(next)}` : '');
+            } else {
+                detail = `Day ${t.monthDay} of every month` + (next ? ` - next: ${formatTaskDate(next)}` : '');
+            }
+
+            return `
+                <div class="habit-row ${rowClass}">
+                    <div class="habit-info" style="margin-left: 0;">
+                        <h3>${escapeHtml(t.title)}</h3>
+                        <p>${tags}<span>${detail}</span></p>
+                    </div>
+                    <div class="task-row-actions">
+                        <button class="action-btn btn-edit" style="opacity:0.7;" onclick="openTaskModal('${t.id}')" title="Edit">${ICON_EDIT}</button>
+                        <button class="action-btn btn-delete" style="opacity:0.7;" onclick="deleteTask('${t.id}')" title="Delete">${ICON_TRASH}</button>
+                    </div>
+                </div>`;
+        }
+
+        function renderTasksPage() {
+            if (!appState.tasks) appState.tasks = [];
+            const today = getTodayStr();
+            const todayItems = getTasksDueToday();
+            const weekly = appState.tasks.filter(t => t.type === 'weekly');
+            const monthly = appState.tasks.filter(t => t.type === 'monthly');
+            const once = appState.tasks.filter(t => t.type === 'once').sort((a, b) => a.date.localeCompare(b.date));
+
+            const tabs = [
+                ['today', `Today (${todayItems.length})`],
+                ['weekly', `Weekly (${weekly.length})`],
+                ['monthly', `Monthly (${monthly.length})`],
+                ['once', `One-time (${once.length})`]
+            ];
+            document.getElementById('taskTabs').innerHTML = tabs.map(([k, label]) =>
+                `<button class="tab-btn ${taskTab === k ? 'active' : ''}" onclick="setTaskTab('${k}')">${label}</button>`).join('');
+
+            const box = document.getElementById('tasksContent');
+            const empties = {
+                today: 'Nothing due today.',
+                weekly: 'No weekly tasks yet. Add one and pick the days it should repeat.',
+                monthly: 'No monthly tasks yet. Add one and pick the day of the month.',
+                once: 'No one-time tasks yet. Add one with a future date and it will show up on that day.'
+            };
+            let html = '';
+            if (taskTab === 'today') html = todayItems.map(taskCheckRow).join('');
+            else if (taskTab === 'weekly') html = weekly.map(taskManageRow).join('');
+            else if (taskTab === 'monthly') html = monthly.map(taskManageRow).join('');
+            else html = once.map(taskManageRow).join('');
+            box.innerHTML = html || `<div class="task-empty">${empties[taskTab]}</div>`;
+        }
+
+        function updateTaskFormFields() {
+            const type = document.getElementById('taskTypeInput').value;
+            document.getElementById('taskOnceGroup').style.display = type === 'once' ? 'block' : 'none';
+            document.getElementById('taskWeeklyGroup').style.display = type === 'weekly' ? 'block' : 'none';
+            document.getElementById('taskMonthlyGroup').style.display = type === 'monthly' ? 'block' : 'none';
+        }
+
+        function toggleWeekday(btn) { btn.classList.toggle('selected'); }
+
+        function setTaskDateOffset(days) {
+            document.getElementById('taskDateInput').value = dateAdd(getTodayStr(), days);
+        }
+
+        function openTaskModal(id) {
+            const sel = document.getElementById('taskMonthDayInput');
+            if (!sel.options.length) {
+                for (let i = 1; i <= 31; i++) sel.innerHTML += `<option value="${i}">${i}</option>`;
+            }
+            document.querySelectorAll('#weekdayRow .weekday-btn').forEach(b => b.classList.remove('selected'));
+            const t = id ? (appState.tasks || []).find(x => x.id === id) : null;
+
+            document.getElementById('taskModalTitle').innerText = t ? 'Edit Task' : 'Add Task';
+            document.getElementById('editTaskId').value = t ? t.id : '';
+            document.getElementById('taskTitleInput').value = t ? t.title : '';
+            document.getElementById('taskTypeInput').value = t ? t.type : 'once';
+            document.getElementById('taskDateInput').value = t && t.type === 'once' ? t.date : dateAdd(getTodayStr(), 1);
+            sel.value = t && t.type === 'monthly' ? t.monthDay : parseInt(getTodayStr().slice(8), 10);
+            if (t && t.type === 'weekly') {
+                document.querySelectorAll('#weekdayRow .weekday-btn').forEach(b => {
+                    if ((t.weekdays || []).includes(Number(b.dataset.day))) b.classList.add('selected');
+                });
+            }
+            updateTaskFormFields();
+            document.getElementById('taskModal').classList.add('show');
+        }
+
+        function closeTaskModal() {
+            document.getElementById('taskModal').classList.remove('show');
+        }
+
+        function saveTask() {
+            if (!appState.tasks) appState.tasks = [];
+            const id = document.getElementById('editTaskId').value;
+            const title = document.getElementById('taskTitleInput').value.trim();
+            const type = document.getElementById('taskTypeInput').value;
+            if (!title) return showToast('Please enter a task!', true);
+
+            const data = { title, type };
+            if (type === 'once') {
+                const date = document.getElementById('taskDateInput').value;
+                if (!date) return showToast('Please pick a date!', true);
+                data.date = date;
+            } else if (type === 'weekly') {
+                const days = Array.from(document.querySelectorAll('#weekdayRow .weekday-btn.selected')).map(b => Number(b.dataset.day));
+                if (!days.length) return showToast('Pick at least one day!', true);
+                data.weekdays = days;
+            } else {
+                data.monthDay = parseInt(document.getElementById('taskMonthDayInput').value, 10);
+            }
+
+            if (id) {
+                const t = appState.tasks.find(x => x.id === id);
+                if (t) Object.assign(t, data);
+                showToast('Task updated!');
+            } else {
+                appState.tasks.push(Object.assign({ id: Date.now().toString(), done: {} }, data));
+                showToast('Task added!');
+            }
+
+            saveData();
+            renderHomeTasks();
+            renderTasksPage();
+            closeTaskModal();
+        }
+
+        function deleteTask(id) {
+            if (confirm('Delete this task?')) {
+                appState.tasks = appState.tasks.filter(t => t.id !== id);
+                saveData();
+                renderHomeTasks();
+                renderTasksPage();
+                showToast('Task deleted');
             }
         }
 
@@ -1427,6 +1801,7 @@
             }
 
             renderMonthlyChart();
+            renderHomeTasks();
             updateStreakAndBadges();
         }
 
