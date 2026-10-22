@@ -169,7 +169,7 @@
         .stat-title { color: var(--text-muted); font-size: 14px; margin-bottom: 10px; font-weight: 500; }
         .stat-value { font-size: 28px; font-weight: 700; display: flex; align-items: baseline; gap: 5px; }
         .stat-value span { font-size: 14px; color: var(--text-muted); font-weight: 400; }
-        
+
         .level-bar-container {
             margin-top: 15px;
             height: 8px;
@@ -180,7 +180,7 @@
         .level-bar-fill {
             height: 100%;
             background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
-            width: 0%; 
+            width: 0%;
             border-radius: 10px;
             box-shadow: 0 0 10px var(--neon-cyan);
             transition: width 0.5s ease;
@@ -304,7 +304,7 @@
             gap: 8px;
             min-width: max-content;
         }
-        
+
         .cal-header-cell {
             text-align: center;
             font-size: 11px;
@@ -337,7 +337,7 @@
             color: transparent;
         }
         .cal-cell:hover { border-color: var(--neon-cyan); background: rgba(0, 240, 255, 0.1); }
-        
+
         .cal-cell.completed {
             background: rgba(0, 255, 136, 0.2);
             border-color: var(--neon-green);
@@ -345,7 +345,7 @@
             box-shadow: inset 0 0 10px rgba(0, 255, 136, 0.2);
         }
         .cal-cell.completed::after { content: '✓'; font-weight: bold; }
-        
+
         .cal-cell.today { border: 2px solid var(--neon-purple); }
 
         /* --- ANALYTICS LINE CHART --- */
@@ -390,7 +390,7 @@
             color: white; outline: none; font-family: 'Outfit'; font-size: 14px;
         }
         .input-group input:focus, .input-group select:focus { border-color: var(--neon-cyan); box-shadow: 0 0 10px rgba(0,240,255,0.2); }
-        
+
         /* Toast Notification */
         .toast {
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
@@ -413,6 +413,50 @@
         .mobile-nav-item.active { color: var(--neon-cyan); }
         .mobile-nav-icon { display: flex; align-items: center; justify-content: center; }
 
+        /* --- ACHIEVEMENTS / BADGES --- */
+        .badge-summary-bar { height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; margin-top: 12px; }
+        .badge-summary-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--neon-yellow), var(--neon-purple)); border-radius: 10px; transition: width 0.5s ease; }
+        .next-goal { display: flex; align-items: center; gap: 18px; border-color: rgba(255, 204, 0, 0.25); }
+        .next-goal-label { font-size: 12px; color: var(--neon-yellow); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+        .next-goal-title { font-size: 18px; font-weight: 600; }
+        .next-goal-text { font-size: 13px; color: var(--text-muted); margin-top: 3px; }
+        .achievements-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 18px; }
+        .badge-card {
+            --bc: var(--neon-cyan);
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 22px 16px;
+            text-align: center;
+            display: flex; flex-direction: column; align-items: center; gap: 6px;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+        .badge-card:hover { transform: translateY(-4px); }
+        .badge-icon {
+            width: 64px; height: 64px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.06);
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            position: relative;
+        }
+        .badge-icon .icon { width: 28px; height: 28px; }
+        .badge-card.locked .badge-icon { filter: grayscale(1); opacity: 0.6; }
+        .badge-card.locked .badge-title { color: var(--text-muted); }
+        .badge-card.unlocked { border-color: var(--bc); box-shadow: 0 0 20px rgba(255,255,255,0.03); }
+        .badge-card.unlocked .badge-icon {
+            color: var(--bc);
+            background: rgba(255,255,255,0.08);
+            box-shadow: 0 0 18px var(--bc), inset 0 0 12px rgba(255,255,255,0.05);
+        }
+        .badge-title { font-size: 16px; font-weight: 600; }
+        .badge-desc { font-size: 12px; color: var(--text-muted); min-height: 32px; }
+        .badge-progress { width: 100%; margin-top: 6px; }
+        .badge-progress-bar { height: 6px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; }
+        .badge-progress-fill { height: 100%; background: var(--bc); border-radius: 10px; transition: width 0.5s ease; }
+        .badge-progress-text { font-size: 11px; color: var(--text-muted); margin-top: 5px; }
+        .badge-unlocked-text { font-size: 11px; color: var(--neon-green); margin-top: 6px; font-weight: 600; }
+
         /* Responsive */
         @media (max-width: 1024px) {
             .workspace { grid-template-columns: 1fr; }
@@ -423,10 +467,13 @@
             .main-content { margin-left: 0; width: 100%; padding: 20px; padding-bottom: 80px; }
             .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
             .stat-value { font-size: 22px; }
+            .stats-grid .stat-card:last-child:nth-child(odd) { grid-column: span 2; }
             .top-header h1 { font-size: 24px; }
             .user-profile { display: none; }
             .mobile-nav { display: flex; }
             .panel { padding: 15px; }
+            .achievements-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+            .badge-card { padding: 16px 10px; }
             .calendar-grid { grid-template-columns: 120px repeat(31, 30px); }
             .cal-cell { width: 30px; height: 30px; }
         }
@@ -462,7 +509,7 @@
     </aside>
 
     <main class="main-content">
-        
+
         <!-- DASHBOARD PAGE -->
         <div id="page-dashboard" class="page-section active">
             <header class="top-header">
@@ -499,6 +546,18 @@
                     <div class="stat-title">Habits Completed</div>
                     <div class="stat-value" id="habitsCompletedDisplay">0/0</div>
                 </div>
+                <div class="stat-card">
+                    <div class="stat-title">Total Completed</div>
+                    <div class="stat-value" style="color: var(--neon-purple);" id="totalCompletedDisplay">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Monthly Progress</div>
+                    <div class="stat-value" style="color: var(--neon-cyan);"><span id="monthlyPercentDisplay" style="font-size: inherit; color: inherit; font-weight: inherit;">0%</span></div>
+                    <div class="level-bar-container">
+                        <div class="level-bar-fill" id="monthlyProgressBar"></div>
+                    </div>
+                    <div style="font-size: 11px; color: var(--text-muted); margin-top: 5px; text-align: right;" id="monthlyDetailText">0 / 0 done</div>
+                </div>
             </section>
 
             <div class="workspace">
@@ -513,12 +572,28 @@
                     </div>
                     <p style="color: var(--text-muted); font-size: 13px; margin-top: 15px;" id="progressMessage">Let's get started!</p>
                 </div>
-                
+
                 <div class="panel">
                     <h2 class="panel-title" style="margin-bottom: 15px;">Weekly Performance</h2>
                     <div class="bars" id="weeklyBars"></div>
                 </div>
             </div>
+
+            <!-- STATISTICS (HOME) -->
+            <section class="panel">
+                <h2 class="panel-title" style="margin-bottom: 5px;">Statistics</h2>
+                <p style="color: var(--text-muted); font-size: 13px;">Last 7 days progress trend</p>
+                <div class="analytics-chart-container">
+                    <svg id="homeChart">
+                        <defs>
+                            <linearGradient id="areaGradientHome" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="var(--neon-cyan)" stop-opacity="0.5"/>
+                                <stop offset="100%" stop-color="var(--neon-cyan)" stop-opacity="0"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+            </section>
 
             <!-- MONTHLY CALENDAR SECTION -->
             <section class="calendar-section">
@@ -572,25 +647,20 @@
         <!-- ACHIEVEMENTS PAGE -->
         <div id="page-achievements" class="page-section">
             <header class="top-header">
-                <h1>Achievements</h1>
+                <div>
+                    <h1>Achievements</h1>
+                    <p id="badgeSummary">0 / 0 badges unlocked</p>
+                </div>
             </header>
             <section class="panel">
-                <div class="achievements-grid">
-                    <div class="badge-card unlocked">
-                        <div class="badge-icon">
-                            <svg class="icon" viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
-                        </div>
-                        <div class="badge-title">First Step</div>
-                        <div class="badge-desc">Completed 1 habit</div>
-                    </div>
-                    <div class="badge-card">
-                        <div class="badge-icon">
-                            <svg class="icon" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
-                        </div>
-                        <div class="badge-title">On Fire</div>
-                        <div class="badge-desc">7 Day Streak</div>
-                    </div>
+                <div style="display:flex; justify-content: space-between; font-size: 13px; color: var(--text-muted);">
+                    <span>Badge Collection</span><span id="badgePercent">0%</span>
                 </div>
+                <div class="badge-summary-bar"><div class="badge-summary-fill" id="badgeSummaryFill"></div></div>
+            </section>
+            <section class="panel next-goal" id="nextGoalPanel"></section>
+            <section class="panel">
+                <div class="achievements-grid" id="badgesGrid"></div>
             </section>
         </div>
 
@@ -602,9 +672,6 @@
         </div>
         <div class="mobile-nav-item" onclick="changePage('habits', this)">
             <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg></span>Habits
-        </div>
-        <div class="mobile-nav-item" onclick="changePage('analytics', this)">
-            <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></span>Stats
         </div>
         <div class="mobile-nav-item" onclick="changePage('achievements', this)">
             <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></span>Badges
@@ -638,6 +705,7 @@
         let appState = {
             totalXp: 0,
             currentLevel: 1,
+            badges: {},
             habits: []
         };
 
@@ -685,7 +753,7 @@
             }
 
             // Re-draw chart when opening analytics
-            if (pageId === 'analytics') {
+            if (pageId === 'analytics' || pageId === 'dashboard') {
                 renderAnalyticsChart();
             }
         }
@@ -696,7 +764,7 @@
             let greeting = "Good Evening";
             if (hours < 12) greeting = "Good Morning";
             else if (hours < 18) greeting = "Good Afternoon";
-            
+
             document.getElementById('greetingText').innerText = `${greeting}, Achiever!`;
             document.getElementById('currentDate').innerText = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 
@@ -704,6 +772,7 @@
             if (savedData) {
                 appState = JSON.parse(savedData);
                 appState.habits.forEach(h => { if(!h.history) h.history = {}; });
+                if(!appState.badges) appState.badges = {};
             } else {
                 appState.habits = defaultHabits;
             }
@@ -713,6 +782,7 @@
             renderWeeklyChart();
             renderCalendar();
             updateUI();
+            renderAnalyticsChart();
         }
 
         function saveData() {
@@ -755,7 +825,7 @@
 
             const isCompleted = !habit.history[dateStr];
             habit.history[dateStr] = isCompleted;
-            
+
             if (isCompleted) {
                 appState.totalXp += habit.xp;
                 showToast(`+${habit.xp} XP (${dateStr})`);
@@ -766,11 +836,11 @@
             if (dateStr === getTodayStr()) {
                 habit.completed = isCompleted;
                 renderHabits();
-                updateUI();
             }
 
             checkLevelUp();
             saveData();
+            updateUI();   // ab hamesha chalega
             renderCalendar();
             renderWeeklyChart();
             renderAnalyticsChart();
@@ -832,7 +902,7 @@
                     const isCompleted = habit.history[dateStr] === true;
                     const isToday = dateStr === todayStr;
                     grid.innerHTML += `
-                        <div class="cal-cell ${isCompleted ? 'completed' : ''} ${isToday ? 'today' : ''}" 
+                        <div class="cal-cell ${isCompleted ? 'completed' : ''} ${isToday ? 'today' : ''}"
                              onclick="toggleCalendarCell('${habit.id}', '${dateStr}')">
                         </div>
                     `;
@@ -842,7 +912,12 @@
 
         // --- Render Custom SVG Analytics Chart ---
         function renderAnalyticsChart() {
-            const svg = document.getElementById('analyticsChart');
+            drawChart('analyticsChart', 'areaGradient');
+            drawChart('homeChart', 'areaGradientHome');
+        }
+
+        function drawChart(svgId, gradId) {
+            const svg = document.getElementById(svgId);
             const defs = svg.querySelector('defs');
             svg.innerHTML = '';
             svg.appendChild(defs);
@@ -879,7 +954,7 @@
             for (let i = 0; i <= 4; i++) {
                 const y = padding.top + chartH - (i * (chartH / 4));
                 const percent = i * 25;
-                
+
                 const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
                 line.setAttribute('x1', padding.left);
                 line.setAttribute('y1', y);
@@ -905,10 +980,10 @@
             dataPoints.forEach((val, index) => {
                 const x = padding.left + (index * xStep);
                 const y = padding.top + chartH - ((val / 100) * chartH);
-                
+
                 if (index === 0) linePath += `M ${x} ${y} `;
                 else linePath += `L ${x} ${y} `;
-                
+
                 areaPath += `L ${x} ${y} `;
 
                 const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
@@ -919,12 +994,13 @@
                 text.textContent = labels[index];
                 svg.appendChild(text);
             });
-            
+
             areaPath += `L ${padding.left + chartW} ${padding.top + chartH} Z`;
 
             const area = document.createElementNS('http://www.w3.org/2000/svg', 'path');
             area.setAttribute('d', areaPath);
             area.setAttribute('class', 'chart-area');
+            area.style.fill = `url(#${gradId})`;
             svg.appendChild(area);
 
             const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -935,32 +1011,227 @@
             dataPoints.forEach((val, index) => {
                 const x = padding.left + (index * xStep);
                 const y = padding.top + chartH - ((val / 100) * chartH);
-                
+
                 const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
                 circle.setAttribute('cx', x);
                 circle.setAttribute('cy', y);
                 circle.setAttribute('r', 4);
                 circle.setAttribute('class', 'chart-dot');
-                
+
                 const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
                 title.textContent = `${labels[index]}: ${Math.round(val)}%`;
                 circle.appendChild(title);
-                
+
                 svg.appendChild(circle);
             });
         }
 
         window.addEventListener('resize', () => {
-            if(document.getElementById('page-analytics').classList.contains('active')) {
-                renderAnalyticsChart();
-            }
+            renderAnalyticsChart();
         });
+
+        // ================= BADGES =================
+        const BADGE_ICONS = {
+            rocket: '<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>',
+            zap: '<path d="M13 2L4.5 13h6L10 22l8.5-11h-6L13 2z"/>',
+            target: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+            award: '<circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>',
+            crown: '<path d="M2 20h20"/><path d="m4 20-2-13 5 4 5-7 5 7 5-4-2 13"/>',
+            flame: '<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>',
+            star: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+            calendar: '<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>',
+            layers: '<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>',
+            trending: '<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>',
+            gem: '<path d="M6 3h12l4 6-10 13L2 9z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/>',
+            trophy: '<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>'
+        };
+
+        function dateAdd(dateStr, n) {
+            const [y, m, d] = dateStr.split('-').map(Number);
+            const dt = new Date(y, m - 1, d + n);
+            return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`;
+        }
+
+        function getActiveDates() {
+            const set = new Set();
+            appState.habits.forEach(h => {
+                Object.entries(h.history).forEach(([d, v]) => { if (v === true) set.add(d); });
+            });
+            return set;
+        }
+
+        function getTotalCompleted() {
+            return appState.habits.reduce((sum, h) => sum + Object.values(h.history).filter(v => v === true).length, 0);
+        }
+
+        function getCurrentStreak() {
+            const active = getActiveDates();
+            let d = getTodayStr();
+            if (!active.has(d)) d = dateAdd(d, -1);
+            let count = 0;
+            while (active.has(d)) { count++; d = dateAdd(d, -1); }
+            return count;
+        }
+
+        function getLongestStreak() {
+            const dates = Array.from(getActiveDates()).sort();
+            let best = 0, run = 0, prev = null;
+            dates.forEach(d => {
+                run = (prev && dateAdd(prev, 1) === d) ? run + 1 : 1;
+                if (run > best) best = run;
+                prev = d;
+            });
+            return best;
+        }
+
+        function getPerfectDays() {
+            if (appState.habits.length === 0) return 0;
+            let count = 0;
+            getActiveDates().forEach(d => {
+                if (appState.habits.every(h => h.history[d] === true)) count++;
+            });
+            return count;
+        }
+
+        function getMonthlyPercent() {
+            const now = new Date();
+            const prefix = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-`;
+            const days = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+            const possible = appState.habits.length * days;
+            if (possible === 0) return 0;
+            const done = appState.habits.reduce((sum, h) => {
+                return sum + Object.entries(h.history).filter(([d, v]) => v === true && d.startsWith(prefix)).length;
+            }, 0);
+            return Math.round((done / possible) * 100);
+        }
+
+        const BADGES = [
+            { id: 'first_step',   name: 'First Step',      desc: 'Complete your first habit',          icon: 'rocket',   color: 'var(--neon-cyan)',   target: 1,   unit: 'habits',  get: () => getTotalCompleted() },
+            { id: 'warming_up',   name: 'Warming Up',      desc: 'Complete 10 habits in total',        icon: 'zap',      color: 'var(--neon-cyan)',   target: 10,  unit: 'habits',  get: () => getTotalCompleted() },
+            { id: 'dedicated',    name: 'Dedicated',       desc: 'Complete 50 habits in total',        icon: 'target',   color: 'var(--neon-purple)', target: 50,  unit: 'habits',  get: () => getTotalCompleted() },
+            { id: 'centurion',    name: 'Centurion',       desc: 'Complete 100 habits in total',       icon: 'award',    color: 'var(--neon-yellow)', target: 100, unit: 'habits',  get: () => getTotalCompleted() },
+            { id: 'legend',       name: 'Living Legend',   desc: 'Complete 500 habits in total',       icon: 'crown',    color: 'var(--neon-yellow)', target: 500, unit: 'habits',  get: () => getTotalCompleted() },
+            { id: 'on_fire',      name: 'On Fire',         desc: 'Reach a 7 day streak',               icon: 'flame',    color: 'var(--neon-red)',    target: 7,   unit: 'days',    get: () => getLongestStreak() },
+            { id: 'unstoppable',  name: 'Unstoppable',     desc: 'Reach a 14 day streak',              icon: 'flame',    color: 'var(--neon-red)',    target: 14,  unit: 'days',    get: () => getLongestStreak() },
+            { id: 'monthly_master', name: 'Monthly Master', desc: 'Reach a 30 day streak',             icon: 'calendar', color: 'var(--neon-green)',  target: 30,  unit: 'days',    get: () => getLongestStreak() },
+            { id: 'perfect_day',  name: 'Perfect Day',     desc: 'Complete every habit in one day',    icon: 'star',     color: 'var(--neon-green)',  target: 1,   unit: 'days',    get: () => getPerfectDays() },
+            { id: 'perfect_week', name: 'Perfect Week',    desc: 'Get 7 perfect days',                 icon: 'trophy',   color: 'var(--neon-green)',  target: 7,   unit: 'days',    get: () => getPerfectDays() },
+            { id: 'habit_builder', name: 'Habit Builder',  desc: 'Have 5 habits in your list',         icon: 'layers',   color: 'var(--neon-purple)', target: 5,   unit: 'habits',  get: () => appState.habits.length },
+            { id: 'level_5',      name: 'Rising Star',     desc: 'Reach Level 5',                      icon: 'trending', color: 'var(--neon-cyan)',   target: 5,   unit: 'levels',  get: () => appState.currentLevel },
+            { id: 'level_10',     name: 'Elite',           desc: 'Reach Level 10',                     icon: 'gem',      color: 'var(--neon-purple)', target: 10,  unit: 'levels',  get: () => appState.currentLevel },
+            { id: 'monthly_80',   name: 'Month Crusher',   desc: 'Reach 80% monthly progress',         icon: 'target',   color: 'var(--neon-yellow)', target: 80,  unit: '%',       get: () => getMonthlyPercent() }
+        ];
+
+        function formatBadgeDate(dateStr) {
+            const [y, m, d] = dateStr.split('-').map(Number);
+            return new Date(y, m - 1, d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+
+        function checkBadges() {
+            if (!appState.badges) appState.badges = {};
+            const newly = [];
+            BADGES.forEach(b => {
+                if (!appState.badges[b.id] && b.get() >= b.target) {
+                    appState.badges[b.id] = getTodayStr();
+                    newly.push(b);
+                }
+            });
+            if (newly.length) {
+                saveData();
+                const extra = newly.length > 1 ? ` (+${newly.length - 1} more)` : '';
+                setTimeout(() => showToast(`Badge Unlocked: ${newly[0].name}${extra}`), 1500);
+            }
+        }
+
+        function renderBadges() {
+            const grid = document.getElementById('badgesGrid');
+            if (!grid) return;
+            const unlockedCount = BADGES.filter(b => appState.badges[b.id]).length;
+            const pct = Math.round((unlockedCount / BADGES.length) * 100);
+            document.getElementById('badgeSummary').innerText = `${unlockedCount} / ${BADGES.length} badges unlocked`;
+            document.getElementById('badgePercent').innerText = `${pct}%`;
+            document.getElementById('badgeSummaryFill').style.width = `${pct}%`;
+
+            // Next goal = locked badge closest to completion
+            let next = null, bestRatio = -1;
+            BADGES.forEach(b => {
+                if (appState.badges[b.id]) return;
+                const ratio = Math.min(b.get() / b.target, 1);
+                if (ratio > bestRatio) { bestRatio = ratio; next = b; }
+            });
+            const panel = document.getElementById('nextGoalPanel');
+            if (next) {
+                const left = Math.max(next.target - next.get(), 0);
+                panel.style.display = 'flex';
+                panel.innerHTML = `
+                    <div class="badge-icon" style="--bc:${next.color}; color:${next.color}; margin-bottom:0; flex-shrink:0;">
+                        <svg class="icon" viewBox="0 0 24 24">${BADGE_ICONS[next.icon]}</svg>
+                    </div>
+                    <div style="flex-grow:1;">
+                        <div class="next-goal-label">Next Goal</div>
+                        <div class="next-goal-title">${next.name}</div>
+                        <div class="next-goal-text">${next.desc} - only ${left} ${next.unit} to go!</div>
+                    </div>`;
+            } else {
+                panel.style.display = 'flex';
+                panel.innerHTML = `<div style="flex-grow:1; text-align:center;"><div class="next-goal-label">All Done</div><div class="next-goal-title">You unlocked every badge!</div></div>`;
+            }
+
+            grid.innerHTML = '';
+            BADGES.forEach(b => {
+                const cur = b.get();
+                const unlockedOn = appState.badges[b.id];
+                const shown = Math.min(cur, b.target);
+                const ratio = Math.round((shown / b.target) * 100);
+                const card = document.createElement('div');
+                card.className = `badge-card ${unlockedOn ? 'unlocked' : 'locked'}`;
+                card.style.setProperty('--bc', b.color);
+                card.innerHTML = `
+                    <div class="badge-icon"><svg class="icon" viewBox="0 0 24 24">${BADGE_ICONS[b.icon]}</svg></div>
+                    <div class="badge-title">${b.name}</div>
+                    <div class="badge-desc">${b.desc}</div>
+                    ${unlockedOn
+                        ? `<div class="badge-unlocked-text">Unlocked on ${formatBadgeDate(unlockedOn)}</div>`
+                        : `<div class="badge-progress">
+                               <div class="badge-progress-bar"><div class="badge-progress-fill" style="width:${ratio}%"></div></div>
+                               <div class="badge-progress-text">${shown} / ${b.target}${b.unit === '%' ? '%' : ''}</div>
+                           </div>`}
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function updateStreakAndBadges() {
+            document.getElementById('streakDisplay').innerText = getCurrentStreak();
+            checkBadges();
+            renderBadges();
+        }
 
         function updateUI() {
             const totalHabits = appState.habits.length;
             const completedHabits = appState.habits.filter(h => h.completed).length;
-            
+
             document.getElementById('habitsCompletedDisplay').innerText = `${completedHabits}/${totalHabits}`;
+
+            // Total Completed: all-time count across every habit's history
+            const totalCompleted = appState.habits.reduce((sum, h) => {
+                return sum + Object.values(h.history).filter(v => v === true).length;
+            }, 0);
+            document.getElementById('totalCompletedDisplay').innerText = totalCompleted;
+
+            // Monthly Progress: completed checks this month / (habits x days in month)
+            const nowM = new Date();
+            const monthPrefix = `${nowM.getFullYear()}-${String(nowM.getMonth() + 1).padStart(2, '0')}-`;
+            const daysInMonthNow = new Date(nowM.getFullYear(), nowM.getMonth() + 1, 0).getDate();
+            const doneThisMonth = appState.habits.reduce((sum, h) => {
+                return sum + Object.entries(h.history).filter(([d, v]) => v === true && d.startsWith(monthPrefix)).length;
+            }, 0);
+            const possibleThisMonth = totalHabits * daysInMonthNow;
+            const monthlyPercent = possibleThisMonth === 0 ? 0 : Math.round((doneThisMonth / possibleThisMonth) * 100);
+            document.getElementById('monthlyPercentDisplay').innerText = `${monthlyPercent}%`;
+            document.getElementById('monthlyProgressBar').style.width = `${monthlyPercent}%`;
+            document.getElementById('monthlyDetailText').innerText = `${doneThisMonth} / ${possibleThisMonth} done`;
+
             document.getElementById('totalXpDisplay').innerText = appState.totalXp;
 
             const xpInCurrentLevel = appState.totalXp % 100;
@@ -970,7 +1241,7 @@
 
             const percentage = totalHabits === 0 ? 0 : Math.round((completedHabits / totalHabits) * 100);
             document.getElementById('progressText').innerText = `${percentage}%`;
-            
+
             const ring = document.getElementById('progressRing');
             const offset = 440 - ((percentage / 100) * 440);
             ring.style.strokeDashoffset = offset;
@@ -982,15 +1253,17 @@
                 ring.style.stroke = 'var(--neon-cyan)';
                 document.getElementById('progressMessage').innerText = percentage > 50 ? "Halfway there!" : "Let's build momentum!";
             }
+
+            updateStreakAndBadges();
         }
 
         function renderWeeklyChart() {
             const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
             const container = document.getElementById('weeklyBars');
             container.innerHTML = '';
-            
-            const todayIndex = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1; 
-            
+
+            const todayIndex = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1;
+
             days.forEach((day, index) => {
                 let height = Math.floor(Math.random() * 40) + 10;
                 let isActive = false;
@@ -1039,12 +1312,12 @@
                 habit.xp = xp;
                 showToast("Habit updated!");
             } else {
-                appState.habits.push({ 
-                    id: Date.now().toString(), 
-                    name: name, 
-                    xp: xp, 
+                appState.habits.push({
+                    id: Date.now().toString(),
+                    name: name,
+                    xp: xp,
                     completed: false,
-                    history: {} 
+                    history: {}
                 });
                 showToast("New habit created!");
             }
@@ -1053,6 +1326,7 @@
             renderHabits();
             renderCalendar();
             updateUI();
+            renderAnalyticsChart();
             closeModal();
         }
 
@@ -1075,6 +1349,7 @@
                 renderHabits();
                 renderCalendar();
                 updateUI();
+                renderAnalyticsChart();
                 showToast("Habit deleted");
             }
         }
