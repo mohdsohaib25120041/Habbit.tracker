@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quantum - Gamified Habit Tracker</title>
+    <title>Allex - Gamified Habit Tracker</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 
@@ -330,13 +330,12 @@
             border-radius: 8px;
             background: rgba(255,255,255,0.03);
             border: 1px solid var(--border-color);
-            cursor: pointer;
+            cursor: default;
             transition: all 0.2s;
             display: flex; justify-content: center; align-items: center;
             font-size: 12px;
             color: transparent;
         }
-        .cal-cell:hover { border-color: var(--neon-cyan); background: rgba(0, 240, 255, 0.1); }
 
         .cal-cell.completed {
             background: rgba(0, 255, 136, 0.2);
@@ -345,6 +344,13 @@
             box-shadow: inset 0 0 10px rgba(0, 255, 136, 0.2);
         }
         .cal-cell.completed::after { content: '✓'; font-weight: bold; }
+        .cal-cell.missed {
+            background: rgba(255, 51, 102, 0.18);
+            border-color: var(--neon-red);
+            color: var(--neon-red);
+            box-shadow: inset 0 0 10px rgba(255, 51, 102, 0.15);
+        }
+        .cal-cell.missed::after { content: '✕'; font-weight: bold; }
 
         .cal-cell.today { border: 2px solid var(--neon-purple); }
 
@@ -457,6 +463,39 @@
         .badge-progress-text { font-size: 11px; color: var(--text-muted); margin-top: 5px; }
         .badge-unlocked-text { font-size: 11px; color: var(--neon-green); margin-top: 6px; font-weight: 600; }
 
+        /* --- JOURNAL --- */
+        textarea, input { user-select: text; }
+        .input-group textarea {
+            width: 100%; padding: 12px; border-radius: 10px; resize: vertical; min-height: 80px;
+            background: rgba(255,255,255,0.05); border: 1px solid var(--border-color);
+            color: white; outline: none; font-family: 'Outfit'; font-size: 14px; line-height: 1.5;
+        }
+        .input-group textarea:focus { border-color: var(--neon-cyan); box-shadow: 0 0 10px rgba(0,240,255,0.2); }
+        .mood-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+        .mood-btn {
+            --mc: var(--neon-cyan);
+            flex: 1; min-width: 80px; padding: 10px 14px; border-radius: 12px; cursor: pointer;
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border-color);
+            color: var(--text-muted); font-weight: 600; font-size: 14px; transition: all 0.2s;
+        }
+        .mood-btn:hover { border-color: var(--mc); color: var(--mc); }
+        .mood-btn.selected { border-color: var(--mc); color: var(--mc); background: rgba(255,255,255,0.07); box-shadow: 0 0 14px var(--mc); }
+        .missed-hint { margin-bottom: 15px; }
+        .missed-hint p { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
+        .missed-chip {
+            display: inline-block; margin: 0 6px 6px 0; padding: 5px 12px; border-radius: 20px; cursor: pointer;
+            font-size: 12px; color: var(--neon-red); border: 1px solid var(--neon-red); background: rgba(255,51,102,0.1);
+            transition: all 0.2s;
+        }
+        .missed-chip:hover { background: var(--neon-red); color: var(--bg-base); }
+        .journal-entry { padding: 16px; border-radius: 16px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); margin-bottom: 12px; }
+        .journal-entry-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 10px; }
+        .journal-entry-date { font-weight: 600; font-size: 14px; }
+        .journal-mood-tag { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 10px; border: 1px solid currentColor; }
+        .journal-entry-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 8px; }
+        .journal-entry-text { font-size: 14px; line-height: 1.5; margin-top: 2px; word-break: break-word; user-select: text; }
+        .journal-empty { color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px 0; }
+
         /* Responsive */
         @media (max-width: 1024px) {
             .workspace { grid-template-columns: 1fr; }
@@ -486,7 +525,7 @@
     <aside class="sidebar">
         <div class="logo">
             <svg class="icon" viewBox="0 0 24 24"><path d="M13 2L4.5 13h6L10 22l8.5-11h-6L13 2z"/></svg>
-            Quantum<span>.</span>
+            Allex<span>.</span>
         </div>
         <div class="nav-links">
             <a href="#" class="nav-item active" onclick="changePage('dashboard', this)">
@@ -497,9 +536,9 @@
                 <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
                 My Habits
             </a>
-            <a href="#" class="nav-item" onclick="changePage('analytics', this)">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-                Analytics
+            <a href="#" class="nav-item" onclick="changePage('journal', this)">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                Journal
             </a>
             <a href="#" class="nav-item" onclick="changePage('achievements', this)">
                 <svg class="icon" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
@@ -573,9 +612,18 @@
                     <p style="color: var(--text-muted); font-size: 13px; margin-top: 15px;" id="progressMessage">Let's get started!</p>
                 </div>
 
-                <div class="panel">
-                    <h2 class="panel-title" style="margin-bottom: 15px;">Weekly Performance</h2>
-                    <div class="bars" id="weeklyBars"></div>
+                <div style="display: flex; flex-direction: column; gap: 25px;">
+                    <div class="panel">
+                        <h2 class="panel-title" style="margin-bottom: 15px;">Weekly Performance</h2>
+                        <div class="bars" id="weeklyBars"></div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-header" style="margin-bottom: 0;">
+                            <h2 class="panel-title">Monthly Performance</h2>
+                            <span style="font-size: 12px; color: var(--neon-cyan); font-weight: 600;" id="monthlyPerfText"></span>
+                        </div>
+                        <div class="bars" id="monthlyBars"></div>
+                    </div>
                 </div>
             </div>
 
@@ -599,7 +647,7 @@
             <section class="calendar-section">
                 <div class="panel-header" style="margin-bottom: 15px;">
                     <h2 class="panel-title">Monthly Tracker</h2>
-                    <span style="font-size: 12px; color: var(--text-muted);">Scroll right to see all days</span>
+                    <span style="font-size: 12px; color: var(--text-muted);">Scroll right to see all days (auto-updated)</span>
                 </div>
                 <div class="calendar-scroll-container">
                     <div class="calendar-grid" id="calendarGrid"></div>
@@ -623,24 +671,40 @@
             </div>
         </div>
 
-        <!-- ANALYTICS PAGE WITH NEW GRAPH -->
-        <div id="page-analytics" class="page-section">
+        <!-- JOURNAL PAGE -->
+        <div id="page-journal" class="page-section">
             <header class="top-header">
-                <h1>Analytics</h1>
-                <p>Track your 7-day progress trend</p>
+                <div>
+                    <h1>Daily Journal</h1>
+                    <p id="journalDate"></p>
+                </div>
             </header>
             <section class="panel">
-                <h2 class="panel-title" style="margin-bottom: 20px;">Progress Trend (Last 7 Days)</h2>
-                <div class="analytics-chart-container">
-                    <svg id="analyticsChart">
-                        <defs>
-                            <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stop-color="var(--neon-cyan)" stop-opacity="0.5"/>
-                                <stop offset="100%" stop-color="var(--neon-cyan)" stop-opacity="0"/>
-                            </linearGradient>
-                        </defs>
-                    </svg>
+                <h2 class="panel-title" style="margin-bottom: 15px;">How was your day today?</h2>
+                <div class="mood-row" id="moodRow">
+                    <button class="mood-btn" style="--mc: var(--neon-green);" onclick="selectMood('great')" data-mood="great">Great</button>
+                    <button class="mood-btn" style="--mc: var(--neon-cyan);" onclick="selectMood('good')" data-mood="good">Good</button>
+                    <button class="mood-btn" style="--mc: var(--neon-yellow);" onclick="selectMood('okay')" data-mood="okay">Okay</button>
+                    <button class="mood-btn" style="--mc: var(--neon-red);" onclick="selectMood('tough')" data-mood="tough">Tough</button>
                 </div>
+                <div class="input-group">
+                    <label>Write about your day</label>
+                    <textarea id="journalDay" rows="3" placeholder="How did your day go? What was on your mind?"></textarea>
+                </div>
+                <div class="missed-hint" id="missedHint"></div>
+                <div class="input-group">
+                    <label>What did you miss today?</label>
+                    <textarea id="journalMissed" rows="2" placeholder="Which habits or tasks did you miss?"></textarea>
+                </div>
+                <div class="input-group">
+                    <label>Why did you miss it?</label>
+                    <textarea id="journalWhy" rows="3" placeholder="What stopped you? How can you fix it tomorrow?"></textarea>
+                </div>
+                <button class="btn-primary" style="width: 100%; padding: 12px;" onclick="saveJournal()">Save Today's Entry</button>
+            </section>
+            <section class="panel">
+                <h2 class="panel-title" style="margin-bottom: 15px;">Past Entries</h2>
+                <div id="journalHistory"></div>
             </section>
         </div>
 
@@ -672,6 +736,9 @@
         </div>
         <div class="mobile-nav-item" onclick="changePage('habits', this)">
             <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg></span>Habits
+        </div>
+        <div class="mobile-nav-item" onclick="changePage('journal', this)">
+            <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>Journal
         </div>
         <div class="mobile-nav-item" onclick="changePage('achievements', this)">
             <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></span>Badges
@@ -706,6 +773,7 @@
             totalXp: 0,
             currentLevel: 1,
             badges: {},
+            journal: {},
             habits: []
         };
 
@@ -753,7 +821,11 @@
             }
 
             // Re-draw chart when opening analytics
-            if (pageId === 'analytics' || pageId === 'dashboard') {
+            if (pageId === 'journal') {
+                renderJournal();
+            }
+
+            if (pageId === 'dashboard') {
                 renderAnalyticsChart();
             }
         }
@@ -773,6 +845,7 @@
                 appState = JSON.parse(savedData);
                 appState.habits.forEach(h => { if(!h.history) h.history = {}; });
                 if(!appState.badges) appState.badges = {};
+                if(!appState.journal) appState.journal = {};
             } else {
                 appState.habits = defaultHabits;
             }
@@ -901,18 +974,14 @@
                     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
                     const isCompleted = habit.history[dateStr] === true;
                     const isToday = dateStr === todayStr;
-                    grid.innerHTML += `
-                        <div class="cal-cell ${isCompleted ? 'completed' : ''} ${isToday ? 'today' : ''}"
-                             onclick="toggleCalendarCell('${habit.id}', '${dateStr}')">
-                        </div>
-                    `;
+                    const isMissed = !isCompleted && dateStr <= todayStr;
+                    grid.innerHTML += `<div class="cal-cell ${isCompleted ? 'completed' : ''} ${isMissed ? 'missed' : ''} ${isToday ? 'today' : ''}"></div>`;
                 }
             });
         }
 
         // --- Render Custom SVG Analytics Chart ---
         function renderAnalyticsChart() {
-            drawChart('analyticsChart', 'areaGradient');
             drawChart('homeChart', 'areaGradientHome');
         }
 
@@ -1207,6 +1276,109 @@
             renderBadges();
         }
 
+        // ================= JOURNAL =================
+        const MOODS = {
+            great: { label: 'Great', color: 'var(--neon-green)' },
+            good:  { label: 'Good',  color: 'var(--neon-cyan)' },
+            okay:  { label: 'Okay',  color: 'var(--neon-yellow)' },
+            tough: { label: 'Tough', color: 'var(--neon-red)' }
+        };
+        let journalMood = '';
+        let missedTodayList = [];
+
+        function escapeHtml(str) {
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+
+        function selectMood(mood) {
+            journalMood = mood;
+            document.querySelectorAll('#moodRow .mood-btn').forEach(btn => {
+                btn.classList.toggle('selected', btn.dataset.mood === mood);
+            });
+        }
+
+        function addMissedHabit(index) {
+            const name = missedTodayList[index];
+            if (!name) return;
+            const box = document.getElementById('journalMissed');
+            const current = box.value.trim();
+            if (current.split(',').map(x => x.trim()).includes(name)) return;
+            box.value = current ? `${current}, ${name}` : name;
+        }
+
+        function renderJournal() {
+            if (!appState.journal) appState.journal = {};
+            const today = getTodayStr();
+            const entry = appState.journal[today] || { mood: '', day: '', missed: '', why: '' };
+
+            document.getElementById('journalDate').innerText = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+            document.getElementById('journalDay').value = entry.day;
+            document.getElementById('journalMissed').value = entry.missed;
+            document.getElementById('journalWhy').value = entry.why;
+            selectMood(entry.mood);
+
+            // Habits not completed today (tap to add to "missed")
+            missedTodayList = appState.habits.filter(h => !h.completed).map(h => h.name);
+            const hint = document.getElementById('missedHint');
+            if (missedTodayList.length) {
+                hint.innerHTML = '<p>Not completed today (tap to add):</p>' +
+                    missedTodayList.map((n, i) => `<span class="missed-chip" onclick="addMissedHabit(${i})">${escapeHtml(n)}</span>`).join('');
+            } else {
+                hint.innerHTML = appState.habits.length ? '<p style="color: var(--neon-green);">You completed every habit today!</p>' : '';
+            }
+
+            renderJournalHistory();
+        }
+
+        function renderJournalHistory() {
+            const container = document.getElementById('journalHistory');
+            const today = getTodayStr();
+            const dates = Object.keys(appState.journal || {}).filter(d => d !== today).sort().reverse();
+            if (!dates.length) {
+                container.innerHTML = '<div class="journal-empty">No past entries yet. Your earlier days will show up here.</div>';
+                return;
+            }
+            container.innerHTML = dates.map(d => {
+                const e = appState.journal[d];
+                const mood = MOODS[e.mood];
+                const nl = t => escapeHtml(t).replace(/\n/g, '<br>');
+                return `
+                    <div class="journal-entry">
+                        <div class="journal-entry-head">
+                            <span class="journal-entry-date">${formatBadgeDate(d)}</span>
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                ${mood ? `<span class="journal-mood-tag" style="color:${mood.color};">${mood.label}</span>` : ''}
+                                <button class="action-btn btn-delete" style="opacity:0.6;" onclick="deleteJournalEntry('${d}')" title="Delete">${ICON_TRASH}</button>
+                            </div>
+                        </div>
+                        ${e.day ? `<div class="journal-entry-label">My day</div><div class="journal-entry-text">${nl(e.day)}</div>` : ''}
+                        ${e.missed ? `<div class="journal-entry-label">Missed</div><div class="journal-entry-text">${nl(e.missed)}</div>` : ''}
+                        ${e.why ? `<div class="journal-entry-label">Why</div><div class="journal-entry-text">${nl(e.why)}</div>` : ''}
+                    </div>`;
+            }).join('');
+        }
+
+        function saveJournal() {
+            const day = document.getElementById('journalDay').value.trim();
+            const missed = document.getElementById('journalMissed').value.trim();
+            const why = document.getElementById('journalWhy').value.trim();
+            if (!journalMood && !day && !missed && !why) return showToast("Write something first!", true);
+
+            if (!appState.journal) appState.journal = {};
+            appState.journal[getTodayStr()] = { mood: journalMood, day, missed, why };
+            saveData();
+            showToast("Journal saved!");
+        }
+
+        function deleteJournalEntry(dateStr) {
+            if (confirm("Delete this journal entry?")) {
+                delete appState.journal[dateStr];
+                saveData();
+                renderJournalHistory();
+                showToast("Entry deleted");
+            }
+        }
+
         function updateUI() {
             const totalHabits = appState.habits.length;
             const completedHabits = appState.habits.filter(h => h.completed).length;
@@ -1254,7 +1426,55 @@
                 document.getElementById('progressMessage').innerText = percentage > 50 ? "Halfway there!" : "Let's build momentum!";
             }
 
+            renderMonthlyChart();
             updateStreakAndBadges();
+        }
+
+        function renderMonthlyChart() {
+            const container = document.getElementById('monthlyBars');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const todayNum = now.getDate();
+            const prefix = `${year}-${String(month + 1).padStart(2, '0')}-`;
+            const totalHabits = appState.habits.length;
+
+            const weekCount = Math.ceil(daysInMonth / 7);
+            for (let w = 0; w < weekCount; w++) {
+                const startDay = w * 7 + 1;
+                const endDay = Math.min(startDay + 6, daysInMonth);
+                const daysInWeek = endDay - startDay + 1;
+
+                let done = 0;
+                appState.habits.forEach(h => {
+                    for (let d = startDay; d <= endDay; d++) {
+                        const key = prefix + String(d).padStart(2, '0');
+                        if (h.history[key] === true) done++;
+                    }
+                });
+
+                const possible = totalHabits * daysInWeek;
+                const pct = possible === 0 ? 0 : Math.round((done / possible) * 100);
+                const isFuture = startDay > todayNum;
+                const isCurrent = todayNum >= startDay && todayNum <= endDay;
+                const height = isFuture ? 5 : Math.max(pct, 5);
+
+                const wrapper = document.createElement('div');
+                wrapper.className = 'bar-wrapper';
+                wrapper.title = `Week ${w + 1} (day ${startDay}-${endDay}): ${pct}%`;
+                wrapper.innerHTML = `
+                    <div class="bar ${isCurrent ? 'active' : ''}" style="height: ${height}%"></div>
+                    <div class="bar-label">W${w + 1}</div>
+                `;
+                container.appendChild(wrapper);
+            }
+
+            const monthName = now.toLocaleDateString('en-US', { month: 'long' });
+            document.getElementById('monthlyPerfText').innerText = `${monthName} - ${getMonthlyPercent()}%`;
         }
 
         function renderWeeklyChart() {
