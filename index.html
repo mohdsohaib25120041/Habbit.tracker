@@ -3,24 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        try { if (localStorage.getItem('quantumTheme') === 'light') document.documentElement.setAttribute('data-theme', 'light'); } catch (e) {}
+    </script>
     <title>Allex - Gamified Habit Tracker</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 
         :root {
-            --bg-base: #060913;
-            --bg-card: rgba(20, 26, 46, 0.7);
-            --bg-card-hover: rgba(30, 38, 66, 0.9);
+            color-scheme: dark;
+            --tint: 255, 255, 255;
+            --bg-base: #000000;
+            --bg-card: rgba(18, 18, 18, 0.85);
+            --bg-card-hover: rgba(30, 30, 30, 0.9);
+            --sidebar-bg: rgba(0, 0, 0, 0.9);
+            --nav-bg: rgba(0, 0, 0, 0.95);
+            --modal-bg: #0b0b0b;
             --text-main: #ffffff;
-            --text-muted: #8b92a5;
+            --text-muted: #9a9a9a;
             --neon-cyan: #00f0ff;
             --neon-purple: #b026ff;
             --neon-green: #00ff88;
             --neon-yellow: #ffcc00;
             --neon-red: #ff3366;
-            --border-color: rgba(255, 255, 255, 0.08);
+            --border-color: rgba(var(--tint), 0.08);
             --glass-blur: blur(12px);
         }
+
+        /* WHITE THEME */
+        :root[data-theme="light"] {
+            color-scheme: light;
+            --tint: 0, 0, 0;
+            --bg-base: #f4f5f7;
+            --bg-card: rgba(255, 255, 255, 0.95);
+            --bg-card-hover: rgba(240, 240, 240, 0.95);
+            --sidebar-bg: rgba(255, 255, 255, 0.95);
+            --nav-bg: rgba(255, 255, 255, 0.97);
+            --modal-bg: #ffffff;
+            --text-main: #111111;
+            --text-muted: #5f6573;
+            --neon-cyan: #0097a7;
+            --neon-purple: #8e24aa;
+            --neon-green: #00a86b;
+            --neon-yellow: #b8860b;
+            --neon-red: #e0224f;
+        }
+        :root[data-theme="light"] body {
+            background-image: radial-gradient(circle at 15% 50%, rgba(0, 151, 167, 0.06), transparent 25%),
+                              radial-gradient(circle at 85% 30%, rgba(142, 36, 170, 0.05), transparent 25%);
+        }
+        :root[data-theme="light"] .panel,
+        :root[data-theme="light"] .stat-card,
+        :root[data-theme="light"] .calendar-section,
+        :root[data-theme="light"] .user-profile { box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06); }
+        :root[data-theme="light"] .modal-overlay { background: rgba(0, 0, 0, 0.45); }
 
         * {
             margin: 0;
@@ -61,7 +97,7 @@
             height: 100vh;
             position: fixed;
             left: 0; top: 0;
-            background: rgba(10, 14, 26, 0.8);
+            background: var(--sidebar-bg);
             backdrop-filter: var(--glass-blur);
             border-right: 1px solid var(--border-color);
             padding: 20px;
@@ -173,7 +209,7 @@
         .level-bar-container {
             margin-top: 15px;
             height: 8px;
-            background: rgba(255,255,255,0.1);
+            background: rgba(var(--tint), 0.1);
             border-radius: 10px;
             overflow: hidden;
         }
@@ -221,14 +257,14 @@
             display: flex;
             align-items: center;
             padding: 15px;
-            background: rgba(255,255,255,0.02);
+            background: rgba(var(--tint), 0.02);
             border-radius: 16px;
             border: 1px solid transparent;
             transition: all 0.3s;
             animation: slideIn 0.3s ease-out;
         }
         @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
-        .habit-row:hover { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.1); }
+        .habit-row:hover { background: rgba(var(--tint), 0.04); border-color: rgba(var(--tint), 0.1); }
         .habit-row.completed { opacity: 0.6; }
         .habit-row.completed h3 { text-decoration: line-through; color: var(--text-muted); }
 
@@ -267,14 +303,14 @@
         /* Circular Progress */
         .circle-wrap { position: relative; width: 140px; height: 140px; margin: 0 auto; }
         .circle-wrap svg { transform: rotate(-90deg); width: 140px; height: 140px; }
-        .circle-bg { fill: none; stroke: rgba(255,255,255,0.1); stroke-width: 10; }
+        .circle-bg { fill: none; stroke: rgba(var(--tint), 0.1); stroke-width: 10; }
         .circle-progress { fill: none; stroke: var(--neon-cyan); stroke-width: 10; stroke-dasharray: 440; stroke-dashoffset: 440; stroke-linecap: round; transition: stroke-dashoffset 1s ease, stroke 0.5s; }
         .circle-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 28px; font-weight: 700; }
 
         /* Analytics Chart */
         .bars { display: flex; align-items: flex-end; gap: 8px; height: 120px; margin-top: 15px; width: 100%; justify-content: space-between;}
         .bar-wrapper { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; height: 100%; justify-content: flex-end;}
-        .bar { width: 100%; background: rgba(255,255,255,0.1); border-radius: 5px 5px 0 0; transition: height 0.5s; min-height: 5px;}
+        .bar { width: 100%; background: rgba(var(--tint), 0.1); border-radius: 5px 5px 0 0; transition: height 0.5s; min-height: 5px;}
         .bar.active { background: var(--neon-cyan); box-shadow: 0 0 10px var(--neon-cyan); }
         .bar-label { font-size: 10px; color: var(--text-muted); }
 
@@ -294,7 +330,7 @@
             padding-bottom: 10px;
         }
         .calendar-scroll-container::-webkit-scrollbar { height: 8px; }
-        .calendar-scroll-container::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
+        .calendar-scroll-container::-webkit-scrollbar-track { background: rgba(var(--tint), 0.05); border-radius: 10px; }
         .calendar-scroll-container::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 10px; }
         .calendar-scroll-container::-webkit-scrollbar-thumb:hover { background: var(--neon-cyan); }
 
@@ -328,7 +364,7 @@
         .cal-cell {
             width: 35px; height: 35px;
             border-radius: 8px;
-            background: rgba(255,255,255,0.03);
+            background: rgba(var(--tint), 0.03);
             border: 1px solid var(--border-color);
             cursor: default;
             transition: all 0.2s;
@@ -365,7 +401,7 @@
             width: 100%; height: 100%;
             overflow: visible;
         }
-        .chart-grid-line { stroke: rgba(255,255,255,0.05); stroke-width: 1; stroke-dasharray: 4; }
+        .chart-grid-line { stroke: rgba(var(--tint), 0.05); stroke-width: 1; stroke-dasharray: 4; }
         .chart-axis-text { fill: var(--text-muted); font-size: 12px; font-family: 'Outfit'; }
         .chart-line { fill: none; stroke: var(--neon-cyan); stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.6)); }
         .chart-area { fill: url(#areaGradient); opacity: 0.3; }
@@ -381,7 +417,7 @@
         }
         .modal-overlay.show { display: flex; opacity: 1; }
         .modal-content {
-            background: #0d1221;
+            background: var(--modal-bg);
             border: 1px solid var(--border-color);
             padding: 30px; border-radius: 20px; width: 90%; max-width: 400px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
@@ -392,8 +428,8 @@
         .input-group label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 5px; }
         .input-group input, .input-group select {
             width: 100%; padding: 12px; border-radius: 10px;
-            background: rgba(255,255,255,0.05); border: 1px solid var(--border-color);
-            color: white; outline: none; font-family: 'Outfit'; font-size: 14px;
+            background: rgba(var(--tint), 0.05); border: 1px solid var(--border-color);
+            color: var(--text-main); outline: none; font-family: 'Outfit'; font-size: 14px;
         }
         .input-group input:focus, .input-group select:focus { border-color: var(--neon-cyan); box-shadow: 0 0 10px rgba(0,240,255,0.2); }
 
@@ -411,7 +447,7 @@
         .mobile-nav {
             display: none;
             position: fixed; bottom: 0; left: 0; right: 0;
-            background: rgba(10, 14, 26, 0.95); backdrop-filter: blur(10px);
+            background: var(--nav-bg); backdrop-filter: blur(10px);
             border-top: 1px solid var(--border-color);
             padding: 10px 20px; justify-content: space-around; z-index: 100;
         }
@@ -420,7 +456,7 @@
         .mobile-nav-icon { display: flex; align-items: center; justify-content: center; }
 
         /* --- ACHIEVEMENTS / BADGES --- */
-        .badge-summary-bar { height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; margin-top: 12px; }
+        .badge-summary-bar { height: 8px; background: rgba(var(--tint), 0.1); border-radius: 10px; overflow: hidden; margin-top: 12px; }
         .badge-summary-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--neon-yellow), var(--neon-purple)); border-radius: 10px; transition: width 0.5s ease; }
         .next-goal { display: flex; align-items: center; gap: 18px; border-color: rgba(255, 204, 0, 0.25); }
         .next-goal-label { font-size: 12px; color: var(--neon-yellow); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
@@ -429,7 +465,7 @@
         .achievements-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 18px; }
         .badge-card {
             --bc: var(--neon-cyan);
-            background: rgba(255,255,255,0.03);
+            background: rgba(var(--tint), 0.03);
             border: 1px solid var(--border-color);
             border-radius: 20px;
             padding: 22px 16px;
@@ -441,7 +477,7 @@
         .badge-icon {
             width: 64px; height: 64px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            background: rgba(255,255,255,0.06);
+            background: rgba(var(--tint), 0.06);
             color: var(--text-muted);
             margin-bottom: 8px;
             position: relative;
@@ -449,16 +485,16 @@
         .badge-icon .icon { width: 28px; height: 28px; }
         .badge-card.locked .badge-icon { filter: grayscale(1); opacity: 0.6; }
         .badge-card.locked .badge-title { color: var(--text-muted); }
-        .badge-card.unlocked { border-color: var(--bc); box-shadow: 0 0 20px rgba(255,255,255,0.03); }
+        .badge-card.unlocked { border-color: var(--bc); box-shadow: 0 0 20px rgba(var(--tint), 0.03); }
         .badge-card.unlocked .badge-icon {
             color: var(--bc);
-            background: rgba(255,255,255,0.08);
-            box-shadow: 0 0 18px var(--bc), inset 0 0 12px rgba(255,255,255,0.05);
+            background: rgba(var(--tint), 0.08);
+            box-shadow: 0 0 18px var(--bc), inset 0 0 12px rgba(var(--tint), 0.05);
         }
         .badge-title { font-size: 16px; font-weight: 600; }
         .badge-desc { font-size: 12px; color: var(--text-muted); min-height: 32px; }
         .badge-progress { width: 100%; margin-top: 6px; }
-        .badge-progress-bar { height: 6px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; }
+        .badge-progress-bar { height: 6px; background: rgba(var(--tint), 0.1); border-radius: 10px; overflow: hidden; }
         .badge-progress-fill { height: 100%; background: var(--bc); border-radius: 10px; transition: width 0.5s ease; }
         .badge-progress-text { font-size: 11px; color: var(--text-muted); margin-top: 5px; }
         .badge-unlocked-text { font-size: 11px; color: var(--neon-green); margin-top: 6px; font-weight: 600; }
@@ -467,19 +503,19 @@
         textarea, input { user-select: text; }
         .input-group textarea {
             width: 100%; padding: 12px; border-radius: 10px; resize: vertical; min-height: 80px;
-            background: rgba(255,255,255,0.05); border: 1px solid var(--border-color);
-            color: white; outline: none; font-family: 'Outfit'; font-size: 14px; line-height: 1.5;
+            background: rgba(var(--tint), 0.05); border: 1px solid var(--border-color);
+            color: var(--text-main); outline: none; font-family: 'Outfit'; font-size: 14px; line-height: 1.5;
         }
         .input-group textarea:focus { border-color: var(--neon-cyan); box-shadow: 0 0 10px rgba(0,240,255,0.2); }
         .mood-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
         .mood-btn {
             --mc: var(--neon-cyan);
             flex: 1; min-width: 80px; padding: 10px 14px; border-radius: 12px; cursor: pointer;
-            background: rgba(255,255,255,0.03); border: 1px solid var(--border-color);
+            background: rgba(var(--tint), 0.03); border: 1px solid var(--border-color);
             color: var(--text-muted); font-weight: 600; font-size: 14px; transition: all 0.2s;
         }
         .mood-btn:hover { border-color: var(--mc); color: var(--mc); }
-        .mood-btn.selected { border-color: var(--mc); color: var(--mc); background: rgba(255,255,255,0.07); box-shadow: 0 0 14px var(--mc); }
+        .mood-btn.selected { border-color: var(--mc); color: var(--mc); background: rgba(var(--tint), 0.07); box-shadow: 0 0 14px var(--mc); }
         .missed-hint { margin-bottom: 15px; }
         .missed-hint p { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
         .missed-chip {
@@ -488,7 +524,7 @@
             transition: all 0.2s;
         }
         .missed-chip:hover { background: var(--neon-red); color: var(--bg-base); }
-        .journal-entry { padding: 16px; border-radius: 16px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); margin-bottom: 12px; }
+        .journal-entry { padding: 16px; border-radius: 16px; background: rgba(var(--tint), 0.03); border: 1px solid var(--border-color); margin-bottom: 12px; }
         .journal-entry-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 10px; }
         .journal-entry-date { font-weight: 600; font-size: 14px; }
         .journal-mood-tag { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 10px; border: 1px solid currentColor; }
@@ -497,11 +533,10 @@
         .journal-empty { color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px 0; }
 
         /* --- TASKS --- */
-        input[type="date"] { color-scheme: dark; }
         .task-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
         .tab-btn {
             padding: 8px 16px; border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 13px;
-            background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); color: var(--text-muted);
+            background: rgba(var(--tint), 0.03); border: 1px solid var(--border-color); color: var(--text-muted);
             transition: all 0.2s;
         }
         .tab-btn:hover { color: var(--neon-cyan); border-color: var(--neon-cyan); }
@@ -509,7 +544,7 @@
         .task-tag {
             --tc: var(--neon-cyan);
             font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 10px;
-            color: var(--tc); border: 1px solid var(--tc); background: rgba(255,255,255,0.04);
+            color: var(--tc); border: 1px solid var(--tc); background: rgba(var(--tint), 0.04);
         }
         .task-row-actions { display: flex; gap: 8px; }
         .task-empty { color: var(--text-muted); font-size: 13px; text-align: center; padding: 25px 0; }
@@ -523,10 +558,19 @@
         .weekday-row { display: flex; gap: 6px; flex-wrap: wrap; }
         .weekday-btn {
             flex: 1; min-width: 44px; padding: 8px 0; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 12px;
-            background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); color: var(--text-muted);
+            background: rgba(var(--tint), 0.03); border: 1px solid var(--border-color); color: var(--text-muted);
             transition: all 0.2s;
         }
         .weekday-btn.selected { color: var(--neon-purple); border-color: var(--neon-purple); background: rgba(176,38,255,0.15); }
+
+        /* --- THEME TOGGLE --- */
+        .theme-fab {
+            display: none; position: fixed; top: 12px; right: 12px; z-index: 150;
+            width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
+            align-items: center; justify-content: center;
+            background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main);
+            backdrop-filter: var(--glass-blur);
+        }
 
         /* Responsive */
         @media (max-width: 1024px) {
@@ -542,6 +586,8 @@
             .top-header h1 { font-size: 24px; }
             .user-profile { display: none; }
             .mobile-nav { display: flex; }
+            .theme-fab { display: flex; }
+            .main-content { padding-top: 64px; }
             .panel { padding: 15px; }
             .achievements-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
             .badge-card { padding: 16px 10px; }
@@ -581,7 +627,15 @@
                 Achievements
             </a>
         </div>
+        <a href="#" class="nav-item" id="themeToggleSide" onclick="toggleTheme(); return false;">
+            <svg class="icon" viewBox="0 0 24 24" id="themeIconSide"></svg>
+            <span id="themeLabelSide">Light mode</span>
+        </a>
     </aside>
+
+    <button class="theme-fab" id="themeToggleFab" onclick="toggleTheme()" title="Switch theme">
+        <svg class="icon" viewBox="0 0 24 24" id="themeIconFab"></svg>
+    </button>
 
     <main class="main-content">
 
@@ -948,6 +1002,26 @@
             }
         }
 
+        // ================= THEME =================
+        const ICON_SUN = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
+        const ICON_MOON = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+
+        function updateThemeButton() {
+            const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+            // Show the icon/label of the theme you will switch TO
+            document.getElementById('themeIconSide').innerHTML = isLight ? ICON_MOON : ICON_SUN;
+            document.getElementById('themeIconFab').innerHTML = isLight ? ICON_MOON : ICON_SUN;
+            document.getElementById('themeLabelSide').innerText = isLight ? 'Dark mode' : 'Light mode';
+        }
+
+        function toggleTheme() {
+            const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+            if (isLight) document.documentElement.removeAttribute('data-theme');
+            else document.documentElement.setAttribute('data-theme', 'light');
+            try { localStorage.setItem('quantumTheme', isLight ? 'dark' : 'light'); } catch (e) {}
+            updateThemeButton();
+        }
+
         function init() {
             const now = new Date();
             const hours = now.getHours();
@@ -969,6 +1043,7 @@
                 appState.habits = defaultHabits;
             }
 
+            updateThemeButton();
             syncTodayStatus();
             renderHabits();
             renderWeeklyChart();
