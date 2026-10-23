@@ -1153,10 +1153,16 @@
         };
 
         const defaultHabits = [
-            { id: '1', name: 'Wake up at 06:00', xp: 5, completed: false, history: {} },
-            { id: '2', name: 'Meditation', xp: 5, completed: false, history: {} },
-            { id: '3', name: 'Read 10 pages', xp: 5, completed: false, history: {} },
-            { id: '4', name: 'Workout', xp: 5, completed: false, history: {} }
+            { id: '1', name: 'Wake Up Early', xp: 5, completed: false, history: {} },
+            { id: '2', name: 'Make Your Bed', xp: 5, completed: false, history: {} },
+            { id: '3', name: 'Morning Walk', xp: 5, completed: false, history: {} },
+            { id: '4', name: 'Daily Workout', xp: 5, completed: false, history: {} },
+            { id: '5', name: 'Eat Enough Protein', xp: 5, completed: false, history: {} },
+            { id: '6', name: 'Learn a New Skill', xp: 5, completed: false, history: {} },
+            { id: '7', name: 'Deep Work Session', xp: 5, completed: false, history: {} },
+            { id: '8', name: 'Practice Coding', xp: 5, completed: false, history: {} },
+            { id: '9', name: 'No Junk Food', xp: 5, completed: false, history: {} },
+            { id: '10', name: 'Sleep 8 Hours', xp: 5, completed: false, history: {} }
         ];
 
         // SVG icon snippets reused across toasts and habit rows
@@ -1658,6 +1664,13 @@
                 if(!appState.tasks) appState.tasks = [];
             } else {
                 appState.habits = defaultHabits;
+            }
+
+            // If the saved habits are still the untouched old starter habits, switch to the new default list
+            const OLD_STARTERS = ['Wake up at 06:00', 'Meditation', 'Read 10 pages', 'Workout'];
+            if (appState.habits.length === 4 && appState.habits.every((h, i) => h.name === OLD_STARTERS[i] && Object.keys(h.history).length === 0)) {
+                appState.habits = JSON.parse(JSON.stringify(defaultHabits));
+                saveData();
             }
 
             // One-time XP migration: old saves used custom XP per habit. Recalculate with the fixed 5 XP rule.
