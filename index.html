@@ -609,6 +609,148 @@
         }
         @keyframes confettiFall { to { transform: translateY(110vh) rotate(720deg); } }
 
+        /* --- NOTIFICATIONS --- */
+        .notify-stack {
+            position: fixed; top: 20px; right: 20px; width: 340px; z-index: 2500;
+            display: flex; flex-direction: column; gap: 10px; pointer-events: none;
+        }
+        .notify {
+            --nc: var(--neon-cyan);
+            pointer-events: auto; position: relative; overflow: hidden;
+            display: flex; align-items: center; gap: 12px;
+            padding: 14px 40px 16px 14px; border-radius: 16px;
+            background: var(--bg-card); backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border-color); border-left: 4px solid var(--nc);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+            animation: notifyIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+        .notify.leaving { animation: notifyOut 0.3s ease forwards; }
+        @keyframes notifyIn { from { opacity: 0; transform: translateX(60px) scale(0.95); } to { opacity: 1; transform: translateX(0) scale(1); } }
+        @keyframes notifyOut { to { opacity: 0; transform: translateX(60px) scale(0.95); } }
+        .notify-icon {
+            width: 38px; height: 38px; border-radius: 12px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--nc); background: rgba(var(--tint), 0.07); box-shadow: 0 0 14px var(--nc);
+        }
+        .notify-title { font-weight: 600; font-size: 14px; color: var(--text-main); }
+        .notify-msg { font-size: 12px; color: var(--text-muted); margin-top: 2px; line-height: 1.4; word-break: break-word; }
+        .notify-close {
+            position: absolute; top: 8px; right: 10px; background: none; border: none; cursor: pointer;
+            color: var(--text-muted); font-size: 18px; line-height: 1;
+        }
+        .notify-close:hover { color: var(--text-main); }
+        .notify-bar {
+            position: absolute; left: 0; bottom: 0; height: 3px; width: 100%; background: var(--nc);
+            transform-origin: left; animation: notifyBar linear forwards;
+        }
+        @keyframes notifyBar { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+
+        /* --- SETTINGS --- */
+        .setting-line { display: flex; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 18px; }
+        .setting-title { font-weight: 600; font-size: 15px; }
+        .setting-desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+        .switch { position: relative; display: inline-block; width: 46px; height: 26px; flex-shrink: 0; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .switch-slider { position: absolute; inset: 0; border-radius: 26px; background: rgba(var(--tint), 0.18); transition: 0.3s; cursor: pointer; }
+        .switch-slider::before { content: ''; position: absolute; height: 20px; width: 20px; left: 3px; top: 3px; border-radius: 50%; background: #fff; transition: 0.3s; }
+        .switch input:checked + .switch-slider { background: var(--neon-cyan); }
+        .switch input:checked + .switch-slider::before { transform: translateX(20px); }
+        .volume-row { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+        .volume-row input[type="range"] { flex: 1; accent-color: var(--neon-cyan); }
+        .sound-row {
+            display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
+            padding: 14px; border-radius: 16px; margin-bottom: 10px;
+            background: rgba(var(--tint), 0.03); border: 1px solid var(--border-color);
+        }
+        .sound-row-title { font-weight: 600; font-size: 14px; }
+        .sound-row-desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; max-width: 280px; }
+        .sound-row-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .sound-row select {
+            padding: 9px 10px; border-radius: 10px; min-width: 150px; max-width: 220px;
+            background: rgba(var(--tint), 0.06); border: 1px solid var(--border-color);
+            color: var(--text-main); font-family: 'Outfit'; font-size: 13px; outline: none;
+        }
+        .sound-row select:focus { border-color: var(--neon-cyan); }
+        .icon-btn {
+            width: 36px; height: 36px; border-radius: 10px; cursor: pointer; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(var(--tint), 0.05); border: 1px solid var(--border-color); color: var(--text-muted);
+            transition: all 0.2s;
+        }
+        .icon-btn:hover { color: var(--neon-cyan); border-color: var(--neon-cyan); }
+
+        /* --- BADGES (NEW LOOK) --- */
+        .bd-banner {
+            --bn: var(--neon-cyan);
+            display: flex; align-items: center; gap: 14px; padding: 16px 18px; border-radius: 18px;
+            border: 1px solid var(--bn); background: rgba(var(--tint), 0.04);
+            box-shadow: 0 0 18px rgba(var(--tint), 0.04);
+        }
+        .bd-banner.warn { --bn: var(--neon-red); }
+        .bd-banner.good { --bn: var(--neon-green); }
+        .bd-banner-icon {
+            width: 44px; height: 44px; border-radius: 14px; flex-shrink: 0; color: var(--bn);
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(var(--tint), 0.06); box-shadow: 0 0 14px var(--bn);
+        }
+        .bd-banner-title { font-weight: 600; font-size: 15px; }
+        .bd-banner-text { font-size: 13px; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
+
+        .bd-hero { display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
+        .bd-hero-main { display: flex; align-items: center; gap: 18px; flex: 1; min-width: 260px; }
+        .bd-hero-label { font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--neon-yellow); margin-bottom: 4px; }
+        .bd-hero-title { font-size: 20px; font-weight: 600; }
+        .bd-hero-text { font-size: 13px; color: var(--text-muted); margin-top: 3px; line-height: 1.4; }
+        .bd-hero-bar { height: 8px; border-radius: 10px; background: rgba(var(--tint), 0.1); margin-top: 10px; overflow: hidden; max-width: 320px; }
+        .bd-hero-bar > div { height: 100%; border-radius: 10px; background: var(--bc); transition: width 0.5s; }
+        .bd-hero-side { text-align: center; min-width: 120px; }
+        .bd-count { font-size: 40px; font-weight: 700; line-height: 1; }
+        .bd-count span { font-size: 18px; color: var(--text-muted); font-weight: 500; }
+        .bd-count-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+        .bd-ring { --bc: var(--neon-cyan); position: relative; width: 84px; height: 84px; flex-shrink: 0; }
+        .bd-ring-svg { width: 84px; height: 84px; transform: rotate(-90deg); }
+        .bd-ring-bg { fill: none; stroke: rgba(var(--tint), 0.1); stroke-width: 6; }
+        .bd-ring-fg { fill: none; stroke: var(--bc); stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 0.6s; }
+        .bd-ring-icon {
+            position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--bc);
+        }
+        .bd-ring-icon .icon { width: 30px; height: 30px; }
+
+        .bd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 16px; }
+        .bd-card {
+            --bc: var(--neon-cyan);
+            position: relative; text-align: center; padding: 22px 14px 18px; border-radius: 22px;
+            background: rgba(var(--tint), 0.03); border: 1px solid var(--border-color);
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .bd-card:hover { transform: translateY(-4px); }
+        .bd-card .bd-ring { margin-bottom: 8px; }
+        .bd-card.locked .bd-ring-icon { opacity: 0.55; }
+        .bd-card.locked .bd-title { color: var(--text-muted); }
+        .bd-card.unlocked { border-color: var(--bc); box-shadow: 0 0 22px rgba(var(--tint), 0.05), inset 0 0 22px rgba(var(--tint), 0.03); }
+        .bd-card.unlocked .bd-ring-fg { filter: drop-shadow(0 0 6px var(--bc)); }
+        .bd-card.unlocked .bd-ring-icon { filter: drop-shadow(0 0 8px var(--bc)); }
+        .bd-tier {
+            position: absolute; top: 12px; left: 12px; font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+            padding: 2px 8px; border-radius: 10px; color: var(--bc); border: 1px solid var(--bc);
+        }
+        .bd-new {
+            position: absolute; top: 12px; right: 12px; font-size: 10px; font-weight: 700;
+            padding: 2px 8px; border-radius: 10px; background: var(--neon-green); color: #000;
+        }
+        .bd-tick {
+            position: absolute; top: 12px; right: 12px; width: 22px; height: 22px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; background: var(--bc); color: #000;
+        }
+        .bd-tick .icon { width: 13px; height: 13px; stroke-width: 3; }
+        .bd-title { font-size: 16px; font-weight: 600; }
+        .bd-desc { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+        .bd-meta { margin-top: 8px; font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: 20px; background: rgba(var(--tint), 0.06); color: var(--text-main); }
+        .bd-card.unlocked .bd-meta { color: var(--neon-green); background: transparent; padding: 5px 0; }
+
         /* Responsive */
         @media (max-width: 1024px) {
             .workspace { grid-template-columns: 1fr; }
@@ -622,9 +764,14 @@
             .stats-grid .stat-card:last-child:nth-child(odd) { grid-column: span 2; }
             .top-header h1 { font-size: 24px; }
             .user-profile { display: none; }
-            .mobile-nav { display: flex; }
+            .mobile-nav { display: flex; padding: 10px 6px; }
             .theme-fab { display: flex; }
-            .main-content { padding-top: 64px; }
+            .bd-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+            .bd-card { padding: 18px 8px 14px; }
+            .bd-hero-side { width: 100%; }
+            .notify-stack { left: 12px; right: 12px; width: auto; top: 14px; }
+            .sound-row-controls { width: 100%; }
+            .sound-row select { flex: 1; max-width: none; }
             .panel { padding: 15px; }
             .achievements-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
             .badge-card { padding: 16px 10px; }
@@ -635,7 +782,7 @@
 </head>
 <body>
 
-    <div class="toast" id="toastMsg">Level Up!</div>
+    <div class="notify-stack" id="notifyStack"></div>
 
     <aside class="sidebar">
         <div class="logo">
@@ -664,23 +811,11 @@
                 Achievements
             </a>
         </div>
-        <a href="#" class="nav-item" id="soundToggleSide" style="margin-bottom: 6px;" onclick="toggleSound(); return false;">
-            <svg class="icon" viewBox="0 0 24 24" id="soundIconSide"></svg>
-            <span id="soundLabelSide">Sound: On</span>
-        </a>
-        <a href="#" class="nav-item" id="themeToggleSide" onclick="toggleTheme(); return false;">
-            <svg class="icon" viewBox="0 0 24 24" id="themeIconSide"></svg>
-            <span id="themeLabelSide">Light mode</span>
+        <a href="#" class="nav-item" style="margin-bottom: 6px;" onclick="changePage('settings', this); return false;">
+            <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            Settings
         </a>
     </aside>
-
-    <button class="theme-fab" id="soundToggleFab" style="right: 60px;" onclick="toggleSound()" title="Sound on/off">
-        <svg class="icon" viewBox="0 0 24 24" id="soundIconFab"></svg>
-    </button>
-
-    <button class="theme-fab" id="themeToggleFab" onclick="toggleTheme()" title="Switch theme">
-        <svg class="icon" viewBox="0 0 24 24" id="themeIconFab"></svg>
-    </button>
 
     <main class="main-content">
 
@@ -816,6 +951,19 @@
             </div>
         </div>
 
+        <!-- SETTINGS PAGE -->
+        <div id="page-settings" class="page-section">
+            <header class="top-header">
+                <div>
+                    <h1>Settings</h1>
+                    <p>Choose your own sounds and notifications</p>
+                </div>
+            </header>
+            <section class="panel" id="appearancePanel"></section>
+            <section class="panel" id="soundSettingsPanel"></section>
+            <section class="panel" id="notifySettingsPanel"></section>
+        </div>
+
         <!-- TASKS PAGE -->
         <div id="page-tasks" class="page-section">
             <header class="top-header">
@@ -876,20 +1024,22 @@
                     <p id="badgeSummary">0 / 0 badges unlocked</p>
                 </div>
             </header>
-            <section class="panel">
-                <div style="display:flex; justify-content: space-between; font-size: 13px; color: var(--text-muted);">
-                    <span>Badge Collection</span><span id="badgePercent">0%</span>
-                </div>
-                <div class="badge-summary-bar"><div class="badge-summary-fill" id="badgeSummaryFill"></div></div>
-            </section>
+
+            <div id="comebackBanner"></div>
+
+            <section class="panel bd-hero" id="badgeHero"></section>
+
             <section class="panel">
                 <h2 class="panel-title" style="margin-bottom: 5px;">Level Roadmap</h2>
                 <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 15px;">Earn XP from habits and tasks to complete each level.</p>
                 <div class="level-grid" id="levelRoadmap"></div>
             </section>
-            <section class="panel next-goal" id="nextGoalPanel"></section>
+
             <section class="panel">
-                <div class="achievements-grid" id="badgesGrid"></div>
+                <h2 class="panel-title" style="margin-bottom: 15px;">Badges</h2>
+                <div class="task-tabs" id="badgeTabs"></div>
+                <p style="color: var(--text-muted); font-size: 12px; margin: -8px 0 16px;">Sorted from easy (Bronze) to hard (Legend).</p>
+                <div class="bd-grid" id="badgesGrid"></div>
             </section>
         </div>
 
@@ -911,6 +1061,9 @@
         <div class="mobile-nav-item" onclick="changePage('achievements', this)">
             <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></span>Badges
         </div>
+        <div class="mobile-nav-item" onclick="changePage('settings', this)">
+            <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>Settings
+        </div>
     </nav>
 
     <div class="modal-overlay" id="habitModal">
@@ -920,14 +1073,6 @@
             <div class="input-group">
                 <label>Habit Name</label>
                 <input type="text" id="habitNameInput" placeholder="e.g. Read 10 pages">
-            </div>
-            <div class="input-group">
-                <label>XP Reward</label>
-                <select id="habitXpInput">
-                    <option value="10">10 XP (Easy)</option>
-                    <option value="20">20 XP (Medium)</option>
-                    <option value="30">30 XP (Hard)</option>
-                </select>
             </div>
             <div style="display: flex; gap: 10px; margin-top: 25px;">
                 <button class="btn-primary" style="flex: 1; background: transparent; border-color: var(--text-muted); color: var(--text-muted);" onclick="closeModal()">Cancel</button>
@@ -1008,10 +1153,10 @@
         };
 
         const defaultHabits = [
-            { id: '1', name: 'Wake up at 06:00', xp: 10, completed: false, history: {} },
-            { id: '2', name: 'Meditation', xp: 10, completed: false, history: {} },
-            { id: '3', name: 'Read 10 pages', xp: 20, completed: false, history: {} },
-            { id: '4', name: 'Workout', xp: 30, completed: false, history: {} }
+            { id: '1', name: 'Wake up at 06:00', xp: 5, completed: false, history: {} },
+            { id: '2', name: 'Meditation', xp: 5, completed: false, history: {} },
+            { id: '3', name: 'Read 10 pages', xp: 5, completed: false, history: {} },
+            { id: '4', name: 'Workout', xp: 5, completed: false, history: {} }
         ];
 
         // SVG icon snippets reused across toasts and habit rows
@@ -1051,6 +1196,10 @@
             }
 
             // Re-draw chart when opening analytics
+            if (pageId === 'settings') {
+                renderSettings();
+            }
+
             if (pageId === 'tasks') {
                 renderTasksPage();
             }
@@ -1073,7 +1222,10 @@
             return t;
         })();
         const RANKS = ['Beginner', 'Starter', 'Explorer', 'Achiever', 'Warrior', 'Champion', 'Hero', 'Master', 'Grandmaster', 'Legend'];
-        const TASK_XP = 15;
+        // Fixed reward: every habit or task gives exactly 5 XP (cannot be edited)
+        const XP_PER_ACTION = 5;
+        const HABIT_XP = XP_PER_ACTION;
+        const TASK_XP = XP_PER_ACTION;
 
         function getRank(level) { return RANKS[level - 1] || 'Mythic'; }
 
@@ -1177,7 +1329,7 @@
             osc.frequency.setValueAtTime(freq, t0);
             if (endFreq) osc.frequency.exponentialRampToValueAtTime(endFreq, t0 + dur);
             gain.gain.setValueAtTime(0.0001, t0);
-            gain.gain.exponentialRampToValueAtTime(vol || 0.15, t0 + 0.012);
+            gain.gain.exponentialRampToValueAtTime(Math.min((vol || 0.15) * (soundSettings.volume / 0.7), 0.9), t0 + 0.012);
             gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
             osc.connect(gain);
             gain.connect(ctx.destination);
@@ -1185,47 +1337,265 @@
             osc.stop(t0 + dur + 0.05);
         }
 
-        const SOUNDS = {
-            // 1. Task check: short, crisp "pop-tick"
-            check() {
-                tone(700, 0, 0.07, 'sine', 0.2, 500);
-                tone(1050, 0.04, 0.12, 'triangle', 0.14);
-            },
-            // soft "undo" blip when un-ticking
-            uncheck() {
-                tone(420, 0, 0.12, 'sine', 0.12, 260);
-            },
-            // 2. Task completion: bright rising chime (all done)
-            complete() {
-                [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone(f, i * 0.09, 0.4, 'triangle', 0.17));
-                tone(1318.5, 0.42, 0.7, 'sine', 0.13);
-            },
-            // 3. Achievement unlock: triumphant fanfare + sparkle
-            achievement() {
+        const SOUND_LIB = {
+            pop:      { label: 'Pop',        fn() { tone(700, 0, 0.07, 'sine', 0.2, 500); tone(1050, 0.04, 0.12, 'triangle', 0.14); } },
+            click:    { label: 'Click',      fn() { tone(1800, 0, 0.03, 'square', 0.07); tone(1200, 0.02, 0.05, 'square', 0.05); } },
+            bubble:   { label: 'Bubble',     fn() { tone(300, 0, 0.15, 'sine', 0.2, 900); tone(450, 0.08, 0.12, 'sine', 0.12, 1200); } },
+            coin:     { label: 'Coin',       fn() { tone(988, 0, 0.08, 'square', 0.08); tone(1319, 0.08, 0.35, 'square', 0.08); } },
+            success:  { label: 'Success',    fn() { tone(600, 0, 0.12, 'sine', 0.18); tone(900, 0.1, 0.3, 'sine', 0.18); } },
+            ding:     { label: 'Ding',       fn() { tone(1568, 0, 0.6, 'sine', 0.18); tone(3136, 0, 0.3, 'sine', 0.05); } },
+            bell:     { label: 'Bell',       fn() { [880, 1760, 2640].forEach((f, i) => tone(f, 0, 1 / (i + 1) + 0.2, 'sine', 0.14 / (i + 1))); } },
+            chime:    { label: 'Chime',      fn() { [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone(f, i * 0.09, 0.4, 'triangle', 0.17)); tone(1318.5, 0.42, 0.7, 'sine', 0.13); } },
+            marimba:  { label: 'Marimba',    fn() { [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone(f, i * 0.1, 0.28, 'triangle', 0.2)); } },
+            harp:     { label: 'Harp',       fn() { [392, 494, 587, 784, 988, 1175].forEach((f, i) => tone(f, i * 0.07, 0.6, 'sine', 0.13)); } },
+            magic:    { label: 'Magic',      fn() { [1568, 1976, 2349, 2637, 3136, 3951].forEach((f, i) => tone(f, i * 0.05, 0.4, 'sine', 0.08)); } },
+            arcade:   { label: 'Arcade',     fn() { [262, 330, 392, 523, 659, 784].forEach((f, i) => tone(f, i * 0.07, 0.1, 'square', 0.07)); tone(1047, 0.45, 0.35, 'square', 0.07); } },
+            fanfare:  { label: 'Fanfare',    fn() {
                 [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach((f, i) => tone(f, i * 0.11, 0.3, 'square', 0.07));
                 [523.25, 659.25, 783.99, 1046.5].forEach(f => tone(f, 0.6, 1.1, 'triangle', 0.1));
                 [2093, 2637, 3136].forEach((f, i) => tone(f, 0.65 + i * 0.07, 0.35, 'sine', 0.05));
-            },
-            // Level complete: long epic rise + big chord
-            levelup() {
+            } },
+            epic:     { label: 'Epic Rise',  fn() {
                 [392, 440, 494, 587, 659, 784, 988, 1175].forEach((f, i) => tone(f, i * 0.09, 0.28, 'sawtooth', 0.06));
                 [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach(f => tone(f, 0.8, 1.6, 'triangle', 0.1));
                 [2093, 2637, 3136, 4186].forEach((f, i) => tone(f, 0.85 + i * 0.08, 0.5, 'sine', 0.045));
-            }
+            } },
+            soft:     { label: 'Soft Blip',  fn() { tone(420, 0, 0.12, 'sine', 0.12, 260); } }
         };
 
-        function playSound(name) {
-            if (!soundOn) return;
-            try { SOUNDS[name](); } catch (e) {}
+        const SOUND_ACTIONS = [
+            { id: 'check',       label: 'Tick (Habit / Task)',  desc: 'Plays when you tick a habit or a task.', def: 'pop' },
+            { id: 'uncheck',     label: 'Un-tick',              desc: 'Plays when you remove a tick.', def: 'soft' },
+            { id: 'complete',    label: 'All Done',             desc: "Plays when all of today's habits or tasks are completed.", def: 'chime' },
+            { id: 'achievement', label: 'Achievement Unlocked', desc: 'Plays when you unlock a new badge.', def: 'fanfare' },
+            { id: 'levelup',     label: 'Level Complete',       desc: 'Plays when you finish a level.', def: 'epic' }
+        ];
+
+        let soundSettings = { volume: 0.7, choices: {}, customs: {} };
+        try {
+            const saved = JSON.parse(localStorage.getItem('quantumSoundSettings') || 'null');
+            if (saved) {
+                if (typeof saved.volume === 'number') soundSettings.volume = saved.volume;
+                soundSettings.choices = saved.choices || {};
+                soundSettings.customs = saved.customs || {};
+            }
+        } catch (e) {}
+
+        function saveSoundSettings() {
+            try { localStorage.setItem('quantumSoundSettings', JSON.stringify(soundSettings)); return true; }
+            catch (e) { return false; }
+        }
+
+        function getSoundChoice(action) {
+            return soundSettings.choices[action] || SOUND_ACTIONS.find(a => a.id === action).def;
+        }
+
+        function playSound(name, force) {
+            if (!soundOn && !force) return;
+            const choice = getSoundChoice(name);
+            if (choice === 'none') return;
+            if (choice === 'custom' && soundSettings.customs[name]) {
+                try {
+                    const audio = new Audio(soundSettings.customs[name].data);
+                    audio.volume = Math.min(1, soundSettings.volume);
+                    audio.play().catch(() => {});
+                } catch (e) {}
+                return;
+            }
+            const def = SOUND_ACTIONS.find(a => a.id === name).def;
+            const lib = SOUND_LIB[choice] || SOUND_LIB[def];
+            try { lib.fn(); } catch (e) {}
+        }
+
+        function setSoundChoice(action, value) {
+            soundSettings.choices[action] = value;
+            saveSoundSettings();
+            playSound(action, true);
+        }
+
+        function previewSound(action) { playSound(action, true); }
+
+        function setVolume(v) {
+            soundSettings.volume = Number(v) / 100;
+            saveSoundSettings();
+            const label = document.getElementById('volumeLabel');
+            if (label) label.innerText = `${Math.round(soundSettings.volume * 100)}%`;
+        }
+
+        function handleSoundUpload(action, input) {
+            const file = input.files && input.files[0];
+            if (!file) return;
+            if (!file.type.startsWith('audio/')) return notify({ type: 'error', title: 'Not an audio file', message: 'Please choose an mp3, wav or ogg file.' });
+            if (file.size > 500 * 1024) return notify({ type: 'error', title: 'File is too big', message: 'Please choose a sound under 500 KB (short clips work best).' });
+            const reader = new FileReader();
+            reader.onload = () => {
+                const prevCustom = soundSettings.customs[action];
+                const prevChoice = soundSettings.choices[action];
+                soundSettings.customs[action] = { name: file.name, data: reader.result };
+                soundSettings.choices[action] = 'custom';
+                if (!saveSoundSettings()) {
+                    if (prevCustom) soundSettings.customs[action] = prevCustom; else delete soundSettings.customs[action];
+                    soundSettings.choices[action] = prevChoice;
+                    return notify({ type: 'error', title: 'Could not save', message: 'Browser storage is full. Try a smaller sound.' });
+                }
+                renderSettings();
+                playSound(action, true);
+                notify({ type: 'success', title: 'Your sound is set!', message: file.name });
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeCustomSound(action) {
+            delete soundSettings.customs[action];
+            if (soundSettings.choices[action] === 'custom') delete soundSettings.choices[action];
+            saveSoundSettings();
+            renderSettings();
+        }
+
+        function resetSounds() {
+            soundSettings = { volume: 0.7, choices: {}, customs: {} };
+            saveSoundSettings();
+            renderSettings();
+            notify({ type: 'info', title: 'Sounds reset', message: 'Default sounds restored.' });
+        }
+
+        function setSoundEnabled(on) {
+            if (soundOn !== on) toggleSound();
+        }
+
+        // ================= NOTIFICATIONS =================
+        let notifyOn = true;
+        try { notifyOn = localStorage.getItem('quantumNotify') !== 'off'; } catch (e) {}
+
+        const NOTIFY_STYLES = {
+            success: { color: 'var(--neon-green)',  icon: '<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>' },
+            info:    { color: 'var(--neon-cyan)',   icon: '<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>' },
+            xp:      { color: 'var(--neon-yellow)', icon: '<path d="M13 2L4.5 13h6L10 22l8.5-11h-6L13 2z"/>' },
+            task:    { color: 'var(--neon-cyan)',   icon: '<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>' },
+            badge:   { color: 'var(--neon-purple)', icon: '<circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>' },
+            level:   { color: 'var(--neon-yellow)', icon: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>' },
+            error:   { color: 'var(--neon-red)',    icon: '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>' }
+        };
+
+        function notify(opts) {
+            const type = opts.type || 'success';
+            if (!notifyOn && type !== 'error' && !opts.force) return;
+            const stack = document.getElementById('notifyStack');
+            if (!stack) return;
+            const st = NOTIFY_STYLES[type] || NOTIFY_STYLES.success;
+            const duration = opts.duration || 4000;
+            while (stack.children.length >= 4) stack.firstChild.remove();
+
+            const el = document.createElement('div');
+            el.className = 'notify';
+            el.style.setProperty('--nc', st.color);
+            el.innerHTML = `
+                <div class="notify-icon"><svg class="icon" viewBox="0 0 24 24">${st.icon}</svg></div>
+                <div class="notify-body">
+                    <div class="notify-title">${escapeHtml(opts.title || '')}</div>
+                    ${opts.message ? `<div class="notify-msg">${escapeHtml(opts.message)}</div>` : ''}
+                </div>
+                <button class="notify-close" aria-label="Close">&times;</button>
+                <div class="notify-bar" style="animation-duration:${duration}ms"></div>`;
+
+            const close = () => {
+                if (el.classList.contains('leaving')) return;
+                el.classList.add('leaving');
+                setTimeout(() => el.remove(), 300);
+            };
+            el.addEventListener('click', close);
+            stack.appendChild(el);
+            setTimeout(close, duration);
+        }
+
+        function setNotifyOn(on) {
+            notifyOn = on;
+            try { localStorage.setItem('quantumNotify', on ? 'on' : 'off'); } catch (e) {}
+            if (on) previewNotify('task');
+        }
+
+        function previewNotify(kind) {
+            const samples = {
+                task:  { type: 'task',  title: 'Task added', message: '"Pay electricity bill" - Mon, Nov 9 (in 17 days)' },
+                xp:    { type: 'xp',    title: '+5 XP', message: 'Habit completed - keep going!' },
+                badge: { type: 'badge', title: 'Achievement unlocked!', message: 'On Fire', duration: 5500 }
+            };
+            notify(Object.assign({ force: true }, samples[kind]));
+            if (kind === 'badge') playSound('achievement', true);
+            else if (kind === 'xp') playSound('check', true);
+        }
+
+        // ================= SETTINGS PAGE =================
+        function renderSettings() {
+            renderAppearance();
+            const panel = document.getElementById('soundSettingsPanel');
+            if (!panel) return;
+            const PLAY = '<polygon points="6 3 20 12 6 21 6 3"/>';
+            const UPLOAD = '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>';
+
+            const rows = SOUND_ACTIONS.map(a => {
+                const cur = getSoundChoice(a.id);
+                const custom = soundSettings.customs[a.id];
+                const opts = Object.entries(SOUND_LIB).map(([id, o]) =>
+                    `<option value="${id}" ${cur === id ? 'selected' : ''}>${o.label}</option>`).join('');
+                const customOpt = custom ? `<option value="custom" ${cur === 'custom' ? 'selected' : ''}>My sound: ${escapeHtml(custom.name)}</option>` : '';
+                return `
+                    <div class="sound-row">
+                        <div>
+                            <div class="sound-row-title">${a.label}</div>
+                            <div class="sound-row-desc">${a.desc}</div>
+                        </div>
+                        <div class="sound-row-controls">
+                            <select onchange="setSoundChoice('${a.id}', this.value)">
+                                ${opts}${customOpt}
+                                <option value="none" ${cur === 'none' ? 'selected' : ''}>Silent</option>
+                            </select>
+                            <button class="icon-btn" onclick="previewSound('${a.id}')" title="Preview"><svg class="icon icon-sm" viewBox="0 0 24 24">${PLAY}</svg></button>
+                            <button class="icon-btn" onclick="document.getElementById('file-${a.id}').click()" title="Upload your own sound"><svg class="icon icon-sm" viewBox="0 0 24 24">${UPLOAD}</svg></button>
+                            ${custom ? `<button class="icon-btn" onclick="removeCustomSound('${a.id}')" title="Remove my sound">${ICON_TRASH}</button>` : ''}
+                            <input type="file" accept="audio/*" id="file-${a.id}" style="display:none" onchange="handleSoundUpload('${a.id}', this)">
+                        </div>
+                    </div>`;
+            }).join('');
+
+            panel.innerHTML = `
+                <div class="setting-line">
+                    <div>
+                        <h2 class="panel-title">Sound Effects</h2>
+                        <div class="setting-desc">Use the switch to mute or unmute all sounds. Pick a sound for each action, or upload your own (mp3/wav, under 500 KB).</div>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="soundEnabledToggle" ${soundOn ? 'checked' : ''} onchange="setSoundEnabled(this.checked)"><span class="switch-slider"></span></label>
+                </div>
+                <div class="volume-row">
+                    <span style="font-size: 13px; color: var(--text-muted);">Volume</span>
+                    <input type="range" min="0" max="100" value="${Math.round(soundSettings.volume * 100)}" oninput="setVolume(this.value)" onchange="playSound('check', true)">
+                    <span style="font-size: 13px; width: 40px; text-align: right;" id="volumeLabel">${Math.round(soundSettings.volume * 100)}%</span>
+                </div>
+                ${rows}
+                <button class="btn-primary" style="margin-top: 8px; background: transparent; border-color: var(--text-muted); color: var(--text-muted);" onclick="resetSounds()">Reset to default sounds</button>`;
+
+            document.getElementById('notifySettingsPanel').innerHTML = `
+                <div class="setting-line" style="margin-bottom: 10px;">
+                    <div>
+                        <h2 class="panel-title">Notifications</h2>
+                        <div class="setting-desc">Pop-up cards when you add tasks, earn XP or unlock badges. Tap a card to dismiss it.</div>
+                    </div>
+                    <label class="switch"><input type="checkbox" ${notifyOn ? 'checked' : ''} onchange="setNotifyOn(this.checked)"><span class="switch-slider"></span></label>
+                </div>
+                <div class="setting-desc" style="margin-bottom: 8px;">Preview:</div>
+                <div class="quick-row">
+                    <span class="quick-chip" onclick="previewNotify('task')">Task added</span>
+                    <span class="quick-chip" onclick="previewNotify('xp')">XP earned</span>
+                    <span class="quick-chip" onclick="previewNotify('badge')">Achievement</span>
+                </div>`;
         }
 
         const ICON_VOL_ON = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>';
         const ICON_VOL_OFF = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>';
 
         function updateSoundButton() {
-            document.getElementById('soundIconSide').innerHTML = soundOn ? ICON_VOL_ON : ICON_VOL_OFF;
-            document.getElementById('soundIconFab').innerHTML = soundOn ? ICON_VOL_ON : ICON_VOL_OFF;
-            document.getElementById('soundLabelSide').innerText = soundOn ? 'Sound: On' : 'Sound: Off';
+            const chk = document.getElementById('soundEnabledToggle');
+            if (chk) chk.checked = soundOn;
         }
 
         function toggleSound() {
@@ -1239,20 +1609,34 @@
         const ICON_SUN = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
         const ICON_MOON = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
 
+        function isLightTheme() { return document.documentElement.getAttribute('data-theme') === 'light'; }
+
         function updateThemeButton() {
-            const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-            // Show the icon/label of the theme you will switch TO
-            document.getElementById('themeIconSide').innerHTML = isLight ? ICON_MOON : ICON_SUN;
-            document.getElementById('themeIconFab').innerHTML = isLight ? ICON_MOON : ICON_SUN;
-            document.getElementById('themeLabelSide').innerText = isLight ? 'Dark mode' : 'Light mode';
+            if (document.getElementById('appearancePanel')) renderAppearance();
         }
 
-        function toggleTheme() {
-            const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-            if (isLight) document.documentElement.removeAttribute('data-theme');
-            else document.documentElement.setAttribute('data-theme', 'light');
-            try { localStorage.setItem('quantumTheme', isLight ? 'dark' : 'light'); } catch (e) {}
+        function setTheme(mode) {
+            if (mode === 'light') document.documentElement.setAttribute('data-theme', 'light');
+            else document.documentElement.removeAttribute('data-theme');
+            try { localStorage.setItem('quantumTheme', mode === 'light' ? 'light' : 'dark'); } catch (e) {}
             updateThemeButton();
+        }
+
+        function renderAppearance() {
+            const box = document.getElementById('appearancePanel');
+            if (!box) return;
+            const light = isLightTheme();
+            box.innerHTML = `
+                <h2 class="panel-title" style="margin-bottom: 4px;">Appearance</h2>
+                <div class="setting-desc" style="margin-bottom: 14px;">Choose a day (white) or night (black) theme.</div>
+                <div class="mood-row" style="margin-bottom: 0;">
+                    <button class="mood-btn ${!light ? 'selected' : ''}" style="--mc: var(--neon-cyan);" onclick="setTheme('dark')">
+                        <svg class="icon icon-sm" viewBox="0 0 24 24" style="margin-right: 6px;">${ICON_MOON}</svg>Night (Black)
+                    </button>
+                    <button class="mood-btn ${light ? 'selected' : ''}" style="--mc: var(--neon-yellow);" onclick="setTheme('light')">
+                        <svg class="icon icon-sm" viewBox="0 0 24 24" style="margin-right: 6px;">${ICON_SUN}</svg>Day (White)
+                    </button>
+                </div>`;
         }
 
         function init() {
@@ -1276,6 +1660,14 @@
                 appState.habits = defaultHabits;
             }
 
+            // One-time XP migration: old saves used custom XP per habit. Recalculate with the fixed 5 XP rule.
+            if (appState.xpVersion !== 2) {
+                const habitsDone = appState.habits.reduce((n, h) => n + Object.values(h.history).filter(v => v === true).length, 0);
+                const tasksDone = (appState.tasks || []).reduce((n, t) => n + Object.values(t.done || {}).filter(v => v === true).length, 0);
+                appState.totalXp = (habitsDone + tasksDone) * XP_PER_ACTION;
+                appState.xpVersion = 2;
+                saveData();
+            }
             const startLevel = getLevelInfo(appState.totalXp).level;
             appState.currentLevel = startLevel;
             appState.highestLevel = startLevel;
@@ -1309,10 +1701,10 @@
             habit.history[today] = habit.completed;
 
             if (habit.completed) {
-                appState.totalXp += habit.xp;
-                showToast(`+${habit.xp} XP Earned!`);
+                appState.totalXp += HABIT_XP;
+                showToast(`+${HABIT_XP} XP Earned!`);
             } else {
-                appState.totalXp -= habit.xp;
+                appState.totalXp -= HABIT_XP;
             }
 
             checkLevelUp();
@@ -1342,10 +1734,10 @@
             habit.history[dateStr] = isCompleted;
 
             if (isCompleted) {
-                appState.totalXp += habit.xp;
-                showToast(`+${habit.xp} XP (${dateStr})`);
+                appState.totalXp += HABIT_XP;
+                showToast(`+${HABIT_XP} XP (${dateStr})`);
             } else {
-                appState.totalXp -= habit.xp;
+                appState.totalXp -= HABIT_XP;
             }
 
             if (dateStr === getTodayStr()) {
@@ -1382,7 +1774,7 @@
                     </div>
                     <div class="habit-info">
                         <h3>${habit.name}</h3>
-                        <p><span class="habit-xp">+${habit.xp} XP</span></p>
+                        <p><span class="habit-xp">+${HABIT_XP} XP</span></p>
                     </div>
                     <div class="habit-actions">
                         <button class="action-btn btn-edit" onclick="editHabit('${habit.id}')" title="Edit">${ICON_EDIT}</button>
@@ -1543,6 +1935,8 @@
 
         // ================= BADGES =================
         const BADGE_ICONS = {
+            book: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
+            tasks: '<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',
             rocket: '<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>',
             zap: '<path d="M13 2L4.5 13h6L10 22l8.5-11h-6L13 2z"/>',
             target: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
@@ -1616,21 +2010,73 @@
             return Math.round((done / possible) * 100);
         }
 
+        function getTasksDoneCount() {
+            return (appState.tasks || []).reduce((n, t) => n + Object.values(t.done || {}).filter(v => v === true).length, 0);
+        }
+
+        const TIERS = {
+            bronze: { label: 'BRONZE', color: '#cd7f32' },
+            silver: { label: 'SILVER', color: '#aab4c3' },
+            gold:   { label: 'GOLD',   color: '#ffcc00' },
+            epic:   { label: 'EPIC',   color: '#b026ff' },
+            legend: { label: 'LEGEND', color: '#ff3366' }
+        };
+        const TIER_ORDER = ['bronze', 'silver', 'gold', 'epic', 'legend'];
+
+        function getActiveDaysCount() { return getActiveDates().size; }
+
+        // unit is singular ("day"); plural is added automatically. hint = what the user should DO.
         const BADGES = [
-            { id: 'first_step',   name: 'First Step',      desc: 'Complete your first habit',          icon: 'rocket',   color: 'var(--neon-cyan)',   target: 1,   unit: 'habits',  get: () => getTotalCompleted() },
-            { id: 'warming_up',   name: 'Warming Up',      desc: 'Complete 10 habits in total',        icon: 'zap',      color: 'var(--neon-cyan)',   target: 10,  unit: 'habits',  get: () => getTotalCompleted() },
-            { id: 'dedicated',    name: 'Dedicated',       desc: 'Complete 50 habits in total',        icon: 'target',   color: 'var(--neon-purple)', target: 50,  unit: 'habits',  get: () => getTotalCompleted() },
-            { id: 'centurion',    name: 'Centurion',       desc: 'Complete 100 habits in total',       icon: 'award',    color: 'var(--neon-yellow)', target: 100, unit: 'habits',  get: () => getTotalCompleted() },
-            { id: 'legend',       name: 'Living Legend',   desc: 'Complete 500 habits in total',       icon: 'crown',    color: 'var(--neon-yellow)', target: 500, unit: 'habits',  get: () => getTotalCompleted() },
-            { id: 'on_fire',      name: 'On Fire',         desc: 'Reach a 7 day streak',               icon: 'flame',    color: 'var(--neon-red)',    target: 7,   unit: 'days',    get: () => getLongestStreak() },
-            { id: 'unstoppable',  name: 'Unstoppable',     desc: 'Reach a 14 day streak',              icon: 'flame',    color: 'var(--neon-red)',    target: 14,  unit: 'days',    get: () => getLongestStreak() },
-            { id: 'monthly_master', name: 'Monthly Master', desc: 'Reach a 30 day streak',             icon: 'calendar', color: 'var(--neon-green)',  target: 30,  unit: 'days',    get: () => getLongestStreak() },
-            { id: 'perfect_day',  name: 'Perfect Day',     desc: 'Complete every habit in one day',    icon: 'star',     color: 'var(--neon-green)',  target: 1,   unit: 'days',    get: () => getPerfectDays() },
-            { id: 'perfect_week', name: 'Perfect Week',    desc: 'Get 7 perfect days',                 icon: 'trophy',   color: 'var(--neon-green)',  target: 7,   unit: 'days',    get: () => getPerfectDays() },
-            { id: 'habit_builder', name: 'Habit Builder',  desc: 'Have 5 habits in your list',         icon: 'layers',   color: 'var(--neon-purple)', target: 5,   unit: 'habits',  get: () => appState.habits.length },
-            { id: 'level_5',      name: 'Rising Star',     desc: 'Reach Level 5',                      icon: 'trending', color: 'var(--neon-cyan)',   target: 5,   unit: 'levels',  get: () => appState.currentLevel },
-            { id: 'level_10',     name: 'Elite',           desc: 'Reach Level 10',                     icon: 'gem',      color: 'var(--neon-purple)', target: 10,  unit: 'levels',  get: () => appState.currentLevel },
-            { id: 'monthly_80',   name: 'Month Crusher',   desc: 'Reach 80% monthly progress',         icon: 'target',   color: 'var(--neon-yellow)', target: 80,  unit: '%',       get: () => getMonthlyPercent() }
+            { id: 'first_step', name: 'First Step', desc: 'Tick your first habit', hint: 'Open My Habits and tick one habit', icon: 'rocket', tier: 'bronze', target: 1, unit: 'habit', get: () => getTotalCompleted() },
+            { id: 'first_note', name: 'First Note', desc: 'Write your first note', hint: 'Open Notes and write about your day', icon: 'book', tier: 'bronze', target: 1, unit: 'note', get: () => Object.keys(appState.journal || {}).length },
+            { id: 'planner', name: 'Planner', desc: 'Add your first task', hint: 'Open Tasks and plan something for a future day', icon: 'calendar', tier: 'bronze', target: 1, unit: 'task', get: () => (appState.tasks || []).length },
+            { id: 'task_starter', name: 'Task Starter', desc: 'Finish your first task', hint: 'Tick a task on the day it is due', icon: 'tasks', tier: 'bronze', target: 1, unit: 'task', get: () => getTasksDoneCount() },
+            { id: 'perfect_day', name: 'Perfect Day', desc: 'Finish every habit in one day', hint: 'Tick ALL your habits in a single day', icon: 'star', tier: 'bronze', target: 1, unit: 'day', get: () => getPerfectDays() },
+            { id: 'spark', name: 'Spark', desc: 'Keep a 3-day streak', hint: 'Tick at least 1 habit 3 days in a row', icon: 'zap', tier: 'bronze', target: 3, unit: 'day', get: () => getLongestStreak() },
+            { id: 'triple_start', name: 'Triple Start', desc: 'Have 3 habits in your list', hint: 'Add more habits in My Habits', icon: 'layers', tier: 'bronze', target: 3, unit: 'habit', get: () => appState.habits.length },
+            { id: 'level_2', name: 'Level Up', desc: 'Reach Level 2', hint: 'Earn 5 XP for every habit and task', icon: 'trending', tier: 'bronze', target: 2, unit: 'level', get: () => appState.currentLevel },
+            { id: 'warming_up', name: 'Warming Up', desc: 'Tick 10 habits in total', hint: 'Every tick counts - keep going', icon: 'zap', tier: 'bronze', target: 10, unit: 'habit', get: () => getTotalCompleted() },
+            { id: 'week_visitor', name: 'Week Visitor', desc: 'Be active on 7 different days', hint: 'Come back and tick something each day', icon: 'calendar', tier: 'bronze', target: 7, unit: 'day', get: () => getActiveDaysCount() },
+            { id: 'storyteller', name: 'Storyteller', desc: 'Write 5 notes', hint: 'Write about your day in Notes', icon: 'book', tier: 'bronze', target: 5, unit: 'note', get: () => Object.keys(appState.journal || {}).length },
+            { id: 'habit_builder', name: 'Habit Builder', desc: 'Have 5 habits in your list', hint: 'Add more habits in My Habits', icon: 'layers', tier: 'bronze', target: 5, unit: 'habit', get: () => appState.habits.length },
+            { id: 'hat_trick', name: 'Hat-trick', desc: 'Get 3 perfect days', hint: 'A perfect day = every habit ticked', icon: 'star', tier: 'bronze', target: 3, unit: 'day', get: () => getPerfectDays() },
+            { id: 'future_planner', name: 'Future Planner', desc: 'Plan 5 tasks', hint: 'Add tasks ahead of time in Tasks', icon: 'calendar', tier: 'bronze', target: 5, unit: 'task', get: () => (appState.tasks || []).length },
+            { id: 'getting_going', name: 'Getting Going', desc: 'Tick 25 habits in total', hint: 'Stay consistent and keep ticking', icon: 'target', tier: 'silver', target: 25, unit: 'habit', get: () => getTotalCompleted() },
+            { id: 'on_fire', name: 'On Fire', desc: 'Keep a 7-day streak', hint: 'Tick at least 1 habit every day for a week', icon: 'flame', tier: 'silver', target: 7, unit: 'day', get: () => getLongestStreak() },
+            { id: 'two_weeks_in', name: 'Two Weeks In', desc: 'Be active on 14 different days', hint: 'Keep coming back every day', icon: 'calendar', tier: 'silver', target: 14, unit: 'day', get: () => getActiveDaysCount() },
+            { id: 'task_master', name: 'Task Master', desc: 'Finish 10 tasks', hint: 'Tick your tasks on the day they are due', icon: 'tasks', tier: 'silver', target: 10, unit: 'task', get: () => getTasksDoneCount() },
+            { id: 'perfect_week', name: 'Perfect Week', desc: 'Get 7 perfect days', hint: 'A perfect day = every habit ticked', icon: 'trophy', tier: 'silver', target: 7, unit: 'day', get: () => getPerfectDays() },
+            { id: 'level_3', name: 'Explorer', desc: 'Reach Level 3', hint: 'Keep earning XP from habits and tasks', icon: 'trending', tier: 'silver', target: 3, unit: 'level', get: () => appState.currentLevel },
+            { id: 'halfway_month', name: 'Halfway There', desc: 'Reach 50% monthly progress', hint: 'Keep ticking habits through the month', icon: 'target', tier: 'silver', target: 50, unit: '%', get: () => getMonthlyPercent() },
+            { id: 'reflective', name: 'Reflective Mind', desc: 'Write 15 notes', hint: 'A short note each day builds the habit', icon: 'book', tier: 'silver', target: 15, unit: 'note', get: () => Object.keys(appState.journal || {}).length },
+            { id: 'dedicated', name: 'Dedicated', desc: 'Tick 50 habits in total', hint: 'Fifty ticks - you are building a habit', icon: 'target', tier: 'silver', target: 50, unit: 'habit', get: () => getTotalCompleted() },
+            { id: 'unstoppable', name: 'Unstoppable', desc: 'Keep a 14-day streak', hint: 'Two weeks without missing a day', icon: 'flame', tier: 'silver', target: 14, unit: 'day', get: () => getLongestStreak() },
+            { id: 'level_5', name: 'Rising Star', desc: 'Reach Level 5', hint: 'Earn 5 XP for every habit and task', icon: 'trending', tier: 'silver', target: 5, unit: 'level', get: () => appState.currentLevel },
+            { id: 'habit_collector', name: 'Habit Collector', desc: 'Have 8 habits in your list', hint: 'Add more habits in My Habits', icon: 'layers', tier: 'silver', target: 8, unit: 'habit', get: () => appState.habits.length },
+            { id: 'master_planner', name: 'Master Planner', desc: 'Plan 15 tasks', hint: 'Plan ahead with one-time, weekly or monthly tasks', icon: 'calendar', tier: 'silver', target: 15, unit: 'task', get: () => (appState.tasks || []).length },
+            { id: 'three_weeks', name: 'Three Weeks Strong', desc: 'Keep a 21-day streak', hint: 'They say it takes 21 days to build a habit', icon: 'flame', tier: 'silver', target: 21, unit: 'day', get: () => getLongestStreak() },
+            { id: 'task_crusher', name: 'Task Crusher', desc: 'Finish 25 tasks', hint: 'Keep ticking your tasks', icon: 'tasks', tier: 'gold', target: 25, unit: 'task', get: () => getTasksDoneCount() },
+            { id: 'centurion', name: 'Centurion', desc: 'Tick 100 habits in total', hint: 'One hundred ticks - you can do it', icon: 'award', tier: 'gold', target: 100, unit: 'habit', get: () => getTotalCompleted() },
+            { id: 'regular', name: 'Regular', desc: 'Be active on 30 different days', hint: 'Show up again and again', icon: 'calendar', tier: 'gold', target: 30, unit: 'day', get: () => getActiveDaysCount() },
+            { id: 'flawless_fortnight', name: 'Flawless Fortnight', desc: 'Get 15 perfect days', hint: 'Tick ALL habits, again and again', icon: 'star', tier: 'gold', target: 15, unit: 'day', get: () => getPerfectDays() },
+            { id: 'monthly_80', name: 'Month Crusher', desc: 'Reach 80% monthly progress', hint: 'Keep ticking habits all month long', icon: 'target', tier: 'gold', target: 80, unit: '%', get: () => getMonthlyPercent() },
+            { id: 'monthly_master', name: 'Monthly Master', desc: 'Keep a 30-day streak', hint: 'A whole month, every single day', icon: 'calendar', tier: 'gold', target: 30, unit: 'day', get: () => getLongestStreak() },
+            { id: 'level_7', name: 'Hero', desc: 'Reach Level 7', hint: 'The road to Hero takes real effort', icon: 'trending', tier: 'gold', target: 7, unit: 'level', get: () => appState.currentLevel },
+            { id: 'diary_master', name: 'Diary Master', desc: 'Write 30 notes', hint: 'Your thoughts, one day at a time', icon: 'book', tier: 'gold', target: 30, unit: 'note', get: () => Object.keys(appState.journal || {}).length },
+            { id: 'task_titan', name: 'Task Titan', desc: 'Finish 50 tasks', hint: 'Fifty tasks done - titan level', icon: 'tasks', tier: 'gold', target: 50, unit: 'task', get: () => getTasksDoneCount() },
+            { id: 'habit_hero', name: 'Habit Hero', desc: 'Tick 250 habits in total', hint: 'A quarter of the way to 1000', icon: 'award', tier: 'gold', target: 250, unit: 'habit', get: () => getTotalCompleted() },
+            { id: 'iron_will', name: 'Iron Will', desc: 'Keep a 60-day streak', hint: 'Two months of pure discipline', icon: 'flame', tier: 'gold', target: 60, unit: 'day', get: () => getLongestStreak() },
+            { id: 'level_10', name: 'Elite', desc: 'Reach Level 10', hint: 'Only the most dedicated get here', icon: 'gem', tier: 'gold', target: 10, unit: 'level', get: () => appState.currentLevel },
+            { id: 'loyal', name: 'Loyal Friend', desc: 'Be active on 100 different days', hint: 'A hundred days of showing up', icon: 'calendar', tier: 'epic', target: 100, unit: 'day', get: () => getActiveDaysCount() },
+            { id: 'chronicler', name: 'Chronicler', desc: 'Write 60 notes', hint: 'Two months of reflections', icon: 'book', tier: 'epic', target: 60, unit: 'note', get: () => Object.keys(appState.journal || {}).length },
+            { id: 'perfect_month', name: 'Perfect Month', desc: 'Get 30 perfect days', hint: 'Thirty days with every habit ticked', icon: 'trophy', tier: 'epic', target: 30, unit: 'day', get: () => getPerfectDays() },
+            { id: 'legend', name: 'Living Legend', desc: 'Tick 500 habits in total', hint: 'The long road to greatness', icon: 'crown', tier: 'epic', target: 500, unit: 'habit', get: () => getTotalCompleted() },
+            { id: 'month_100', name: 'Flawless Month', desc: 'Reach 100% monthly progress', hint: 'Tick every habit on every day of the month', icon: 'gem', tier: 'epic', target: 100, unit: '%', get: () => getMonthlyPercent() },
+            { id: 'century_streak', name: 'Century Streak', desc: 'Keep a 100-day streak', hint: 'One hundred days in a row', icon: 'flame', tier: 'epic', target: 100, unit: 'day', get: () => getLongestStreak() },
+            { id: 'task_legend', name: 'Task Legend', desc: 'Finish 100 tasks', hint: 'One hundred tasks conquered', icon: 'tasks', tier: 'legend', target: 100, unit: 'task', get: () => getTasksDoneCount() },
+            { id: 'flawless_60', name: 'Flawless Sixty', desc: 'Get 60 perfect days', hint: 'Sixty days of total perfection', icon: 'star', tier: 'legend', target: 60, unit: 'day', get: () => getPerfectDays() },
+            { id: 'thousand_club', name: 'Thousand Club', desc: 'Tick 1000 habits in total', hint: 'Only true legends reach 1000', icon: 'crown', tier: 'legend', target: 1000, unit: 'habit', get: () => getTotalCompleted() },
+            { id: 'year_streak', name: 'Year of Fire', desc: 'Keep a 365-day streak', hint: 'A whole year without missing a day', icon: 'flame', tier: 'legend', target: 365, unit: 'day', get: () => getLongestStreak() }
         ];
 
         function formatBadgeDate(dateStr) {
@@ -1654,62 +2100,124 @@
             }
         }
 
+        let badgeTab = 'progress';
+        function setBadgeTab(t) { badgeTab = t; renderBadges(); }
+
+        function remainingText(b, cur) {
+            const left = Math.max(b.target - cur, 0);
+            if (b.unit === '%') return `${left}% more`;
+            return `${left} more ${b.unit}${left === 1 ? '' : 's'}`;
+        }
+
+        function badgeRing(ratio) {
+            const r = 36, C = 2 * Math.PI * r;
+            return `<svg class="bd-ring-svg" viewBox="0 0 84 84"><circle class="bd-ring-bg" cx="42" cy="42" r="${r}"/><circle class="bd-ring-fg" cx="42" cy="42" r="${r}" stroke-dasharray="${C.toFixed(2)}" stroke-dashoffset="${(C * (1 - ratio)).toFixed(2)}"/></svg>`;
+        }
+
+        function renderComebackBanner() {
+            const box = document.getElementById('comebackBanner');
+            if (!box) return;
+            const streak = getCurrentStreak();
+            const todayDone = getActiveDates().has(getTodayStr());
+            const longest = getLongestStreak();
+            const nextStreak = ['spark', 'on_fire', 'unstoppable', 'three_weeks', 'monthly_master', 'iron_will', 'century_streak', 'year_streak']
+                .map(id => BADGES.find(b => b.id === id))
+                .find(b => !appState.badges[b.id]);
+            const nextLine = nextStreak
+                ? ` ${Math.max(nextStreak.target - longest, 0)} more day${nextStreak.target - longest === 1 ? '' : 's'} to unlock "${nextStreak.name}".`
+                : '';
+
+            let cls = '', title = '', text = '';
+            if (streak > 0 && !todayDone) {
+                cls = 'warn';
+                title = `Your ${streak}-day streak ends today!`;
+                text = `Tick 1 habit before midnight to keep it alive.${nextLine}`;
+            } else if (streak > 0) {
+                cls = 'good';
+                title = `${streak}-day streak - great job!`;
+                text = `Come back tomorrow to make it ${streak + 1}.${nextLine}`;
+            } else {
+                title = 'Start your streak today';
+                text = `Tick 1 habit now and begin building a streak.${nextLine}`;
+            }
+            box.innerHTML = `
+                <div class="bd-banner ${cls}">
+                    <div class="bd-banner-icon"><svg class="icon" viewBox="0 0 24 24">${BADGE_ICONS.flame}</svg></div>
+                    <div><div class="bd-banner-title">${title}</div><div class="bd-banner-text">${text}</div></div>
+                </div>`;
+        }
+
         function renderBadges() {
             const grid = document.getElementById('badgesGrid');
             if (!grid) return;
-            const unlockedCount = BADGES.filter(b => appState.badges[b.id]).length;
-            const pct = Math.round((unlockedCount / BADGES.length) * 100);
-            document.getElementById('badgeSummary').innerText = `${unlockedCount} / ${BADGES.length} badges unlocked`;
-            document.getElementById('badgePercent').innerText = `${pct}%`;
-            document.getElementById('badgeSummaryFill').style.width = `${pct}%`;
+            if (!appState.badges) appState.badges = {};
+            const today = getTodayStr();
 
-            // Next goal = locked badge closest to completion
-            let next = null, bestRatio = -1;
-            BADGES.forEach(b => {
-                if (appState.badges[b.id]) return;
-                const ratio = Math.min(b.get() / b.target, 1);
-                if (ratio > bestRatio) { bestRatio = ratio; next = b; }
+            const info = BADGES.map(b => {
+                const cur = b.get();
+                return { b, cur, ratio: Math.min(cur / b.target, 1), unlockedOn: appState.badges[b.id] };
             });
-            const panel = document.getElementById('nextGoalPanel');
+            const unlocked = info.filter(x => x.unlockedOn);
+            const lockedByCloseness = info.filter(x => !x.unlockedOn).sort((a, b) => b.ratio - a.ratio);
+            const locked = info.filter(x => !x.unlockedOn).sort((a, b) =>
+                (TIER_ORDER.indexOf(a.b.tier) - TIER_ORDER.indexOf(b.b.tier)) || (b.ratio - a.ratio));
+            const pct = Math.round((unlocked.length / BADGES.length) * 100);
+            document.getElementById('badgeSummary').innerText = `${unlocked.length} / ${BADGES.length} badges unlocked`;
+
+            renderComebackBanner();
+
+            // Hero: next goal + collection count
+            const next = lockedByCloseness[0];
+            const hero = document.getElementById('badgeHero');
             if (next) {
-                const left = Math.max(next.target - next.get(), 0);
-                panel.style.display = 'flex';
-                panel.innerHTML = `
-                    <div class="badge-icon" style="--bc:${next.color}; color:${next.color}; margin-bottom:0; flex-shrink:0;">
-                        <svg class="icon" viewBox="0 0 24 24">${BADGE_ICONS[next.icon]}</svg>
+                const t = TIERS[next.b.tier];
+                hero.innerHTML = `
+                    <div class="bd-hero-main" style="--bc:${t.color};">
+                        <div class="bd-ring" style="--bc:${t.color};">${badgeRing(next.ratio)}<div class="bd-ring-icon"><svg class="icon" viewBox="0 0 24 24">${BADGE_ICONS[next.b.icon]}</svg></div></div>
+                        <div style="flex:1;">
+                            <div class="bd-hero-label">Your next goal</div>
+                            <div class="bd-hero-title">${next.b.name}</div>
+                            <div class="bd-hero-text">${next.b.hint}. Only <b>${remainingText(next.b, next.cur)}</b> to go!</div>
+                            <div class="bd-hero-bar"><div style="width:${Math.round(next.ratio * 100)}%"></div></div>
+                        </div>
                     </div>
-                    <div style="flex-grow:1;">
-                        <div class="next-goal-label">Next Goal</div>
-                        <div class="next-goal-title">${next.name}</div>
-                        <div class="next-goal-text">${next.desc} - only ${left} ${next.unit} to go!</div>
+                    <div class="bd-hero-side">
+                        <div class="bd-count">${unlocked.length}<span>/${BADGES.length}</span></div>
+                        <div class="bd-count-label">badges unlocked (${pct}%)</div>
                     </div>`;
             } else {
-                panel.style.display = 'flex';
-                panel.innerHTML = `<div style="flex-grow:1; text-align:center;"><div class="next-goal-label">All Done</div><div class="next-goal-title">You unlocked every badge!</div></div>`;
+                hero.innerHTML = `<div style="text-align:center; width:100%;"><div class="bd-hero-label">Amazing!</div><div class="bd-hero-title">You unlocked every badge!</div></div>`;
             }
 
-            grid.innerHTML = '';
-            BADGES.forEach(b => {
-                const cur = b.get();
-                const unlockedOn = appState.badges[b.id];
-                const shown = Math.min(cur, b.target);
-                const ratio = Math.round((shown / b.target) * 100);
-                const card = document.createElement('div');
-                card.className = `badge-card ${unlockedOn ? 'unlocked' : 'locked'}`;
-                card.style.setProperty('--bc', b.color);
-                card.innerHTML = `
-                    <div class="badge-icon"><svg class="icon" viewBox="0 0 24 24">${BADGE_ICONS[b.icon]}</svg></div>
-                    <div class="badge-title">${b.name}</div>
-                    <div class="badge-desc">${b.desc}</div>
-                    ${unlockedOn
-                        ? `<div class="badge-unlocked-text">Unlocked on ${formatBadgeDate(unlockedOn)}</div>`
-                        : `<div class="badge-progress">
-                               <div class="badge-progress-bar"><div class="badge-progress-fill" style="width:${ratio}%"></div></div>
-                               <div class="badge-progress-text">${shown} / ${b.target}${b.unit === '%' ? '%' : ''}</div>
-                           </div>`}
-                `;
-                grid.appendChild(card);
-            });
+            // Tabs
+            const tabs = [['progress', `In Progress (${locked.length})`], ['done', `Unlocked (${unlocked.length})`], ['all', `All (${BADGES.length})`]];
+            document.getElementById('badgeTabs').innerHTML = tabs.map(([k, label]) =>
+                `<button class="tab-btn ${badgeTab === k ? 'active' : ''}" onclick="setBadgeTab('${k}')">${label}</button>`).join('');
+
+            let list;
+            if (badgeTab === 'progress') list = locked;
+            else if (badgeTab === 'done') list = unlocked.slice().sort((a, b) => b.unlockedOn.localeCompare(a.unlockedOn));
+            else list = info;
+
+            if (!list.length) {
+                grid.innerHTML = `<div class="task-empty" style="grid-column: 1 / -1;">${badgeTab === 'done' ? 'No badges yet. Tick a habit to unlock your first one!' : 'Nothing here - you unlocked everything!'}</div>`;
+                return;
+            }
+
+            const TICK = '<polyline points="20 6 9 17 4 12"/>';
+            grid.innerHTML = list.map(x => {
+                const t = TIERS[x.b.tier];
+                const done = !!x.unlockedOn;
+                return `
+                    <div class="bd-card ${done ? 'unlocked' : 'locked'}" style="--bc:${t.color};">
+                        <span class="bd-tier">${t.label}</span>
+                        ${done ? (x.unlockedOn === today ? '<span class="bd-new">NEW</span>' : `<span class="bd-tick"><svg class="icon" viewBox="0 0 24 24">${TICK}</svg></span>`) : ''}
+                        <div class="bd-ring">${badgeRing(done ? 1 : x.ratio)}<div class="bd-ring-icon"><svg class="icon" viewBox="0 0 24 24">${BADGE_ICONS[x.b.icon]}</svg></div></div>
+                        <div class="bd-title">${x.b.name}</div>
+                        <div class="bd-desc">${x.b.desc}</div>
+                        <div class="bd-meta">${done ? 'Unlocked ' + formatBadgeDate(x.unlockedOn) : remainingText(x.b, x.cur)}</div>
+                    </div>`;
+            }).join('');
         }
 
         function updateStreakAndBadges() {
@@ -1811,6 +2319,7 @@
             appState.journal[getTodayStr()] = { mood: journalMood, day, missed, why };
             saveData();
             showToast("Note saved!");
+            updateUI();
         }
 
         function deleteJournalEntry(dateStr) {
@@ -1946,6 +2455,12 @@
             renderTasksPage();
         }
 
+        function taskScheduleText(t) {
+            if (t.type === 'once') return `${formatTaskDate(t.date)} (${relativeDayText(t.date)})`;
+            if (t.type === 'weekly') return 'every ' + WEEKDAY_ORDER.filter(d => (t.weekdays || []).includes(d)).map(d => WEEKDAY_NAMES[d]).join(', ');
+            return `day ${t.monthDay} of every month`;
+        }
+
         function taskManageRow(t) {
             const today = getTodayStr();
             let detail = '';
@@ -2072,14 +2587,14 @@
             if (id) {
                 const t = appState.tasks.find(x => x.id === id);
                 if (t) Object.assign(t, data);
-                showToast('Task updated!');
+                notify({ type: 'task', title: 'Task updated', message: `"${title}" - ${taskScheduleText(data)}` });
             } else {
                 appState.tasks.push(Object.assign({ id: Date.now().toString(), done: {} }, data));
-                showToast('Task added!');
+                notify({ type: 'task', title: 'Task added', message: `"${title}" - ${taskScheduleText(data)}` });
             }
 
             saveData();
-            renderHomeTasks();
+            updateUI();
             renderTasksPage();
             closeTaskModal();
         }
@@ -2090,7 +2605,7 @@
                 saveData();
                 renderHomeTasks();
                 renderTasksPage();
-                showToast('Task deleted');
+                notify({ type: 'info', title: 'Task deleted' });
             }
         }
 
@@ -2230,7 +2745,6 @@
             document.getElementById('modalTitle').innerText = "Create New Habit";
             document.getElementById('editHabitId').value = "";
             document.getElementById('habitNameInput').value = "";
-            document.getElementById('habitXpInput').value = "10";
             document.getElementById('habitModal').classList.add('show');
         }
 
@@ -2241,20 +2755,18 @@
         function saveHabit() {
             const id = document.getElementById('editHabitId').value;
             const name = document.getElementById('habitNameInput').value;
-            const xp = parseInt(document.getElementById('habitXpInput').value);
 
             if (!name.trim()) return showToast("Please enter a name!", true);
 
             if (id) {
                 const habit = appState.habits.find(h => h.id === id);
                 habit.name = name;
-                habit.xp = xp;
                 showToast("Habit updated!");
             } else {
                 appState.habits.push({
                     id: Date.now().toString(),
                     name: name,
-                    xp: xp,
+                    xp: HABIT_XP,
                     completed: false,
                     history: {}
                 });
@@ -2275,14 +2787,13 @@
             document.getElementById('modalTitle').innerText = "Edit Habit";
             document.getElementById('editHabitId').value = habit.id;
             document.getElementById('habitNameInput').value = habit.name;
-            document.getElementById('habitXpInput').value = habit.xp;
             document.getElementById('habitModal').classList.add('show');
         }
 
         function deleteHabit(id) {
             if (confirm("Delete this habit? All history for it will be lost.")) {
                 const habit = appState.habits.find(h => h.id === id);
-                if (habit && habit.completed) appState.totalXp -= habit.xp;
+                if (habit && habit.completed) appState.totalXp -= HABIT_XP;
                 appState.habits = appState.habits.filter(h => h.id !== id);
                 saveData();
                 renderHabits();
@@ -2293,16 +2804,15 @@
             }
         }
 
-        let toastTimeout;
+        // Legacy helper: routes simple messages to the nicer notification cards
         function showToast(message, isError = false) {
-            const toast = document.getElementById('toastMsg');
-            const icon = isError ? ICON_ALERT : ICON_CHECK;
-            toast.innerHTML = icon + '<span>' + message + '</span>';
-            toast.style.borderColor = isError ? 'var(--neon-red)' : 'var(--neon-cyan)';
-            toast.style.color = isError ? 'var(--neon-red)' : 'var(--neon-cyan)';
-            toast.classList.add('show');
-            clearTimeout(toastTimeout);
-            toastTimeout = setTimeout(() => toast.classList.remove('show'), 3000);
+            if (isError) return notify({ type: 'error', title: 'Oops!', message });
+            let m;
+            if ((m = message.match(/^\+(\d+) XP/))) return notify({ type: 'xp', title: `+${m[1]} XP`, message: 'Habit completed - keep going!' });
+            if ((m = message.match(/^Task done! \+(\d+) XP/))) return notify({ type: 'task', title: 'Task completed!', message: `+${m[1]} XP earned` });
+            if ((m = message.match(/^Badge Unlocked: (.*)$/))) return notify({ type: 'badge', title: 'Achievement unlocked!', message: m[1], duration: 5500 });
+            if (message.startsWith('Perfect Day')) return notify({ type: 'level', title: 'Perfect Day!', message: 'You completed every habit today.', duration: 5000 });
+            notify({ type: 'success', title: message });
         }
 
         window.onload = init;
