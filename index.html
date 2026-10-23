@@ -572,6 +572,43 @@
             backdrop-filter: var(--glass-blur);
         }
 
+        /* --- LEVELS / LEVEL-UP --- */
+        .level-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; }
+        .level-card {
+            padding: 14px; border-radius: 16px; background: rgba(var(--tint), 0.03);
+            border: 1px solid var(--border-color); transition: transform 0.3s;
+        }
+        .level-card:hover { transform: translateY(-3px); }
+        .level-card .lv-num { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+        .level-card .lv-rank { font-size: 16px; font-weight: 600; margin: 2px 0; }
+        .level-card .lv-xp { font-size: 12px; color: var(--text-muted); }
+        .level-card .lv-status { font-size: 11px; font-weight: 600; margin-top: 8px; color: var(--text-muted); }
+        .level-card.done { border-color: var(--neon-green); }
+        .level-card.done .lv-status { color: var(--neon-green); }
+        .level-card.current { border-color: var(--neon-cyan); box-shadow: 0 0 16px rgba(0, 240, 255, 0.25); }
+        .level-card.current .lv-status { color: var(--neon-cyan); }
+        .level-card.locked { opacity: 0.55; }
+        .lv-bar { height: 5px; border-radius: 10px; background: rgba(var(--tint), 0.1); margin-top: 8px; overflow: hidden; }
+        .lv-bar > div { height: 100%; background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple)); border-radius: 10px; }
+
+        .levelup-card { text-align: center; position: relative; }
+        .levelup-title { font-size: 28px; font-weight: 700; color: var(--neon-yellow); letter-spacing: 1px; }
+        .levelup-sub { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
+        .levelup-badge {
+            width: 100px; height: 100px; border-radius: 50%; margin: 18px auto;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 44px; font-weight: 700; color: #fff;
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-cyan));
+            box-shadow: 0 0 35px var(--neon-cyan);
+            animation: lvPop 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes lvPop { from { transform: scale(0) rotate(-180deg); opacity: 0; } to { transform: scale(1) rotate(0); opacity: 1; } }
+        .confetti-piece {
+            position: fixed; top: -20px; width: 8px; height: 14px; z-index: 3001; pointer-events: none;
+            animation: confettiFall linear forwards;
+        }
+        @keyframes confettiFall { to { transform: translateY(110vh) rotate(720deg); } }
+
         /* Responsive */
         @media (max-width: 1024px) {
             .workspace { grid-template-columns: 1fr; }
@@ -627,11 +664,19 @@
                 Achievements
             </a>
         </div>
+        <a href="#" class="nav-item" id="soundToggleSide" style="margin-bottom: 6px;" onclick="toggleSound(); return false;">
+            <svg class="icon" viewBox="0 0 24 24" id="soundIconSide"></svg>
+            <span id="soundLabelSide">Sound: On</span>
+        </a>
         <a href="#" class="nav-item" id="themeToggleSide" onclick="toggleTheme(); return false;">
             <svg class="icon" viewBox="0 0 24 24" id="themeIconSide"></svg>
             <span id="themeLabelSide">Light mode</span>
         </a>
     </aside>
+
+    <button class="theme-fab" id="soundToggleFab" style="right: 60px;" onclick="toggleSound()" title="Sound on/off">
+        <svg class="icon" viewBox="0 0 24 24" id="soundIconFab"></svg>
+    </button>
 
     <button class="theme-fab" id="themeToggleFab" onclick="toggleTheme()" title="Switch theme">
         <svg class="icon" viewBox="0 0 24 24" id="themeIconFab"></svg>
@@ -649,7 +694,7 @@
                 <div class="user-profile">
                     <div class="avatar">U</div>
                     <div>
-                        <div style="font-weight: 600;">Achiever</div>
+                        <div style="font-weight: 600;" id="userRankDisplay">Beginner</div>
                         <div style="font-size: 12px; color: var(--neon-cyan);">Level <span id="userLevelDisplay">1</span></div>
                     </div>
                 </div>
@@ -659,6 +704,7 @@
                 <div class="stat-card">
                     <div class="stat-title">Total XP</div>
                     <div class="stat-value" style="color: var(--neon-yellow);" id="totalXpDisplay">0</div>
+                    <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;" id="levelInfoText"></div>
                     <div class="level-bar-container">
                         <div class="level-bar-fill" id="xpProgressBar"></div>
                     </div>
@@ -836,6 +882,11 @@
                 </div>
                 <div class="badge-summary-bar"><div class="badge-summary-fill" id="badgeSummaryFill"></div></div>
             </section>
+            <section class="panel">
+                <h2 class="panel-title" style="margin-bottom: 5px;">Level Roadmap</h2>
+                <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 15px;">Earn XP from habits and tasks to complete each level.</p>
+                <div class="level-grid" id="levelRoadmap"></div>
+            </section>
             <section class="panel next-goal" id="nextGoalPanel"></section>
             <section class="panel">
                 <div class="achievements-grid" id="badgesGrid"></div>
@@ -882,6 +933,17 @@
                 <button class="btn-primary" style="flex: 1; background: transparent; border-color: var(--text-muted); color: var(--text-muted);" onclick="closeModal()">Cancel</button>
                 <button class="btn-primary" style="flex: 2;" onclick="saveHabit()">Save Habit</button>
             </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="levelUpOverlay">
+        <div class="modal-content levelup-card">
+            <div class="levelup-title">LEVEL COMPLETE!</div>
+            <div class="levelup-sub" id="levelUpSub">Level 1 complete</div>
+            <div class="levelup-badge" id="levelUpBadge">2</div>
+            <div style="font-size: 16px; font-weight: 600;" id="levelUpRank">You are now Level 2</div>
+            <div class="levelup-sub" id="levelUpNext" style="margin-bottom: 20px;"></div>
+            <button class="btn-primary" style="width: 100%; padding: 12px;" onclick="closeLevelUp()">Keep Going!</button>
         </div>
     </div>
 
@@ -1002,6 +1064,177 @@
             }
         }
 
+        // ================= LEVEL SYSTEM =================
+        // XP needed (total) to COMPLETE each level. Level 1 -> 1,000 | Level 3 -> 2,000 | Level 5 -> 5,000
+        const LEVEL_THRESHOLDS = (() => {
+            const t = [1000, 1400, 2000, 3200, 5000];
+            let inc = 1800;
+            while (t.length < 40) { inc += 400; t.push(t[t.length - 1] + inc); }
+            return t;
+        })();
+        const RANKS = ['Beginner', 'Starter', 'Explorer', 'Achiever', 'Warrior', 'Champion', 'Hero', 'Master', 'Grandmaster', 'Legend'];
+        const TASK_XP = 15;
+
+        function getRank(level) { return RANKS[level - 1] || 'Mythic'; }
+
+        function getLevelInfo(xp) {
+            let completed = 0;
+            while (completed < LEVEL_THRESHOLDS.length - 1 && xp >= LEVEL_THRESHOLDS[completed]) completed++;
+            const start = completed > 0 ? LEVEL_THRESHOLDS[completed - 1] : 0;
+            const end = LEVEL_THRESHOLDS[completed];
+            return {
+                level: completed + 1,
+                completed,
+                start,
+                end,
+                percent: Math.min(100, Math.max(0, Math.round(((xp - start) / (end - start)) * 100))),
+                remaining: Math.max(end - xp, 0)
+            };
+        }
+
+        function renderLevelRoadmap() {
+            const box = document.getElementById('levelRoadmap');
+            if (!box) return;
+            const info = getLevelInfo(appState.totalXp);
+            const shown = Math.max(10, info.level + 1);
+            let html = '';
+            for (let n = 1; n <= shown; n++) {
+                const state = n < info.level ? 'done' : (n === info.level ? 'current' : 'locked');
+                const status = state === 'done' ? 'Completed' : (state === 'current' ? `In progress - ${info.percent}%` : 'Locked');
+                html += `
+                    <div class="level-card ${state}">
+                        <div class="lv-num">LEVEL ${n}</div>
+                        <div class="lv-rank">${getRank(n)}</div>
+                        <div class="lv-xp">Complete at ${LEVEL_THRESHOLDS[n - 1].toLocaleString('en-US')} XP</div>
+                        ${state === 'current' ? `<div class="lv-bar"><div style="width:${info.percent}%"></div></div>` : ''}
+                        <div class="lv-status">${status}</div>
+                    </div>`;
+            }
+            box.innerHTML = html;
+        }
+
+        function checkLevelUp() {
+            const info = getLevelInfo(appState.totalXp);
+            appState.currentLevel = info.level;
+            // Celebrate only when reaching a level for the first time (no farming by untick/retick)
+            if (info.level > (appState.highestLevel || 1)) {
+                appState.highestLevel = info.level;
+                showLevelUp(info.level);
+            }
+        }
+
+        function showLevelUp(newLevel) {
+            const next = getLevelInfo(appState.totalXp);
+            document.getElementById('levelUpSub').innerText = `Level ${newLevel - 1} complete`;
+            document.getElementById('levelUpBadge').innerText = newLevel;
+            document.getElementById('levelUpRank').innerText = `You are now Level ${newLevel} - ${getRank(newLevel)}`;
+            document.getElementById('levelUpNext').innerText = `${next.remaining.toLocaleString('en-US')} XP to complete Level ${newLevel}`;
+            document.getElementById('levelUpOverlay').classList.add('show');
+            setTimeout(() => playSound('levelup'), 350);
+            spawnConfetti(70);
+        }
+
+        function closeLevelUp() {
+            document.getElementById('levelUpOverlay').classList.remove('show');
+        }
+
+        function spawnConfetti(count) {
+            const colors = ['#00f0ff', '#b026ff', '#00ff88', '#ffcc00', '#ff3366'];
+            for (let i = 0; i < count; i++) {
+                const el = document.createElement('div');
+                el.className = 'confetti-piece';
+                el.style.left = Math.random() * 100 + 'vw';
+                el.style.background = colors[i % colors.length];
+                el.style.animationDuration = (2 + Math.random() * 2.5) + 's';
+                el.style.animationDelay = (Math.random() * 0.6) + 's';
+                document.body.appendChild(el);
+                setTimeout(() => el.remove(), 5500);
+            }
+        }
+
+        // ================= SOUND EFFECTS (Web Audio, no files needed) =================
+        let audioCtx = null;
+        let soundOn = true;
+        try { soundOn = localStorage.getItem('quantumSound') !== 'off'; } catch (e) {}
+
+        function getAudioCtx() {
+            if (!audioCtx) {
+                const AC = window.AudioContext || window.webkitAudioContext;
+                if (!AC) return null;
+                audioCtx = new AC();
+            }
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            return audioCtx;
+        }
+
+        function tone(freq, start, dur, type, vol, endFreq) {
+            const ctx = getAudioCtx();
+            if (!ctx) return;
+            const t0 = ctx.currentTime + start;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = type || 'sine';
+            osc.frequency.setValueAtTime(freq, t0);
+            if (endFreq) osc.frequency.exponentialRampToValueAtTime(endFreq, t0 + dur);
+            gain.gain.setValueAtTime(0.0001, t0);
+            gain.gain.exponentialRampToValueAtTime(vol || 0.15, t0 + 0.012);
+            gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(t0);
+            osc.stop(t0 + dur + 0.05);
+        }
+
+        const SOUNDS = {
+            // 1. Task check: short, crisp "pop-tick"
+            check() {
+                tone(700, 0, 0.07, 'sine', 0.2, 500);
+                tone(1050, 0.04, 0.12, 'triangle', 0.14);
+            },
+            // soft "undo" blip when un-ticking
+            uncheck() {
+                tone(420, 0, 0.12, 'sine', 0.12, 260);
+            },
+            // 2. Task completion: bright rising chime (all done)
+            complete() {
+                [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone(f, i * 0.09, 0.4, 'triangle', 0.17));
+                tone(1318.5, 0.42, 0.7, 'sine', 0.13);
+            },
+            // 3. Achievement unlock: triumphant fanfare + sparkle
+            achievement() {
+                [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach((f, i) => tone(f, i * 0.11, 0.3, 'square', 0.07));
+                [523.25, 659.25, 783.99, 1046.5].forEach(f => tone(f, 0.6, 1.1, 'triangle', 0.1));
+                [2093, 2637, 3136].forEach((f, i) => tone(f, 0.65 + i * 0.07, 0.35, 'sine', 0.05));
+            },
+            // Level complete: long epic rise + big chord
+            levelup() {
+                [392, 440, 494, 587, 659, 784, 988, 1175].forEach((f, i) => tone(f, i * 0.09, 0.28, 'sawtooth', 0.06));
+                [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach(f => tone(f, 0.8, 1.6, 'triangle', 0.1));
+                [2093, 2637, 3136, 4186].forEach((f, i) => tone(f, 0.85 + i * 0.08, 0.5, 'sine', 0.045));
+            }
+        };
+
+        function playSound(name) {
+            if (!soundOn) return;
+            try { SOUNDS[name](); } catch (e) {}
+        }
+
+        const ICON_VOL_ON = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>';
+        const ICON_VOL_OFF = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>';
+
+        function updateSoundButton() {
+            document.getElementById('soundIconSide').innerHTML = soundOn ? ICON_VOL_ON : ICON_VOL_OFF;
+            document.getElementById('soundIconFab').innerHTML = soundOn ? ICON_VOL_ON : ICON_VOL_OFF;
+            document.getElementById('soundLabelSide').innerText = soundOn ? 'Sound: On' : 'Sound: Off';
+        }
+
+        function toggleSound() {
+            soundOn = !soundOn;
+            try { localStorage.setItem('quantumSound', soundOn ? 'on' : 'off'); } catch (e) {}
+            updateSoundButton();
+            if (soundOn) playSound('check');
+        }
+
         // ================= THEME =================
         const ICON_SUN = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
         const ICON_MOON = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
@@ -1043,7 +1276,11 @@
                 appState.habits = defaultHabits;
             }
 
+            const startLevel = getLevelInfo(appState.totalXp).level;
+            appState.currentLevel = startLevel;
+            appState.highestLevel = startLevel;
             updateThemeButton();
+            updateSoundButton();
             syncTodayStatus();
             renderHabits();
             renderWeeklyChart();
@@ -1084,6 +1321,17 @@
             renderCalendar();
             updateUI();
             renderAnalyticsChart();
+
+            // Sounds: tick sound on every check, completion chime when ALL habits are done
+            if (habit.completed) {
+                playSound('check');
+                if (appState.habits.length > 0 && appState.habits.every(h => h.completed)) {
+                    setTimeout(() => playSound('complete'), 220);
+                    showToast('Perfect Day! All habits done');
+                }
+            } else {
+                playSound('uncheck');
+            }
         }
 
         function toggleCalendarCell(habitId, dateStr, cellElement) {
@@ -1402,7 +1650,7 @@
             if (newly.length) {
                 saveData();
                 const extra = newly.length > 1 ? ` (+${newly.length - 1} more)` : '';
-                setTimeout(() => showToast(`Badge Unlocked: ${newly[0].name}${extra}`), 1500);
+                setTimeout(() => { playSound('achievement'); showToast(`Badge Unlocked: ${newly[0].name}${extra}`); }, 1500);
             }
         }
 
@@ -1468,6 +1716,7 @@
             document.getElementById('streakDisplay').innerText = getCurrentStreak();
             checkBadges();
             renderBadges();
+            renderLevelRoadmap();
         }
 
         // ================= JOURNAL =================
@@ -1649,7 +1898,7 @@
                     <div class="custom-checkbox ${done ? 'checked' : ''}" onclick="toggleTask('${t.id}', '${item.date}')">${done ? '✓' : ''}</div>
                     <div class="habit-info">
                         <h3>${escapeHtml(t.title)}</h3>
-                        <p>${typeTag(t)}${item.overdue ? `<span class="task-tag" style="--tc:var(--neon-red);">Overdue - ${formatTaskDate(item.date)}</span>` : ''}</p>
+                        <p>${typeTag(t)}<span class="habit-xp">+${TASK_XP} XP</span>${item.overdue ? `<span class="task-tag" style="--tc:var(--neon-red);">Overdue - ${formatTaskDate(item.date)}</span>` : ''}</p>
                     </div>
                 </div>`;
         }
@@ -1658,10 +1907,27 @@
             const t = (appState.tasks || []).find(x => x.id === id);
             if (!t) return;
             t.done[dateKey] = !t.done[dateKey];
-            if (t.done[dateKey]) showToast('Task completed!');
+            if (t.done[dateKey]) {
+                appState.totalXp += TASK_XP;
+                showToast(`Task done! +${TASK_XP} XP`);
+            } else {
+                appState.totalXp = Math.max(0, appState.totalXp - TASK_XP);
+            }
+            checkLevelUp();
             saveData();
-            renderHomeTasks();
+            updateUI();
             if (document.getElementById('page-tasks').classList.contains('active')) renderTasksPage();
+
+            // Sounds: tick sound on every check, completion chime when ALL of today's tasks are done
+            if (t.done[dateKey]) {
+                playSound('check');
+                const items = getTasksDueToday();
+                if (items.length > 0 && items.every(i => i.task.done[i.date])) {
+                    setTimeout(() => playSound('complete'), 220);
+                }
+            } else {
+                playSound('uncheck');
+            }
         }
 
         function renderHomeTasks() {
@@ -1855,10 +2121,13 @@
 
             document.getElementById('totalXpDisplay').innerText = appState.totalXp;
 
-            const xpInCurrentLevel = appState.totalXp % 100;
-            document.getElementById('userLevelDisplay').innerText = appState.currentLevel;
-            document.getElementById('xpProgressBar').style.width = `${xpInCurrentLevel}%`;
-            document.getElementById('nextLevelXpText').innerText = `${100 - xpInCurrentLevel} XP to Level ${appState.currentLevel + 1}`;
+            const lv = getLevelInfo(appState.totalXp);
+            appState.currentLevel = lv.level;
+            document.getElementById('userLevelDisplay').innerText = lv.level;
+            document.getElementById('userRankDisplay').innerText = getRank(lv.level);
+            document.getElementById('levelInfoText').innerText = `Level ${lv.level} - ${getRank(lv.level)}`;
+            document.getElementById('xpProgressBar').style.width = `${lv.percent}%`;
+            document.getElementById('nextLevelXpText').innerText = `${appState.totalXp.toLocaleString('en-US')} / ${lv.end.toLocaleString('en-US')} XP - ${lv.remaining.toLocaleString('en-US')} to complete Level ${lv.level}`;
 
             const percentage = totalHabits === 0 ? 0 : Math.round((completedHabits / totalHabits) * 100);
             document.getElementById('progressText').innerText = `${percentage}%`;
