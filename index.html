@@ -12,6 +12,7 @@
 
         :root {
             color-scheme: dark;
+            --app-font: 'Outfit', sans-serif;
             --tint: 255, 255, 255;
             --bg-base: #000000;
             --bg-card: rgba(18, 18, 18, 0.85);
@@ -62,7 +63,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Outfit', sans-serif;
+            font-family: var(--app-font);
             user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
@@ -402,7 +403,7 @@
             overflow: visible;
         }
         .chart-grid-line { stroke: rgba(var(--tint), 0.05); stroke-width: 1; stroke-dasharray: 4; }
-        .chart-axis-text { fill: var(--text-muted); font-size: 12px; font-family: 'Outfit'; }
+        .chart-axis-text { fill: var(--text-muted); font-size: 12px; font-family: var(--app-font); }
         .chart-line { fill: none; stroke: var(--neon-cyan); stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.6)); }
         .chart-area { fill: url(#areaGradient); opacity: 0.3; }
         .chart-dot { fill: var(--bg-base); stroke: var(--neon-cyan); stroke-width: 3; transition: all 0.3s; cursor: pointer; }
@@ -429,7 +430,7 @@
         .input-group input, .input-group select {
             width: 100%; padding: 12px; border-radius: 10px;
             background: rgba(var(--tint), 0.05); border: 1px solid var(--border-color);
-            color: var(--text-main); outline: none; font-family: 'Outfit'; font-size: 14px;
+            color: var(--text-main); outline: none; font-family: var(--app-font); font-size: 14px;
         }
         .input-group input:focus, .input-group select:focus { border-color: var(--neon-cyan); box-shadow: 0 0 10px rgba(0,240,255,0.2); }
 
@@ -504,7 +505,7 @@
         .input-group textarea {
             width: 100%; padding: 12px; border-radius: 10px; resize: vertical; min-height: 80px;
             background: rgba(var(--tint), 0.05); border: 1px solid var(--border-color);
-            color: var(--text-main); outline: none; font-family: 'Outfit'; font-size: 14px; line-height: 1.5;
+            color: var(--text-main); outline: none; font-family: var(--app-font); font-size: 14px; line-height: 1.5;
         }
         .input-group textarea:focus { border-color: var(--neon-cyan); box-shadow: 0 0 10px rgba(0,240,255,0.2); }
         .mood-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
@@ -669,7 +670,7 @@
         .sound-row select {
             padding: 9px 10px; border-radius: 10px; min-width: 150px; max-width: 220px;
             background: rgba(var(--tint), 0.06); border: 1px solid var(--border-color);
-            color: var(--text-main); font-family: 'Outfit'; font-size: 13px; outline: none;
+            color: var(--text-main); font-family: var(--app-font); font-size: 13px; outline: none;
         }
         .sound-row select:focus { border-color: var(--neon-cyan); }
         .icon-btn {
@@ -751,6 +752,42 @@
         .bd-meta { margin-top: 8px; font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: 20px; background: rgba(var(--tint), 0.06); color: var(--text-main); }
         .bd-card.unlocked .bd-meta { color: var(--neon-green); background: transparent; padding: 5px 0; }
 
+        /* --- GROWTH LAB / EXTRAS --- */
+        .ws-col { display: flex; flex-direction: column; gap: 25px; min-width: 0; }
+        .cal-cell.rest { background: rgba(var(--tint), 0.07); border-color: transparent; }
+        .cal-cell.rest::after { content: '-'; color: var(--text-muted); }
+        :root.hc { --text-muted: #d0d0d0; --border-color: rgba(var(--tint), 0.4); }
+        :root.rm *, :root.rm *::before, :root.rm *::after { animation: none !important; transition: none !important; }
+        .theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+        .theme-card { padding: 12px; border-radius: 14px; text-align: center; cursor: pointer; border: 1px solid var(--border-color); background: rgba(var(--tint), 0.03); transition: all 0.2s; }
+        .theme-card:hover { border-color: var(--neon-cyan); }
+        .theme-card.selected { border-color: var(--neon-cyan); box-shadow: 0 0 14px var(--neon-cyan); }
+        .theme-card.locked { opacity: 0.5; }
+        .theme-sw { height: 36px; border-radius: 10px; margin-bottom: 8px; border: 1px solid var(--border-color); }
+        .theme-name { font-size: 13px; font-weight: 600; }
+        .theme-lv { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+        .qa-fab {
+            position: fixed; right: 22px; bottom: 22px; z-index: 140; width: 54px; height: 54px; border-radius: 50%;
+            border: none; cursor: pointer; font-size: 28px; line-height: 1; color: var(--bg-base);
+            background: var(--neon-cyan); box-shadow: 0 0 18px var(--neon-cyan), 0 6px 20px rgba(0, 0, 0, 0.35);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .qa-fab.open { transform: rotate(45deg); }
+        .qa-menu { position: fixed; right: 22px; bottom: 86px; z-index: 140; display: none; flex-direction: column; gap: 8px; align-items: flex-end; }
+        .qa-menu.show { display: flex; }
+        .qa-item {
+            padding: 9px 16px; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: 600; white-space: nowrap;
+            background: var(--bg-card); backdrop-filter: var(--glass-blur); color: var(--text-main); border: 1px solid var(--border-color);
+        }
+        .qa-item:hover { border-color: var(--neon-cyan); color: var(--neon-cyan); }
+        .focus-screen { position: fixed; inset: 0; z-index: 4000; background: var(--bg-base); display: none; flex-direction: column; align-items: center; justify-content: center; gap: 20px; text-align: center; padding: 20px; }
+        .focus-screen.show { display: flex; }
+        .focus-time { font-size: 84px; font-weight: 700; color: var(--neon-cyan); letter-spacing: 2px; }
+        .search-result { padding: 10px 12px; border-radius: 10px; cursor: pointer; font-size: 14px; border: 1px solid var(--border-color); margin-bottom: 8px; }
+        .search-result:hover { border-color: var(--neon-cyan); }
+        .search-tag { font-size: 10px; font-weight: 700; color: var(--neon-cyan); margin-right: 8px; text-transform: uppercase; }
+        @media (max-width: 768px) { .qa-fab { bottom: 84px; right: 14px; } .qa-menu { bottom: 148px; right: 14px; } .focus-time { font-size: 60px; } }
+
         /* Responsive */
         @media (max-width: 1024px) {
             .workspace { grid-template-columns: 1fr; }
@@ -802,6 +839,10 @@
                 <svg class="icon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
                 Tasks
             </a>
+            <a href="#" class="nav-item" onclick="changePage('growth', this)">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                Growth Lab
+            </a>
             <a href="#" class="nav-item" onclick="changePage('journal', this)">
                 <svg class="icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
                 Notes
@@ -835,7 +876,7 @@
                 </div>
             </header>
 
-            <section class="stats-grid">
+            <section class="stats-grid" data-sec="stats">
                 <div class="stat-card">
                     <div class="stat-title">Total XP</div>
                     <div class="stat-value" style="color: var(--neon-yellow);" id="totalXpDisplay">0</div>
@@ -871,7 +912,8 @@
             </section>
 
             <div class="workspace">
-                <div class="panel" style="text-align: center;">
+                <div class="ws-col">
+                <div class="panel" data-sec="overview" style="text-align: center;">
                     <h2 class="panel-title" style="margin-bottom: 20px; text-align: left;">Daily Overview</h2>
                     <div class="circle-wrap">
                         <svg>
@@ -883,23 +925,10 @@
                     <p style="color: var(--text-muted); font-size: 13px; margin-top: 15px;" id="progressMessage">Let's get started!</p>
                 </div>
 
-                <div style="display: flex; flex-direction: column; gap: 25px;">
-                    <div class="panel">
-                        <h2 class="panel-title" style="margin-bottom: 15px;">Weekly Performance</h2>
-                        <div class="bars" id="weeklyBars"></div>
-                    </div>
-                    <div class="panel">
-                        <div class="panel-header" style="margin-bottom: 0;">
-                            <h2 class="panel-title">Monthly Performance</h2>
-                            <span style="font-size: 12px; color: var(--neon-cyan); font-weight: 600;" id="monthlyPerfText"></span>
-                        </div>
-                        <div class="bars" id="monthlyBars"></div>
-                    </div>
                 </div>
-            </div>
-
+                <div class="ws-col">
             <!-- STATISTICS (HOME) -->
-            <section class="panel">
+            <section class="panel" data-sec="statistics">
                 <h2 class="panel-title" style="margin-bottom: 5px;">Statistics</h2>
                 <p style="color: var(--text-muted); font-size: 13px;">Last 7 days progress trend</p>
                 <div class="analytics-chart-container">
@@ -914,8 +943,22 @@
                 </div>
             </section>
 
+                    <div class="panel" data-sec="weekly">
+                        <h2 class="panel-title" style="margin-bottom: 15px;">Weekly Performance</h2>
+                        <div class="bars" id="weeklyBars"></div>
+                    </div>
+                    <div class="panel" data-sec="monthly">
+                        <div class="panel-header" style="margin-bottom: 0;">
+                            <h2 class="panel-title">Monthly Performance</h2>
+                            <span style="font-size: 12px; color: var(--neon-cyan); font-weight: 600;" id="monthlyPerfText"></span>
+                        </div>
+                        <div class="bars" id="monthlyBars"></div>
+                    </div>
+                </div>
+            </div>
+
             <!-- MONTHLY CALENDAR SECTION -->
-            <section class="calendar-section">
+            <section class="calendar-section" data-sec="tracker">
                 <div class="panel-header" style="margin-bottom: 15px;">
                     <h2 class="panel-title">Monthly Tracker</h2>
                     <span style="font-size: 12px; color: var(--text-muted);">Scroll right to see all days (auto-updated)</span>
@@ -942,6 +985,18 @@
             </div>
         </div>
 
+        <!-- GROWTH LAB PAGE -->
+        <div id="page-growth" class="page-section">
+            <header class="top-header">
+                <div>
+                    <h1>Growth Lab</h1>
+                    <p>Insights, reports, planning and focus tools built from your own data</p>
+                </div>
+            </header>
+            <div class="task-tabs" id="growthTabs" style="margin-bottom: 0;"></div>
+            <div id="growthContent" style="display: flex; flex-direction: column; gap: 25px;"></div>
+        </div>
+
         <!-- SETTINGS PAGE -->
         <div id="page-settings" class="page-section">
             <header class="top-header">
@@ -953,6 +1008,8 @@
             <section class="panel" id="appearancePanel"></section>
             <section class="panel" id="soundSettingsPanel"></section>
             <section class="panel" id="notifySettingsPanel"></section>
+            <section class="panel" id="prefsPanel"></section>
+            <section class="panel" id="securityPanel"></section>
         </div>
 
         <!-- TASKS PAGE -->
@@ -1069,6 +1126,33 @@
                 <button class="btn-primary" style="flex: 1; background: transparent; border-color: var(--text-muted); color: var(--text-muted);" onclick="closeModal()">Cancel</button>
                 <button class="btn-primary" style="flex: 2;" onclick="saveHabit()">Save Habit</button>
             </div>
+        </div>
+    </div>
+
+    <button class="qa-fab" id="qaFab" onclick="toggleQA()" title="Quick actions">+</button>
+    <div class="qa-menu" id="qaMenu"></div>
+
+    <div class="focus-screen" id="focusScreen">
+        <div style="color: var(--text-muted); font-size: 14px;">Focus Mode - everything else is hidden</div>
+        <div class="focus-time" id="focusTime">25:00</div>
+        <div style="width: min(420px, 90%); height: 8px; border-radius: 10px; background: rgba(var(--tint), 0.1); overflow: hidden;"><div id="focusBar" style="height: 100%; width: 0%; background: var(--neon-cyan);"></div></div>
+        <button class="btn-primary" onclick="endFocus(false)">Stop session</button>
+    </div>
+
+    <div class="modal-overlay" id="searchOverlay" onclick="if (event.target === this) closeSearch()">
+        <div class="modal-content" style="max-width: 520px; max-height: 85vh; overflow-y: auto;">
+            <div class="input-group"><input type="text" id="searchInput" placeholder="Search habits, tasks, notes, rules..." oninput="doSearch(this.value)"></div>
+            <div id="searchResults"></div>
+            <button class="btn-primary" style="width: 100%; margin-top: 8px; background: transparent; border-color: var(--text-muted); color: var(--text-muted);" onclick="closeSearch()">Close</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="lockOverlay" style="z-index: 5000; background: var(--bg-base);">
+        <div class="modal-content" style="text-align: center;">
+            <h2 style="margin-bottom: 6px;">App Locked</h2>
+            <div class="setting-desc" style="margin-bottom: 16px;">Enter your PIN to continue</div>
+            <div class="input-group"><input type="password" id="lockInput" inputmode="numeric" placeholder="PIN" onkeydown="if (event.key === 'Enter') unlockApp()"></div>
+            <button class="btn-primary" style="width: 100%; padding: 12px;" onclick="unlockApp()">Unlock</button>
         </div>
     </div>
 
@@ -1193,6 +1277,10 @@
             }
 
             // Re-draw chart when opening analytics
+            if (pageId === 'growth') {
+                renderGrowth();
+            }
+
             if (pageId === 'settings') {
                 renderSettings();
             }
@@ -1277,7 +1365,7 @@
             document.getElementById('levelUpSub').innerText = `Level ${newLevel - 1} complete`;
             document.getElementById('levelUpBadge').innerText = newLevel;
             document.getElementById('levelUpRank').innerText = `You are now Level ${newLevel} - ${getRank(newLevel)}`;
-            document.getElementById('levelUpNext').innerText = `${next.remaining.toLocaleString('en-US')} XP to complete Level ${newLevel}`;
+            document.getElementById('levelUpNext').innerText = `${next.remaining.toLocaleString('en-US')} XP to complete Level ${newLevel}${(THEMES.find(t => t.level === newLevel) || {}).name ? ' - New theme unlocked: ' + THEMES.find(t => t.level === newLevel).name + '!' : ''}`;
             document.getElementById('levelUpOverlay').classList.add('show');
             setTimeout(() => playSound('levelup'), 350);
             spawnConfetti(70);
@@ -1525,6 +1613,7 @@
         // ================= SETTINGS PAGE =================
         function renderSettings() {
             renderAppearance();
+            renderPrefsPanels();
             const panel = document.getElementById('soundSettingsPanel');
             if (!panel) return;
             const PLAY = '<polygon points="6 3 20 12 6 21 6 3"/>';
@@ -1602,41 +1691,435 @@
             if (soundOn) playSound('check');
         }
 
+        // ================= GROWTH LAB & EXTRAS =================
+        const $ = id => document.getElementById(id);
+        const pad2 = n => String(n).padStart(2, '0');
+        const esc = escapeHtml;
+
+        let prefs = { reminder: { on: false, time: '08:00', last: '' }, size: 100, font: 'outfit', contrast: false, motion: false, hidden: [], autoBackup: true, pinHash: '' };
+        try { Object.assign(prefs, JSON.parse(localStorage.getItem('quantumPrefs') || '{}')); } catch (e) {}
+        function savePrefs() { try { localStorage.setItem('quantumPrefs', JSON.stringify(prefs)); } catch (e) {} }
+
+        function ensureExtras() {
+            const d = { tickTimes: {}, energy: {}, distractions: [], procrastination: [], focus: [], stacks: [], plans: [], rules: [], wins: {}, balance: {}, reviews: {}, ba: { before: '', beforeDate: '', after: '', afterDate: '' }, goal: { ticks: 0, deadline: '' }, restDays: [] };
+            Object.keys(d).forEach(k => { if (appState[k] === undefined) appState[k] = d[k]; });
+        }
+
+        function applyPrefs() {
+            const fonts = { outfit: "'Outfit', sans-serif", easy: 'Verdana, Tahoma, sans-serif', serif: 'Georgia, serif' };
+            document.documentElement.style.setProperty('--app-font', fonts[prefs.font] || fonts.outfit);
+            document.body.style.zoom = prefs.size / 100;
+            document.documentElement.classList.toggle('hc', !!prefs.contrast);
+            document.documentElement.classList.toggle('rm', !!prefs.motion);
+            document.querySelectorAll('[data-sec]').forEach(el => { el.style.display = prefs.hidden.includes(el.dataset.sec) ? 'none' : ''; });
+        }
+
+        // ---- date + stats helpers ----
+        function isRestDay(d) { return (appState.restDays || []).includes(weekdayOf(d)); }
+        function workDaysInMonth(dt) {
+            const y = dt.getFullYear(), m = dt.getMonth(), n = new Date(y, m + 1, 0).getDate();
+            let c = 0;
+            for (let i = 1; i <= n; i++) if (!isRestDay(`${y}-${pad2(m + 1)}-${pad2(i)}`)) c++;
+            return c;
+        }
+        function lastDates(n, end) { const e = end || getTodayStr(), out = []; for (let i = n - 1; i >= 0; i--) out.push(dateAdd(e, -i)); return out; }
+        function monthDates(y, m0) {
+            const n = new Date(y, m0 + 1, 0).getDate(), t = getTodayStr(), out = [];
+            for (let i = 1; i <= n; i++) { const d = `${y}-${pad2(m0 + 1)}-${pad2(i)}`; if (d <= t) out.push(d); }
+            return out;
+        }
+        function ticksOn(d) { return appState.habits.filter(h => h.history[d] === true).length; }
+        function rateFor(dates, habits) {
+            habits = habits || appState.habits;
+            let done = 0, tot = 0;
+            dates.forEach(d => { if (isRestDay(d)) return; habits.forEach(h => { tot++; if (h.history[d] === true) done++; }); });
+            return tot ? Math.round(done / tot * 100) : 0;
+        }
+        function perfectIn(dates) { const H = appState.habits; return H.length ? dates.filter(d => H.every(h => h.history[d] === true)).length : 0; }
+        const fm = m => `${pad2(Math.floor(m / 60))}:${pad2(m % 60)}`;
+        const bucket = m => m < 720 ? 'Morning' : m < 1020 ? 'Afternoon' : m < 1260 ? 'Evening' : 'Night';
+        function habitTimes() {
+            return appState.habits.map(h => {
+                const mins = Object.values((appState.tickTimes || {})[h.id] || {}).map(x => { const [a, b] = x.split(':').map(Number); return a * 60 + b; });
+                return { h, n: mins.length, avg: mins.length ? Math.round(mins.reduce((x, y) => x + y, 0) / mins.length) : null, all: mins };
+            });
+        }
+
+        function recordTickAndStacks(habit) {
+            const now = new Date();
+            if (!appState.tickTimes[habit.id]) appState.tickTimes[habit.id] = {};
+            appState.tickTimes[habit.id][getTodayStr()] = `${pad2(now.getHours())}:${pad2(now.getMinutes())}`;
+            saveData();
+            (appState.stacks || []).forEach(st => {
+                if (st.after === habit.id) {
+                    const nx = appState.habits.find(x => x.id === st.then);
+                    if (nx && !nx.completed) notify({ type: 'info', title: 'Next in your stack', message: `Now do: ${nx.name}` });
+                }
+                if (st.then === habit.id) {
+                    const req = appState.habits.find(x => x.id === st.after);
+                    if (req && !req.completed) notify({ type: 'info', title: 'Heads up', message: `"${req.name}" should come first.` });
+                }
+            });
+        }
+
+        // ---- render helpers ----
+        const gCard = (title, body, sub) => `<section class="panel"><h2 class="panel-title" style="margin-bottom: 4px;">${title}</h2>${sub ? `<div class="setting-desc" style="margin-bottom: 14px;">${sub}</div>` : '<div style="margin-bottom: 12px;"></div>'}${body}</section>`;
+        const gTiles = arr => `<div class="stats-grid">${arr.map(([l, v]) => `<div class="stat-card"><div class="stat-title">${l}</div><div class="stat-value" style="font-size: 24px;">${v}</div></div>`).join('')}</div>`;
+        const gRow = (html, del) => `<div class="sound-row" style="margin-bottom: 8px;"><div style="flex: 1; min-width: 0; word-break: break-word; font-size: 14px;">${html}</div>${del ? `<button class="icon-btn" onclick="${del}" title="Delete">${ICON_TRASH}</button>` : ''}</div>`;
+        const gEmpty = t => `<div class="task-empty">${t}</div>`;
+        const gInput = (id, ph, val) => `<div class="input-group" style="margin-bottom: 10px;"><input type="text" id="${id}" placeholder="${ph}" value="${esc(val || '')}"></div>`;
+        const gArea = (id, label, val) => `<div class="input-group"><label>${label}</label><textarea id="${id}" rows="2">${esc(val || '')}</textarea></div>`;
+        const li = (arr) => arr.map(x => `<div style="font-size: 14px; line-height: 1.5; margin-bottom: 8px;">- ${x}</div>`).join('');
+        function delItem(key, i) { appState[key].splice(i, 1); saveData(); renderGrowth(); }
+
+        let growthTab = 'insights';
+        function setGrowthTab(t) { growthTab = t; renderGrowth(); }
+        function renderGrowth() {
+            const tabs = [['insights', 'Insights'], ['reports', 'Reports'], ['planner', 'Planner'], ['trackers', 'Trackers'], ['focus', 'Focus'], ['journey', 'Journey']];
+            $('growthTabs').innerHTML = tabs.map(([k, l]) => `<button class="tab-btn ${growthTab === k ? 'active' : ''}" onclick="setGrowthTab('${k}')">${l}</button>`).join('');
+            const fn = { insights: gInsights, reports: gReports, planner: gPlanner, trackers: gTrackers, focus: gFocus, journey: gJourney }[growthTab];
+            $('growthContent').innerHTML = fn();
+            if (growthTab === 'journey') drawRadar();
+        }
+
+        // ---- INSIGHTS: smart insights, prediction, difficulty, recovery, time analysis, scheduling ----
+        function gInsights() {
+            const H = appState.habits, today = getTodayStr();
+            if (!H.length || getTotalCompleted() === 0) return gCard('Smart Insights', gEmpty('Tick a few habits and your personal insights will appear here.'));
+            const d7 = lastDates(7), d14 = lastDates(14), d56 = lastDates(56);
+            const r7 = rateFor(d7), r14 = rateFor(d14), prev7 = rateFor(lastDates(7, dateAdd(today, -7)));
+            const wd = [0, 1, 2, 3, 4, 5, 6].map(w => ({ w, r: rateFor(d56.filter(d => weekdayOf(d) === w)) }));
+            const best = wd.slice().sort((a, b) => b.r - a.r)[0], worst = wd.slice().sort((a, b) => a.r - b.r)[0];
+            const hr = H.map(h => ({ h, r: rateFor(d14, [h]) })).sort((a, b) => b.r - a.r);
+            const pred = Math.max(0, Math.min(100, Math.round(0.6 * r7 + 0.4 * r14 + 0.3 * (r7 - prev7))));
+            const trend = r7 > prev7 ? `up ${r7 - prev7}%` : r7 < prev7 ? `down ${prev7 - r7}%` : 'steady';
+            const insights = li([
+                `Your best day is <b>${WEEKDAY_NAMES[best.w]}</b> (${best.r}%). Your toughest is <b>${WEEKDAY_NAMES[worst.w]}</b> (${worst.r}%).`,
+                `Strongest habit: <b>${esc(hr[0].h.name)}</b> (${hr[0].r}%). Needs attention: <b>${esc(hr[hr.length - 1].h.name)}</b> (${hr[hr.length - 1].r}%).`,
+                `This week you are <b>${trend}</b> vs last week (${r7}% vs ${prev7}%).`
+            ]);
+            const predBox = `<div class="bd-hero-bar" style="max-width: none; margin: 8px 0;"><div style="width: ${pred}%; background: var(--neon-cyan);"></div></div><div style="font-size: 14px;">Predicted consistency for the next 7 days: <b>${pred}%</b></div><div class="setting-desc">Based on your last 14 days and your recent trend.</div>`;
+            const adv = hr.filter(x => x.r < 30 || x.r >= 90).slice(0, 6).map(x => x.r < 30
+                ? `<b>${esc(x.h.name)}</b> (${x.r}%) looks too hard right now. Shrink it: do just 2 minutes.`
+                : `<b>${esc(x.h.name)}</b> (${x.r}%) is easy for you. Level it up a little.`);
+            const rec = H.map(h => { const ds = Object.keys(h.history).filter(d => h.history[d]).sort(); const last = ds[ds.length - 1]; return last && daysBetween(last, today) >= 3 ? { h, n: daysBetween(last, today) } : null; }).filter(Boolean).slice(0, 5)
+                .map(x => `<b>${esc(x.h.name)}</b>: missed ${x.n} days. Restart tiny (2 minutes) and do it right after "${esc(hr[0].h.name)}".`);
+            const ht = habitTimes(), all = ht.reduce((a, x) => a.concat(x.all), []);
+            const bk = {}; all.forEach(m => { bk[bucket(m)] = (bk[bucket(m)] || 0) + 1; });
+            const topB = Object.keys(bk).sort((a, b) => bk[b] - bk[a])[0];
+            const sched = ht.map(x => x.avg === null ? `<b>${esc(x.h.name)}</b>: not enough data yet` : `<b>${esc(x.h.name)}</b>: usually around <b>${fm(x.avg)}</b> (${bucket(x.avg)}) - suggested slot ${fm(x.avg)}`);
+            return gCard('Smart Insights', insights, 'Calculated on your device from your own history (rule-based, not a cloud AI).')
+                + gCard('Consistency Prediction', predBox)
+                + gCard('Difficulty Advisor', adv.length ? li(adv) : gEmpty('Your habits are well balanced. Nothing to adjust.'), 'Suggestions only - nothing changes automatically.')
+                + gCard('Missed Habit Recovery', rec.length ? li(rec) : gEmpty('No habit has been missed for 3+ days. Great!'))
+                + gCard('Habit Completion Time & Smart Schedule', (topB ? `<div style="margin-bottom: 10px; font-size: 14px;">Most of your ticks happen in the <b>${topB}</b>.</div>` : '') + li(sched), 'Time is recorded each time you tick a habit.');
+        }
+
+        // ---- REPORTS: weekly, monthly, personal bests, weekly review ----
+        function gReports() {
+            const H = appState.habits, t = getTodayStr(), now = new Date();
+            if (!H.length) return gCard('Reports', gEmpty('Add habits to see reports.'));
+            const bestOf = ds => { const x = H.map(h => ({ h, r: rateFor(ds, [h]) })).sort((a, b) => b.r - a.r); return x.length ? `${esc(x[0].h.name)} (${x[0].r}%)` : '-'; };
+            const d7 = lastDates(7), p7 = lastDates(7, dateAdd(t, -7));
+            const r7 = rateFor(d7), rp = rateFor(p7), tk = ds => ds.reduce((n, d) => n + ticksOn(d), 0);
+            const md = monthDates(now.getFullYear(), now.getMonth()), lm = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+            const ld = monthDates(lm.getFullYear(), lm.getMonth()).concat([]), lmFull = (() => { const n = new Date(lm.getFullYear(), lm.getMonth() + 1, 0).getDate(); return Array.from({ length: n }, (_, i) => `${lm.getFullYear()}-${pad2(lm.getMonth() + 1)}-${pad2(i + 1)}`); })();
+            const rm = rateFor(md), rlm = rateFor(lmFull);
+            const dl = (a, b) => a > b ? `+${a - b}%` : a < b ? `${a - b}%` : 'same';
+            const active = Object.keys(getActiveDatesMap());
+            const bestDay = active.reduce((m, d) => Math.max(m, ticksOn(d)), 0);
+            const bestWeek = active.reduce((m, d) => Math.max(m, lastDates(7, dateAdd(d, 6)).reduce((n, x) => n + ticksOn(x), 0)), 0);
+            const wkStart = dateAdd(t, -((weekdayOf(t) + 6) % 7)), rv = appState.reviews[wkStart] || {};
+            const past = Object.keys(appState.reviews).filter(k => k !== wkStart).sort().reverse().slice(0, 3).map(k => gRow(`<b>Week of ${formatTaskDate(k)}</b><br><span class="setting-desc">Went well: ${esc(appState.reviews[k].well || '-')} | Improve: ${esc(appState.reviews[k].improve || '-')} | Goal: ${esc(appState.reviews[k].goal || '-')}</span>`)).join('');
+            return gCard('Weekly Self-Improvement Report', gTiles([['Last 7 days', r7 + '%'], ['vs previous week', dl(r7, rp)], ['Ticks', tk(d7)], ['Best habit', bestOf(d7)]]), `Compared with the 7 days before (${rp}%).`)
+                + gCard('Monthly Personal Growth Report', gTiles([['This month', rm + '%'], ['vs last month', dl(rm, rlm)], ['Ticks', tk(md)], ['Perfect days', perfectIn(md)], ['Best habit', bestOf(md)]]), rm >= rlm ? 'You are growing. Keep it up!' : 'A small dip - a fresh start is always possible.')
+                + gCard('Personal Best Records', gTiles([['Longest streak', getLongestStreak() + ' days'], ['Current streak', getCurrentStreak() + ' days'], ['Total ticks', getTotalCompleted()], ['Best day', bestDay + ' ticks'], ['Best week', bestWeek + ' ticks'], ['Perfect days', getPerfectDays()], ['Tasks done', getTasksDoneCount()], ['Focus minutes', appState.focus.reduce((n, f) => n + f.mins, 0)]]))
+                + gCard('Weekly Goal Review', gArea('rvWell', 'What went well this week?', rv.well) + gArea('rvImprove', 'What should I improve?', rv.improve) + gArea('rvGoal', 'My goal for next week', rv.goal) + `<button class="btn-primary" onclick="saveReview('${wkStart}')">Save review</button>` + (past ? `<div style="margin-top: 16px;">${past}</div>` : ''), `Week starting ${formatTaskDate(wkStart)}`);
+        }
+        function getActiveDatesMap() { const o = {}; getActiveDates().forEach(d => { o[d] = 1; }); return o; }
+        function saveReview(k) { appState.reviews[k] = { well: $('rvWell').value.trim(), improve: $('rvImprove').value.trim(), goal: $('rvGoal').value.trim() }; saveData(); notify({ type: 'success', title: 'Review saved' }); renderGrowth(); }
+
+        // ---- PLANNER: stacking/dependencies, if-then plans, rules ----
+        function gPlanner() {
+            const H = appState.habits, nm = id => { const h = H.find(x => x.id === id); return h ? esc(h.name) : '(deleted)'; };
+            const opt = H.map(h => `<option value="${h.id}">${esc(h.name)}</option>`).join('');
+            const stackForm = H.length > 1 ? `<div class="input-group" style="margin-bottom: 10px;"><label>After I do (this must come first)</label><select id="stAfter">${opt}</select></div><div class="input-group" style="margin-bottom: 10px;"><label>Then I do</label><select id="stThen">${opt}</select></div><button class="btn-primary" style="margin-bottom: 14px;" onclick="addStack()">Link habits</button>` : gEmpty('Add at least 2 habits to link them.');
+            const stacks = appState.stacks.map((st, i) => gRow(`<b>${nm(st.after)}</b> &rarr; <b>${nm(st.then)}</b>`, `delItem('stacks', ${i})`)).join('');
+            const plans = appState.plans.map((p, i) => gRow(`<b>IF</b> ${esc(p.iff)}<br><b>THEN</b> ${esc(p.then)}`, `delItem('plans', ${i})`)).join('');
+            const rules = appState.rules.map((r, i) => gRow(esc(r), `delItem('rules', ${i})`)).join('');
+            return gCard('Habit Stacking & Dependencies', stackForm + stacks, 'Link two habits. When you tick the first one, you are reminded of the next. If you tick the second first, you get a heads-up.')
+                + gCard('If-Then Plans', gInput('planIf', 'IF... (e.g. I feel lazy after lunch)') + gInput('planThen', 'THEN... (e.g. I walk for 5 minutes)') + `<button class="btn-primary" style="margin-bottom: 14px;" onclick="addPlan()">Add plan</button>` + plans, 'Decide in advance what you will do when a situation comes up.')
+                + gCard('My Rules & Commitments', gInput('ruleInput', 'e.g. No phone in the first hour of the day') + `<button class="btn-primary" style="margin-bottom: 14px;" onclick="addRule()">Add rule</button>` + (rules || gEmpty('No rules yet.')));
+        }
+        function addStack() {
+            const a = $('stAfter').value, b = $('stThen').value;
+            if (a === b) return notify({ type: 'error', title: 'Pick two different habits' });
+            if (appState.stacks.some(x => x.after === a && x.then === b)) return notify({ type: 'error', title: 'Already linked' });
+            appState.stacks.push({ after: a, then: b }); saveData(); renderGrowth(); notify({ type: 'success', title: 'Habits linked' });
+        }
+        function addPlan() { const i = $('planIf').value.trim(), t = $('planThen').value.trim(); if (!i || !t) return notify({ type: 'error', title: 'Fill both IF and THEN' }); appState.plans.push({ iff: i, then: t }); saveData(); renderGrowth(); }
+        function addRule() { const r = $('ruleInput').value.trim(); if (!r) return; appState.rules.push(r); saveData(); renderGrowth(); }
+
+        // ---- TRACKERS: energy, distractions, procrastination, daily wins ----
+        const logCard = (kind, title, ph, sub) => {
+            const list = appState[kind], w7 = lastDates(7), c7 = list.filter(x => w7.includes(x.date)).length;
+            const recent = list.slice(-5).reverse().map((x, i) => gRow(`${esc(x.text)} <span class="setting-desc">- ${formatTaskDate(x.date)}</span>`, `delItem('${kind}', ${list.length - 1 - i})`)).join('') || gEmpty('Nothing logged yet.');
+            return gCard(title, `<div class="setting-desc" style="margin-bottom: 10px;">Last 7 days: <b>${c7}</b> entries</div>${gInput('log-' + kind, ph)}<button class="btn-primary" style="margin-bottom: 14px;" onclick="addLog('${kind}')">Log it</button>${recent}`, sub);
+        };
+        function gTrackers() {
+            const t = getTodayStr(), en = appState.energy[t] || 0, labels = ['Drained', 'Low', 'Okay', 'Good', 'Energized'];
+            const btns = labels.map((l, i) => `<button class="mood-btn ${en === i + 1 ? 'selected' : ''}" style="--mc: var(--neon-yellow);" onclick="setEnergy(${i + 1})">${l}</button>`).join('');
+            const bars = lastDates(7).map(d => { const v = appState.energy[d] || 0; return `<div class="bar-wrapper"><div class="bar ${d === t ? 'active' : ''}" style="height: ${v ? v * 20 : 5}%"></div><div class="bar-label">${WEEKDAY_NAMES[weekdayOf(d)][0]}</div></div>`; }).join('');
+            const hi = Object.keys(appState.energy).filter(d => appState.energy[d] >= 4), lo = Object.keys(appState.energy).filter(d => appState.energy[d] <= 2);
+            const corr = hi.length && lo.length ? `On high-energy days you complete <b>${rateFor(hi)}%</b> of habits vs <b>${rateFor(lo)}%</b> on low-energy days.` : 'Log your energy for a few days to see how it affects your habits.';
+            const wins = (appState.wins[t] || []).map((w, i) => gRow(esc(w), `delWin('${t}', ${i})`)).join('');
+            const recentW = Object.keys(appState.wins).filter(d => d !== t && appState.wins[d].length).sort().reverse().slice(0, 3).map(d => gRow(`<b>${formatTaskDate(d)}</b>: ${esc(appState.wins[d].join(', '))}`)).join('');
+            return gCard('Daily Energy Check-In', `<div class="mood-row">${btns}</div><div class="bars" style="height: 80px;">${bars}</div><div class="setting-desc" style="margin-top: 10px;">${corr}</div>`, 'How is your energy today?')
+                + gCard('Daily Wins', gInput('winInput', 'A small win from today...') + `<button class="btn-primary" style="margin-bottom: 14px;" onclick="addWin()">Add win</button>` + (wins || gEmpty('No wins logged today - even a small one counts!')) + recentW)
+                + logCard('distractions', 'Distraction Tracker', 'What distracted you? (e.g. Instagram)', 'Notice what steals your focus.')
+                + logCard('procrastination', 'Procrastination Tracker', 'What did you put off?', 'Be honest - awareness is the first step.');
+        }
+        function setEnergy(n) { appState.energy[getTodayStr()] = n; saveData(); renderGrowth(); }
+        function addLog(kind) { const el = $('log-' + kind), v = el.value.trim(); if (!v) return; appState[kind].push({ date: getTodayStr(), text: v }); saveData(); renderGrowth(); }
+        function addWin() { const v = $('winInput').value.trim(); if (!v) return; const t = getTodayStr(); (appState.wins[t] = appState.wins[t] || []).push(v); saveData(); renderGrowth(); notify({ type: 'success', title: 'Win saved', message: v }); }
+        function delWin(d, i) { appState.wins[d].splice(i, 1); saveData(); renderGrowth(); }
+
+        // ---- FOCUS: deep work sessions + focus mode ----
+        let focusPick = 25, focusTimer = null, focusStart = 0, focusEnd = 0;
+        function pickFocus(m) { focusPick = m; renderGrowth(); }
+        function gFocus() {
+            const t = getTodayStr(), w = lastDates(7), sum = ds => appState.focus.filter(f => ds.includes(f.date)).reduce((n, f) => n + f.mins, 0);
+            const chips = [15, 25, 45, 60, 90].map(m => `<span class="quick-chip" style="${focusPick === m ? 'background: var(--neon-cyan); color: var(--bg-base);' : ''}" onclick="pickFocus(${m})">${m} min</span>`).join('');
+            const recent = appState.focus.slice(-5).reverse().map(f => gRow(`${f.mins} min <span class="setting-desc">- ${formatTaskDate(f.date)}</span>`)).join('') || gEmpty('No sessions yet.');
+            return gCard('Deep Work Session', `<div class="quick-row" style="margin: 0 0 16px;">${chips}</div><button class="btn-primary" style="width: 100%; padding: 14px; font-size: 16px;" onclick="startFocus()">Start ${focusPick}-minute Focus Mode</button>`, 'Focus Mode opens a full screen timer and hides everything else.')
+                + gTiles([['Today', sum([t]) + ' min'], ['Last 7 days', sum(w) + ' min'], ['Sessions', appState.focus.length]])
+                + gCard('Recent sessions', recent);
+        }
+        function startFocus() {
+            focusStart = Date.now(); focusEnd = focusStart + focusPick * 60000;
+            $('focusScreen').classList.add('show'); tickFocus(); focusTimer = setInterval(tickFocus, 1000);
+        }
+        function tickFocus() {
+            const left = Math.max(0, focusEnd - Date.now()), sec = Math.ceil(left / 1000);
+            $('focusTime').innerText = `${pad2(Math.floor(sec / 60))}:${pad2(sec % 60)}`;
+            $('focusBar').style.width = (100 - left / (focusEnd - focusStart) * 100) + '%';
+            if (left <= 0) endFocus(true);
+        }
+        function endFocus(done) {
+            clearInterval(focusTimer); $('focusScreen').classList.remove('show');
+            const mins = Math.round((Math.min(Date.now(), focusEnd) - focusStart) / 60000);
+            if (mins >= 1) { appState.focus.push({ date: getTodayStr(), mins }); saveData(); }
+            if (done) { playSound('complete'); notify({ type: 'level', title: 'Focus session complete!', message: `${mins} minutes of deep work. Great job!`, duration: 5500 }); }
+            else if (mins >= 1) notify({ type: 'info', title: 'Session saved', message: `${mins} min logged` });
+            if ($('page-growth').classList.contains('active')) renderGrowth();
+        }
+
+        // ---- JOURNEY: timeline, before/after, milestones + forecast, balance wheel ----
+        const BAL_AREAS = ['Health', 'Career', 'Learning', 'Money', 'Relations', 'Fun', 'Mindset', 'Home'];
+        function radarHtml() {
+            const n = BAL_AREAS.length, cx = 150, cy = 150, R = 100;
+            const pt = (i, v) => { const a = -Math.PI / 2 + 2 * Math.PI * i / n; return [(cx + Math.cos(a) * R * v / 10).toFixed(1), (cy + Math.sin(a) * R * v / 10).toFixed(1)]; };
+            const rings = [2, 4, 6, 8, 10].map(k => `<polygon points="${BAL_AREAS.map((_, i) => pt(i, k).join(',')).join(' ')}" fill="none" stroke="var(--border-color)"/>`).join('');
+            const spokes = BAL_AREAS.map((_, i) => `<line x1="${cx}" y1="${cy}" x2="${pt(i, 10)[0]}" y2="${pt(i, 10)[1]}" stroke="var(--border-color)"/>`).join('');
+            const poly = BAL_AREAS.map((_, i) => pt(i, appState.balance[i] || 5).join(',')).join(' ');
+            const labels = BAL_AREAS.map((l, i) => `<text x="${pt(i, 11.9)[0]}" y="${pt(i, 11.9)[1]}" text-anchor="middle" font-size="10" fill="var(--text-muted)">${l}</text>`).join('');
+            return `<svg viewBox="0 0 300 300" style="width: 100%; max-width: 340px; display: block; margin: 0 auto;">${rings}${spokes}<polygon points="${poly}" fill="var(--neon-cyan)" fill-opacity="0.25" stroke="var(--neon-cyan)" stroke-width="2"/>${labels}</svg>`;
+        }
+        function drawRadar() { const b = $('radarBox'); if (b) b.innerHTML = radarHtml(); }
+        function setBalance(i, v) { appState.balance[i] = Number(v); $('bal-' + i).innerText = v; saveData(); drawRadar(); }
+        function gJourney() {
+            const t = getTodayStr(), ev = [];
+            let first = null; appState.habits.forEach(h => Object.keys(h.history).forEach(d => { if (h.history[d] && (!first || d < first)) first = d; }));
+            if (first) ev.push({ d: first, t: 'Ticked your very first habit' });
+            Object.keys(appState.journal || {}).sort().slice(0, 1).forEach(d => ev.push({ d, t: 'Wrote your first note' }));
+            BADGES.forEach(b => { if (appState.badges[b.id]) ev.push({ d: appState.badges[b.id], t: `Unlocked badge: ${b.name}` }); });
+            appState.focus.slice(0, 1).forEach(f => ev.push({ d: f.date, t: 'Completed your first focus session' }));
+            ev.sort((a, b) => b.d.localeCompare(a.d));
+            const timeline = ev.slice(0, 12).map(e => gRow(`<b>${formatTaskDate(e.d)}</b> - ${e.t}`)).join('') || gEmpty('Your journey starts with your first tick.');
+
+            const ba = appState.ba;
+            const baCard = gCard('Before & After Journal', gArea('baBefore', `Before - where I started${ba.beforeDate ? ' (' + formatTaskDate(ba.beforeDate) + ')' : ''}`, ba.before) + gArea('baAfter', `After - where I am now${ba.afterDate ? ' (' + formatTaskDate(ba.afterDate) + ')' : ''}`, ba.after) + `<button class="btn-primary" onclick="saveBA()">Save</button>`, 'Write it once, compare later. Update "After" whenever you grow.');
+
+            const pace = lastDates(14).reduce((n, d) => n + ticksOn(d), 0) / 14, total = getTotalCompleted();
+            const eta = target => { if (total >= target) return 'Done!'; if (pace <= 0) return 'Tick more to see a forecast'; const days = Math.ceil((target - total) / pace); return `~${days} days (${formatTaskDate(dateAdd(t, days))})`; };
+            const ms = [100, 250, 500, 1000, 2000].filter(x => x > total || x === 100).slice(0, 4).map(x => gRow(`<b>${x} ticks</b> - ${total >= x ? 'Reached' : `${x - total} to go. Forecast: ${eta(x)}`}`)).join('');
+            const g = appState.goal; let gtxt = 'Set a goal to see your forecast.';
+            if (g.ticks > 0) { gtxt = total >= g.ticks ? 'Goal reached!' : `At your pace (${pace.toFixed(1)} ticks/day) you will reach it in ${eta(g.ticks)}.`; if (g.deadline && total < g.ticks) { const left = daysBetween(t, g.deadline); gtxt += left > 0 ? ` To finish by ${formatTaskDate(g.deadline)} you need <b>${Math.ceil((g.ticks - total) / left)} ticks/day</b>.` : ' The deadline has passed.'; } }
+            const forecast = gCard('Goal Progress Forecast & Milestones', `<div class="setting-desc" style="margin-bottom: 8px;">My goal: total ticks</div><div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;"><div class="input-group" style="margin: 0; flex: 1; min-width: 120px;"><input type="number" id="goalTicks" min="1" placeholder="e.g. 500" value="${g.ticks || ''}"></div><div class="input-group" style="margin: 0; flex: 1; min-width: 140px;"><input type="date" id="goalDate" value="${g.deadline || ''}"></div><button class="btn-primary" onclick="saveGoal()">Save goal</button></div><div style="font-size: 14px; margin-bottom: 14px;">${gtxt}</div>${ms}`);
+
+            const bal = gCard('Life Balance Wheel', `<div id="radarBox"></div>` + BAL_AREAS.map((l, i) => `<div class="volume-row" style="margin-bottom: 8px;"><span style="font-size: 13px; width: 80px; color: var(--text-muted);">${l}</span><input type="range" min="1" max="10" value="${appState.balance[i] || 5}" oninput="setBalance(${i}, this.value)"><span id="bal-${i}" style="width: 24px; text-align: right; font-size: 13px;">${appState.balance[i] || 5}</span></div>`).join(''), 'Rate each area of life from 1 to 10.');
+            return gCard('Personal Growth Timeline', timeline) + baCard + forecast + bal;
+        }
+        function saveBA() { const b = $('baBefore').value.trim(), a = $('baAfter').value.trim(), ba = appState.ba, t = getTodayStr(); if (b !== ba.before) ba.beforeDate = t; if (a !== ba.after) ba.afterDate = t; ba.before = b; ba.after = a; saveData(); notify({ type: 'success', title: 'Saved' }); renderGrowth(); }
+        function saveGoal() { appState.goal = { ticks: parseInt($('goalTicks').value, 10) || 0, deadline: $('goalDate').value || '' }; saveData(); renderGrowth(); }
+
+        // ---- QUICK ACTIONS + SEARCH ----
+        function toggleQA() {
+            const m = $('qaMenu'), open = !m.classList.contains('show');
+            const items = [['Search', 'openSearch()'], ['Add Habit', "changePage('habits', null); openModal()"], ['Add Task', 'openTaskModal()'], ['Write Note', "changePage('journal', null)"], ['Log Energy', "growthTab = 'trackers'; changePage('growth', null)"], ['Start Focus', "growthTab = 'focus'; changePage('growth', null)"], ['Growth Lab', "changePage('growth', null)"]];
+            m.innerHTML = items.map(([l, f]) => `<div class="qa-item" onclick="${f}; toggleQA()">${l}</div>`).join('');
+            m.classList.toggle('show', open); $('qaFab').classList.toggle('open', open);
+            if (!open) { m.classList.remove('show'); $('qaFab').classList.remove('open'); }
+        }
+        function openSearch() { $('searchOverlay').classList.add('show'); $('searchInput').value = ''; $('searchResults').innerHTML = ''; setTimeout(() => $('searchInput').focus(), 50); }
+        function closeSearch() { $('searchOverlay').classList.remove('show'); }
+        function goTo(page, tab) { closeSearch(); if (tab) growthTab = tab; changePage(page, null); }
+        function doSearch(q) {
+            q = q.trim().toLowerCase(); const out = [];
+            if (q.length < 2) { $('searchResults').innerHTML = ''; return; }
+            const add = (type, text, page, tab) => { if (String(text).toLowerCase().includes(q)) out.push({ type, text, page, tab }); };
+            appState.habits.forEach(h => add('Habit', h.name, 'habits'));
+            appState.tasks.forEach(x => add('Task', x.title, 'tasks'));
+            Object.keys(appState.journal).forEach(d => { const e = appState.journal[d]; [e.day, e.missed, e.why].forEach(x => x && add('Note', `${formatTaskDate(d)}: ${x}`, 'journal')); });
+            Object.keys(appState.wins).forEach(d => appState.wins[d].forEach(w => add('Win', w, 'growth', 'trackers')));
+            appState.rules.forEach(r => add('Rule', r, 'growth', 'planner'));
+            appState.plans.forEach(p => add('If-Then', `${p.iff} -> ${p.then}`, 'growth', 'planner'));
+            appState.distractions.concat(appState.procrastination).forEach(x => add('Log', x.text, 'growth', 'trackers'));
+            $('searchResults').innerHTML = out.slice(0, 30).map(r => `<div class="search-result" onclick="goTo('${r.page}', '${r.tab || ''}')"><span class="search-tag">${r.type}</span>${esc(r.text)}</div>`).join('') || gEmpty('No results.');
+        }
+        document.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); openSearch(); } if (e.key === 'Escape') closeSearch(); });
+
+        // ---- SETTINGS: rest days, reminder, accessibility, layout, lock, data ----
+        function toggleRestDay(d) { const r = appState.restDays, i = r.indexOf(d); if (i >= 0) r.splice(i, 1); else r.push(d); saveData(); updateUI(); renderCalendar(); renderPrefsPanels(); }
+        function setReminder(on, time) { if (on === true && 'Notification' in window && Notification.permission === 'default') Notification.requestPermission(); prefs.reminder.on = on; if (time) prefs.reminder.time = time; savePrefs(); renderPrefsPanels(); }
+        function checkReminder() {
+            const r = prefs.reminder, n = new Date(), t = getTodayStr();
+            if (!r.on || r.last === t || r.time !== `${pad2(n.getHours())}:${pad2(n.getMinutes())}`) return;
+            r.last = t; savePrefs();
+            notify({ type: 'info', title: 'Time to build your habits!', message: 'Open Allex and tick what you have done.', duration: 8000 }); playSound('complete');
+            if ('Notification' in window && Notification.permission === 'granted') { try { new Notification('Allex', { body: 'Time to tick your habits!' }); } catch (e) {} }
+        }
+        setInterval(checkReminder, 20000);
+        function setPref(k, v) { prefs[k] = v; savePrefs(); applyPrefs(); }
+        function toggleSection(id, on) { prefs.hidden = prefs.hidden.filter(x => x !== id); if (!on) prefs.hidden.push(id); savePrefs(); applyPrefs(); }
+
+        async function hashPin(p) {
+            try { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('allex:' + p)); return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2, '0')).join(''); }
+            catch (e) { let h = 5381; for (const c of 'allex:' + p) h = ((h << 5) + h + c.charCodeAt(0)) | 0; return 'x' + h; }
+        }
+        async function setPin() { const v = $('pinNew').value.trim(); if (!/^\d{4,8}$/.test(v)) return notify({ type: 'error', title: 'PIN must be 4 to 8 digits' }); prefs.pinHash = await hashPin(v); savePrefs(); renderPrefsPanels(); notify({ type: 'success', title: 'App lock is on' }); }
+        async function removePin() { if (await hashPin($('pinCur').value.trim()) !== prefs.pinHash) return notify({ type: 'error', title: 'Wrong PIN' }); prefs.pinHash = ''; savePrefs(); renderPrefsPanels(); notify({ type: 'info', title: 'App lock removed' }); }
+        async function unlockApp() { const v = $('lockInput').value.trim(); if (await hashPin(v) === prefs.pinHash) { $('lockOverlay').classList.remove('show'); $('lockInput').value = ''; } else { notify({ type: 'error', title: 'Wrong PIN' }); $('lockInput').value = ''; } }
+
+        function downloadFile(name, text, type) { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type })); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); }
+        function exportJSON() { downloadFile(`allex-backup-${getTodayStr()}.json`, JSON.stringify(appState, null, 2), 'application/json'); }
+        function exportCSV() {
+            const rows = ['date,habit,done'];
+            appState.habits.forEach(h => Object.keys(h.history).sort().forEach(d => rows.push(`${d},"${h.name.replace(/"/g, '""')}",${h.history[d] ? 1 : 0}`)));
+            downloadFile(`allex-habits-${getTodayStr()}.csv`, rows.join('\n'), 'text/csv');
+        }
+        function importJSON(input) {
+            const f = input.files[0]; if (!f) return;
+            const r = new FileReader();
+            r.onload = () => { try { const d = JSON.parse(r.result); if (!Array.isArray(d.habits)) throw 0; if (!confirm('Replace ALL current data with this backup?')) return; appState = d; saveData(); location.reload(); } catch (e) { notify({ type: 'error', title: 'Not a valid backup file' }); } };
+            r.readAsText(f);
+        }
+        function makeBackup() { try { localStorage.setItem('quantumBackup', JSON.stringify({ at: Date.now(), data: appState })); return true; } catch (e) { return false; } }
+        function autoBackup() { try { const b = JSON.parse(localStorage.getItem('quantumBackup') || 'null'); if (prefs.autoBackup && (!b || Date.now() - b.at > 7 * 864e5)) makeBackup(); } catch (e) {} }
+        function backupNow() { notify(makeBackup() ? { type: 'success', title: 'Backup saved on this device' } : { type: 'error', title: 'Backup failed', message: 'Storage is full.' }); renderPrefsPanels(); }
+        function restoreBackup() { try { const b = JSON.parse(localStorage.getItem('quantumBackup') || 'null'); if (!b || !confirm('Restore the last backup? Current data will be replaced.')) return; appState = b.data; saveData(); location.reload(); } catch (e) {} }
+
+        function renderPrefsPanels() {
+            if (!$('prefsPanel')) return;
+            const rest = WEEKDAY_ORDER.map(d => `<button type="button" class="weekday-btn ${appState.restDays.includes(d) ? 'selected' : ''}" onclick="toggleRestDay(${d})">${WEEKDAY_NAMES[d]}</button>`).join('');
+            const secs = [['stats', 'Top stat cards'], ['overview', 'Daily Overview'], ['tracker', 'Monthly Tracker'], ['statistics', 'Statistics graph'], ['weekly', 'Weekly Performance'], ['monthly', 'Monthly Performance']];
+            const sw = (checked, fn) => `<label class="switch"><input type="checkbox" ${checked ? 'checked' : ''} onchange="${fn}"><span class="switch-slider"></span></label>`;
+            const line = (title, desc, ctl) => `<div class="setting-line" style="margin-bottom: 14px;"><div><div class="setting-title">${title}</div><div class="setting-desc">${desc}</div></div>${ctl}</div>`;
+            const usual = habitTimes().reduce((a, x) => a.concat(x.all), []);
+            const sug = usual.length ? `Suggested time from your habits: <b>${fm(Math.round(usual.reduce((a, b) => a + b, 0) / usual.length))}</b>` : 'Tick habits for a few days to get a suggested time.';
+            $('prefsPanel').innerHTML = `<h2 class="panel-title" style="margin-bottom: 14px;">Personalize</h2>
+                <div class="setting-title">Weekly rest days</div><div class="setting-desc" style="margin-bottom: 10px;">Rest days are not counted as missed and keep your streak alive.</div><div class="weekday-row" style="margin-bottom: 20px;">${rest}</div>
+                ${line('Daily reminder', `${sug}<br>Works while Allex is open in a tab.`, `<div style="display: flex; gap: 8px; align-items: center;"><input type="time" value="${prefs.reminder.time}" onchange="setReminder(prefs.reminder.on, this.value)" style="padding: 8px; border-radius: 10px; background: rgba(var(--tint), 0.06); border: 1px solid var(--border-color); color: var(--text-main);">${sw(prefs.reminder.on, 'setReminder(this.checked)')}</div>`)}
+                <div class="setting-title" style="margin-bottom: 8px;">Accessibility</div>
+                <div class="sound-row"><div class="sound-row-title">Text size</div><select onchange="setPref('size', Number(this.value))">${[90, 100, 115, 130].map(v => `<option value="${v}" ${prefs.size === v ? 'selected' : ''}>${v}%</option>`).join('')}</select></div>
+                <div class="sound-row"><div class="sound-row-title">Font</div><select onchange="setPref('font', this.value)">${[['outfit', 'Outfit (default)'], ['easy', 'Easy to read (Verdana)'], ['serif', 'Serif (Georgia)']].map(([v, l]) => `<option value="${v}" ${prefs.font === v ? 'selected' : ''}>${l}</option>`).join('')}</select></div>
+                ${line('High contrast', 'Brighter text and stronger borders.', sw(prefs.contrast, "setPref('contrast', this.checked)"))}
+                ${line('Reduce motion', 'Turn off animations and transitions.', sw(prefs.motion, "setPref('motion', this.checked)"))}
+                <div class="setting-title" style="margin: 6px 0 8px;">Dashboard layout</div><div class="setting-desc" style="margin-bottom: 10px;">Choose which sections show on the home page.</div>
+                ${secs.map(([id, l]) => line(l, '', sw(!prefs.hidden.includes(id), `toggleSection('${id}', this.checked)`))).join('')}`;
+
+            const bk = (() => { try { const b = JSON.parse(localStorage.getItem('quantumBackup') || 'null'); return b ? new Date(b.at).toLocaleString() : 'none yet'; } catch (e) { return 'none yet'; } })();
+            $('securityPanel').innerHTML = `<h2 class="panel-title" style="margin-bottom: 14px;">Privacy & Data</h2>
+                <div class="setting-title">App lock (PIN)</div><div class="setting-desc" style="margin-bottom: 10px;">Hides the app until the PIN is entered. It keeps casual snoopers out - it is not strong encryption.</div>
+                ${prefs.pinHash ? `<div class="input-group" style="max-width: 260px;"><input type="password" id="pinCur" inputmode="numeric" placeholder="Current PIN"></div><button class="btn-primary" style="margin-bottom: 22px;" onclick="removePin()">Remove lock</button>` : `<div class="input-group" style="max-width: 260px;"><input type="password" id="pinNew" inputmode="numeric" placeholder="New PIN (4-8 digits)"></div><button class="btn-primary" style="margin-bottom: 22px;" onclick="setPin()">Turn on lock</button>`}
+                <div class="setting-title">Backup & export</div><div class="setting-desc" style="margin-bottom: 10px;">Your data lives on this device (works offline). Last automatic backup: ${bk}</div>
+                ${line('Automatic weekly backup', 'Saves a snapshot on this device once a week.', sw(prefs.autoBackup, "prefs.autoBackup = this.checked; savePrefs()"))}
+                <div class="quick-row" style="margin: 0;"><span class="quick-chip" onclick="exportJSON()">Export JSON</span><span class="quick-chip" onclick="exportCSV()">Export CSV</span><span class="quick-chip" onclick="document.getElementById('importFile').click()">Import backup</span><span class="quick-chip" onclick="backupNow()">Backup now</span><span class="quick-chip" onclick="restoreBackup()">Restore last backup</span></div>
+                <input type="file" id="importFile" accept=".json,application/json" style="display: none;" onchange="importJSON(this)">`;
+        }
+
         // ================= THEME =================
         const ICON_SUN = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
         const ICON_MOON = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
 
         function isLightTheme() { return document.documentElement.getAttribute('data-theme') === 'light'; }
 
+        // Each level unlocks a new theme (Night and Day are free from Level 1)
+        const THEMES = [
+            { id: 'dark',   name: 'Night',  level: 1,  sw: ['#000000', '#00f0ff'] },
+            { id: 'light',  name: 'Day',    level: 1,  sw: ['#f4f5f7', '#0097a7'] },
+            { id: 'ocean',  name: 'Ocean',  level: 2,  bg: '#04121f', card: 'rgba(8,32,52,0.85)',  a: '#38bdf8', b: '#6366f1' },
+            { id: 'forest', name: 'Forest', level: 3,  bg: '#05140c', card: 'rgba(10,36,22,0.85)', a: '#4ade80', b: '#a3e635' },
+            { id: 'sunset', name: 'Sunset', level: 4,  bg: '#170a06', card: 'rgba(44,20,12,0.85)', a: '#fb923c', b: '#f43f5e' },
+            { id: 'royal',  name: 'Royal',  level: 5,  bg: '#0d0618', card: 'rgba(30,14,52,0.85)', a: '#c084fc', b: '#818cf8' },
+            { id: 'rose',   name: 'Rose',   level: 6,  bg: '#170610', card: 'rgba(46,14,32,0.85)', a: '#fb7185', b: '#f472b6' },
+            { id: 'cyber',  name: 'Cyber',  level: 7,  bg: '#000000', card: 'rgba(10,10,10,0.85)', a: '#39ff14', b: '#ff00e5' },
+            { id: 'gold',   name: 'Gold',   level: 8,  bg: '#0f0b02', card: 'rgba(36,28,6,0.85)',  a: '#facc15', b: '#f59e0b' },
+            { id: 'aurora', name: 'Aurora', level: 9,  bg: '#03131a', card: 'rgba(8,34,40,0.85)',  a: '#2dd4bf', b: '#a78bfa' },
+            { id: 'legend', name: 'Legend', level: 10, bg: '#120405', card: 'rgba(40,10,12,0.85)', a: '#ef4444', b: '#facc15' }
+        ];
+        THEMES.forEach(t => { if (t.bg) t.sw = [t.bg, t.a]; });
+
+        function unlockedLevel() { return Math.max(appState.highestLevel || 1, getLevelInfo(appState.totalXp).level); }
+
+        function applyTheme(id) {
+            const root = document.documentElement;
+            const t = THEMES.find(x => x.id === id && x.level <= unlockedLevel()) || THEMES[0];
+            ['--bg-base', '--bg-card', '--sidebar-bg', '--nav-bg', '--modal-bg', '--neon-cyan', '--neon-purple'].forEach(v => root.style.removeProperty(v));
+            if (t.id === 'light') root.setAttribute('data-theme', 'light');
+            else {
+                root.removeAttribute('data-theme');
+                if (t.bg) {
+                    root.style.setProperty('--bg-base', t.bg); root.style.setProperty('--bg-card', t.card);
+                    root.style.setProperty('--sidebar-bg', t.bg + 'e6'); root.style.setProperty('--nav-bg', t.bg + 'f2');
+                    root.style.setProperty('--modal-bg', t.bg); root.style.setProperty('--neon-cyan', t.a); root.style.setProperty('--neon-purple', t.b);
+                }
+            }
+        }
+
         function updateThemeButton() {
             if (document.getElementById('appearancePanel')) renderAppearance();
         }
 
-        function setTheme(mode) {
-            if (mode === 'light') document.documentElement.setAttribute('data-theme', 'light');
-            else document.documentElement.removeAttribute('data-theme');
-            try { localStorage.setItem('quantumTheme', mode === 'light' ? 'light' : 'dark'); } catch (e) {}
+        function setTheme(id) {
+            const t = THEMES.find(x => x.id === id);
+            if (!t) return;
+            if (t.level > unlockedLevel()) return notify({ type: 'error', title: `${t.name} is locked`, message: `Reach Level ${t.level} to unlock this theme.` });
+            try { localStorage.setItem('quantumTheme', id); } catch (e) {}
+            applyTheme(id);
             updateThemeButton();
         }
 
         function renderAppearance() {
             const box = document.getElementById('appearancePanel');
             if (!box) return;
-            const light = isLightTheme();
+            const cur = localStorage.getItem('quantumTheme') || 'dark';
+            const ul = unlockedLevel();
             box.innerHTML = `
                 <h2 class="panel-title" style="margin-bottom: 4px;">Appearance</h2>
-                <div class="setting-desc" style="margin-bottom: 14px;">Choose a day (white) or night (black) theme.</div>
-                <div class="mood-row" style="margin-bottom: 0;">
-                    <button class="mood-btn ${!light ? 'selected' : ''}" style="--mc: var(--neon-cyan);" onclick="setTheme('dark')">
-                        <svg class="icon icon-sm" viewBox="0 0 24 24" style="margin-right: 6px;">${ICON_MOON}</svg>Night (Black)
-                    </button>
-                    <button class="mood-btn ${light ? 'selected' : ''}" style="--mc: var(--neon-yellow);" onclick="setTheme('light')">
-                        <svg class="icon icon-sm" viewBox="0 0 24 24" style="margin-right: 6px;">${ICON_SUN}</svg>Day (White)
-                    </button>
-                </div>`;
+                <div class="setting-desc" style="margin-bottom: 14px;">Every level unlocks a new theme. Your level: ${ul}.</div>
+                <div class="theme-grid">${THEMES.map(t => {
+                    const locked = t.level > ul;
+                    return `<div class="theme-card ${cur === t.id ? 'selected' : ''} ${locked ? 'locked' : ''}" onclick="setTheme('${t.id}')">
+                        <div class="theme-sw" style="background: linear-gradient(135deg, ${t.sw[0]} 55%, ${t.sw[1]} 55%);"></div>
+                        <div class="theme-name">${t.name}</div>
+                        <div class="theme-lv">${locked ? 'Unlocks at Level ' + t.level : (t.level === 1 ? 'Free' : 'Unlocked')}</div>
+                    </div>`;
+                }).join('')}</div>`;
         }
 
         function init() {
+            if (prefs.pinHash) document.getElementById('lockOverlay').classList.add('show');
             const now = new Date();
             const hours = now.getHours();
             let greeting = "Good Evening";
@@ -1675,6 +2158,10 @@
             const startLevel = getLevelInfo(appState.totalXp).level;
             appState.currentLevel = startLevel;
             appState.highestLevel = startLevel;
+            ensureExtras();
+            applyTheme(localStorage.getItem('quantumTheme') || 'dark');
+            applyPrefs();
+            autoBackup();
             updateThemeButton();
             updateSoundButton();
             syncTodayStatus();
@@ -1720,6 +2207,7 @@
 
             // Sounds: tick sound on every check, completion chime when ALL habits are done
             if (habit.completed) {
+                recordTickAndStacks(habit);
                 playSound('check');
                 if (appState.habits.length > 0 && appState.habits.every(h => h.completed)) {
                     setTimeout(() => playSound('complete'), 220);
@@ -1812,8 +2300,9 @@
                     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
                     const isCompleted = habit.history[dateStr] === true;
                     const isToday = dateStr === todayStr;
-                    const isMissed = !isCompleted && dateStr <= todayStr;
-                    grid.innerHTML += `<div class="cal-cell ${isCompleted ? 'completed' : ''} ${isMissed ? 'missed' : ''} ${isToday ? 'today' : ''}"></div>`;
+                    const isRest = !isCompleted && isRestDay(dateStr);
+                    const isMissed = !isCompleted && !isRest && dateStr <= todayStr;
+                    grid.innerHTML += `<div class="cal-cell ${isCompleted ? 'completed' : ''} ${isMissed ? 'missed' : ''} ${isRest ? 'rest' : ''} ${isToday ? 'today' : ''}"></div>`;
                 }
             });
         }
@@ -1978,7 +2467,7 @@
             let d = getTodayStr();
             if (!active.has(d)) d = dateAdd(d, -1);
             let count = 0;
-            while (active.has(d)) { count++; d = dateAdd(d, -1); }
+            for (let i = 0; i < 3700; i++) { if (active.has(d)) count++; else if (!isRestDay(d)) break; d = dateAdd(d, -1); }
             return count;
         }
 
@@ -2005,7 +2494,7 @@
         function getMonthlyPercent() {
             const now = new Date();
             const prefix = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-`;
-            const days = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+            const days = workDaysInMonth(now);
             const possible = appState.habits.length * days;
             if (possible === 0) return 0;
             const done = appState.habits.reduce((sum, h) => {
@@ -2628,7 +3117,7 @@
             // Monthly Progress: completed checks this month / (habits x days in month)
             const nowM = new Date();
             const monthPrefix = `${nowM.getFullYear()}-${String(nowM.getMonth() + 1).padStart(2, '0')}-`;
-            const daysInMonthNow = new Date(nowM.getFullYear(), nowM.getMonth() + 1, 0).getDate();
+            const daysInMonthNow = workDaysInMonth(nowM);
             const doneThisMonth = appState.habits.reduce((sum, h) => {
                 return sum + Object.entries(h.history).filter(([d, v]) => v === true && d.startsWith(monthPrefix)).length;
             }, 0);
