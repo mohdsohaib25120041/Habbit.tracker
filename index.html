@@ -2,7 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#000000">
+    <meta name="description" content="Allex - a gamified habit tracker with levels, badges, tasks and focus tools.">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Allex">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
     <script>
         try { if (localStorage.getItem('quantumTheme') === 'light') document.documentElement.setAttribute('data-theme', 'light'); } catch (e) {}
     </script>
@@ -815,6 +823,45 @@
             .calendar-grid { grid-template-columns: 120px repeat(31, 30px); }
             .cal-cell { width: 30px; height: 30px; }
         }
+
+        /* --- MOBILE POLISH --- */
+        html { -webkit-text-size-adjust: 100%; }
+        body { min-height: 100dvh; overscroll-behavior-y: none; }
+        .modal-content { max-height: 90dvh; overflow-y: auto; }
+        .more-backdrop { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); z-index: 120; display: none; }
+        .more-backdrop.show { display: block; }
+        .more-sheet {
+            position: fixed; left: 0; right: 0; bottom: 0; z-index: 130; display: none;
+            background: var(--modal-bg); border-top: 1px solid var(--border-color); border-radius: 22px 22px 0 0;
+            padding: 14px 14px calc(18px + env(safe-area-inset-bottom)); box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.35);
+        }
+        .more-sheet.show { display: block; animation: sheetUp 0.25s ease; }
+        @keyframes sheetUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .more-item { display: flex; align-items: center; gap: 14px; padding: 16px 14px; border-radius: 14px; font-size: 16px; font-weight: 500; cursor: pointer; }
+        .more-item:active { background: rgba(var(--tint), 0.08); }
+        .more-item .icon { width: 22px; height: 22px; color: var(--neon-cyan); }
+        @media (min-width: 769px) { .more-sheet, .more-backdrop { display: none !important; } }
+        @media (hover: none) { .stat-card:hover, .bd-card:hover, .level-card:hover, .badge-card:hover, .bd-card:hover { transform: none; } }
+        @media (max-width: 768px) {
+            input, select, textarea { font-size: 16px !important; }
+            .main-content { padding-top: calc(20px + env(safe-area-inset-top)); padding-bottom: calc(96px + env(safe-area-inset-bottom)); }
+            .mobile-nav { padding-bottom: calc(8px + env(safe-area-inset-bottom)); }
+            .mobile-nav-item { flex: 1; min-height: 44px; justify-content: center; }
+            .notify-stack { top: calc(10px + env(safe-area-inset-top)); }
+            .qa-fab { bottom: calc(84px + env(safe-area-inset-bottom)); }
+            .qa-menu { bottom: calc(148px + env(safe-area-inset-bottom)); }
+            .top-header { flex-wrap: wrap; gap: 12px; align-items: flex-start; }
+            .task-tabs { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; -webkit-overflow-scrolling: touch; }
+            .tab-btn { white-space: nowrap; flex-shrink: 0; min-height: 40px; }
+            .action-btn { padding: 10px; }
+            .icon-btn { width: 44px; height: 44px; }
+            .btn-primary, .mood-btn { min-height: 44px; }
+            .weekday-btn { min-height: 42px; }
+            .custom-checkbox { width: 38px; height: 38px; }
+            .habit-row { padding: 12px; }
+            .modal-content { padding: 22px; }
+            .focus-screen { padding-top: calc(20px + env(safe-area-inset-top)); padding-bottom: calc(20px + env(safe-area-inset-bottom)); }
+        }
     </style>
 </head>
 <body>
@@ -1094,25 +1141,29 @@
     </main>
 
     <nav class="mobile-nav">
-        <div class="mobile-nav-item active" onclick="changePage('dashboard', this)">
+        <div class="mobile-nav-item" data-pages="dashboard" onclick="changePage('dashboard', this)">
             <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg></span>Home
         </div>
-        <div class="mobile-nav-item" onclick="changePage('habits', this)">
+        <div class="mobile-nav-item" data-pages="habits" onclick="changePage('habits', this)">
             <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg></span>Habits
         </div>
-        <div class="mobile-nav-item" onclick="changePage('tasks', this)">
+        <div class="mobile-nav-item" data-pages="tasks" onclick="changePage('tasks', this)">
             <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>Tasks
         </div>
-        <div class="mobile-nav-item" onclick="changePage('journal', this)">
-            <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>Notes
+        <div class="mobile-nav-item" data-pages="growth" onclick="changePage('growth', this)">
+            <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></span>Growth
         </div>
-        <div class="mobile-nav-item" onclick="changePage('achievements', this)">
-            <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></span>Badges
-        </div>
-        <div class="mobile-nav-item" onclick="changePage('settings', this)">
-            <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>Settings
+        <div class="mobile-nav-item" data-pages="journal,achievements,settings" onclick="toggleMore()">
+            <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg></span>More
         </div>
     </nav>
+
+    <div class="more-backdrop" id="moreBackdrop" onclick="closeMore()"></div>
+    <div class="more-sheet" id="moreSheet">
+        <div class="more-item" onclick="changePage('journal', null)"><svg class="icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Notes</div>
+        <div class="more-item" onclick="changePage('achievements', null)"><svg class="icon" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>Achievements</div>
+        <div class="more-item" onclick="changePage('settings', null)"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</div>
+    </div>
 
     <div class="modal-overlay" id="habitModal">
         <div class="modal-content">
@@ -1271,10 +1322,11 @@
                 });
             }
 
-            document.querySelectorAll('.mobile-nav-item').forEach(nav => nav.classList.remove('active'));
-            if(element && element.classList.contains('mobile-nav-item')) {
-                element.classList.add('active');
-            }
+            document.querySelectorAll('.mobile-nav-item').forEach(nav => {
+                nav.classList.toggle('active', (nav.dataset.pages || '').split(',').includes(pageId));
+            });
+            closeMore();
+            window.scrollTo(0, 0);
 
             // Re-draw chart when opening analytics
             if (pageId === 'growth') {
@@ -2028,6 +2080,7 @@
             const usual = habitTimes().reduce((a, x) => a.concat(x.all), []);
             const sug = usual.length ? `Suggested time from your habits: <b>${fm(Math.round(usual.reduce((a, b) => a + b, 0) / usual.length))}</b>` : 'Tick habits for a few days to get a suggested time.';
             $('prefsPanel').innerHTML = `<h2 class="panel-title" style="margin-bottom: 14px;">Personalize</h2>
+                ${line('Install Allex as an app', deferredInstall ? 'Add it to your home screen for full-screen use.' : 'Use your browser menu: "Install app" or "Add to Home screen".', deferredInstall ? '<button class="btn-primary" onclick="installApp()">Install</button>' : '')}
                 <div class="setting-title">Weekly rest days</div><div class="setting-desc" style="margin-bottom: 10px;">Rest days are not counted as missed and keep your streak alive.</div><div class="weekday-row" style="margin-bottom: 20px;">${rest}</div>
                 ${line('Daily reminder', `${sug}<br>Works while Allex is open in a tab.`, `<div style="display: flex; gap: 8px; align-items: center;"><input type="time" value="${prefs.reminder.time}" onchange="setReminder(prefs.reminder.on, this.value)" style="padding: 8px; border-radius: 10px; background: rgba(var(--tint), 0.06); border: 1px solid var(--border-color); color: var(--text-main);">${sw(prefs.reminder.on, 'setReminder(this.checked)')}</div>`)}
                 <div class="setting-title" style="margin-bottom: 8px;">Accessibility</div>
@@ -3306,6 +3359,29 @@
             if ((m = message.match(/^Badge Unlocked: (.*)$/))) return notify({ type: 'badge', title: 'Achievement unlocked!', message: m[1], duration: 5500 });
             if (message.startsWith('Perfect Day')) return notify({ type: 'level', title: 'Perfect Day!', message: 'You completed every habit today.', duration: 5000 });
             notify({ type: 'success', title: message });
+        }
+
+        function toggleMore() {
+            const open = !document.getElementById('moreSheet').classList.contains('show');
+            document.getElementById('moreSheet').classList.toggle('show', open);
+            document.getElementById('moreBackdrop').classList.toggle('show', open);
+        }
+        function closeMore() {
+            document.getElementById('moreSheet').classList.remove('show');
+            document.getElementById('moreBackdrop').classList.remove('show');
+        }
+
+        // ---- Install as app (PWA) ----
+        let deferredInstall = null;
+        window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredInstall = e; if ($('prefsPanel')) renderPrefsPanels(); });
+        window.addEventListener('appinstalled', () => { deferredInstall = null; notify({ type: 'success', title: 'Allex installed!' }); });
+        function installApp() {
+            if (!deferredInstall) return;
+            deferredInstall.prompt();
+            deferredInstall.userChoice.finally(() => { deferredInstall = null; renderPrefsPanels(); });
+        }
+        if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+            window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
         }
 
         window.onload = init;
