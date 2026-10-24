@@ -1956,7 +1956,7 @@
         // ---- QUICK ACTIONS + SEARCH ----
         function toggleQA() {
             const m = $('qaMenu'), open = !m.classList.contains('show');
-            const items = [['Search', 'openSearch()'], ['Add Habit', "changePage('habits', null); openModal()"], ['Add Task', 'openTaskModal()'], ['Write Note', "changePage('journal', null)"], ['Log Energy', "growthTab = 'trackers'; changePage('growth', null)"], ['Start Focus', "growthTab = 'focus'; changePage('growth', null)"], ['Growth Lab', "changePage('growth', null)"]];
+            const items = [['Add Habit', "changePage('habits', null); openModal()"], ['Add Task', 'openTaskModal()'], ['Write Note', "changePage('journal', null)"], ['Start Focus', "growthTab = 'focus'; changePage('growth', null)"]];
             m.innerHTML = items.map(([l, f]) => `<div class="qa-item" onclick="${f}; toggleQA()">${l}</div>`).join('');
             m.classList.toggle('show', open); $('qaFab').classList.toggle('open', open);
             if (!open) { m.classList.remove('show'); $('qaFab').classList.remove('open'); }
