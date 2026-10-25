@@ -796,6 +796,15 @@
         .search-tag { font-size: 10px; font-weight: 700; color: var(--neon-cyan); margin-right: 8px; text-transform: uppercase; }
         @media (max-width: 768px) { .qa-fab { bottom: 84px; right: 14px; } .qa-menu { bottom: 148px; right: 14px; } .focus-time { font-size: 60px; } }
 
+        /* --- COACH / GROWTH LAB 2 --- */
+        .chat-box { max-height: 320px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+        .chat-msg { padding: 10px 14px; border-radius: 14px; font-size: 14px; max-width: 88%; line-height: 1.5; word-break: break-word; user-select: text; }
+        .chat-msg.user { align-self: flex-end; background: var(--neon-cyan); color: var(--bg-base); }
+        .chat-msg.bot { align-self: flex-start; background: rgba(var(--tint), 0.08); }
+        .pill { display: inline-block; padding: 2px 10px; border-radius: 10px; font-size: 11px; font-weight: 700; border: 1px solid currentColor; }
+        .mini-bar { height: 8px; border-radius: 10px; background: rgba(var(--tint), 0.1); overflow: hidden; margin: 6px 0; }
+        .mini-bar > div { height: 100%; border-radius: 10px; }
+
         /* Responsive */
         @media (max-width: 1024px) {
             .workspace { grid-template-columns: 1fr; }
@@ -899,6 +908,10 @@
                 Achievements
             </a>
         </div>
+        <a href="#" class="nav-item" onclick="downloadApp(); return false;">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download App
+        </a>
         <a href="#" class="nav-item" style="margin-bottom: 6px;" onclick="changePage('settings', this); return false;">
             <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
             Settings
@@ -906,6 +919,11 @@
     </aside>
 
     <main class="main-content">
+
+        <div class="bd-banner warn" id="demoBanner" style="display: none;">
+            <div style="flex: 1;"><div class="bd-banner-title">Demo mode</div><div class="bd-banner-text">You are looking at sample data. Your own data is safe.</div></div>
+            <button class="btn-primary" onclick="exitDemo()">Exit demo</button>
+        </div>
 
         <!-- DASHBOARD PAGE -->
         <div id="page-dashboard" class="page-section active">
@@ -1052,11 +1070,13 @@
                     <p>Choose your own sounds and notifications</p>
                 </div>
             </header>
+            <section class="panel" id="installPanel"></section>
             <section class="panel" id="appearancePanel"></section>
             <section class="panel" id="soundSettingsPanel"></section>
             <section class="panel" id="notifySettingsPanel"></section>
             <section class="panel" id="prefsPanel"></section>
             <section class="panel" id="securityPanel"></section>
+            <section class="panel" id="extraPanel"></section>
         </div>
 
         <!-- TASKS PAGE -->
@@ -1150,19 +1170,20 @@
         <div class="mobile-nav-item" data-pages="tasks" onclick="changePage('tasks', this)">
             <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>Tasks
         </div>
-        <div class="mobile-nav-item" data-pages="growth" onclick="changePage('growth', this)">
-            <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></span>Growth
+        <div class="mobile-nav-item" data-pages="journal" onclick="changePage('journal', this)">
+            <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>Notes
         </div>
-        <div class="mobile-nav-item" data-pages="journal,achievements,settings" onclick="toggleMore()">
+        <div class="mobile-nav-item" data-pages="growth,achievements,settings" onclick="toggleMore()">
             <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg></span>More
         </div>
     </nav>
 
     <div class="more-backdrop" id="moreBackdrop" onclick="closeMore()"></div>
     <div class="more-sheet" id="moreSheet">
-        <div class="more-item" onclick="changePage('journal', null)"><svg class="icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Notes</div>
+        <div class="more-item" onclick="changePage('growth', null)"><svg class="icon" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>Growth Lab</div>
         <div class="more-item" onclick="changePage('achievements', null)"><svg class="icon" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>Achievements</div>
         <div class="more-item" onclick="changePage('settings', null)"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</div>
+        <div class="more-item" onclick="downloadApp(); closeMore()"><svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download App</div>
     </div>
 
     <div class="modal-overlay" id="habitModal">
@@ -1188,6 +1209,14 @@
         <div class="focus-time" id="focusTime">25:00</div>
         <div style="width: min(420px, 90%); height: 8px; border-radius: 10px; background: rgba(var(--tint), 0.1); overflow: hidden;"><div id="focusBar" style="height: 100%; width: 0%; background: var(--neon-cyan);"></div></div>
         <button class="btn-primary" onclick="endFocus(false)">Stop session</button>
+    </div>
+
+    <div class="modal-overlay" id="installHelp" onclick="if (event.target === this) closeInstallHelp()">
+        <div class="modal-content">
+            <h2 style="margin-bottom: 12px;">Download Allex App</h2>
+            <div id="installHelpBody" style="font-size: 14px; line-height: 1.7; color: var(--text-muted);"></div>
+            <button class="btn-primary" style="width: 100%; margin-top: 18px; padding: 12px;" onclick="closeInstallHelp()">Got it</button>
+        </div>
     </div>
 
     <div class="modal-overlay" id="searchOverlay" onclick="if (event.target === this) closeSearch()">
@@ -1225,6 +1254,10 @@
             <div class="input-group">
                 <label>Task</label>
                 <input type="text" id="taskTitleInput" placeholder="e.g. Pay electricity bill">
+            </div>
+            <div class="input-group">
+                <label>Priority</label>
+                <select id="taskPrioInput"><option value="1">High</option><option value="2" selected>Medium</option><option value="3">Low</option></select>
             </div>
             <div class="input-group">
                 <label>Repeat</label>
@@ -1664,8 +1697,10 @@
 
         // ================= SETTINGS PAGE =================
         function renderSettings() {
+            renderInstallPanel();
             renderAppearance();
             renderPrefsPanels();
+            renderExtraPanel();
             const panel = document.getElementById('soundSettingsPanel');
             if (!panel) return;
             const PLAY = '<polygon points="6 3 20 12 6 21 6 3"/>';
@@ -1753,7 +1788,7 @@
         function savePrefs() { try { localStorage.setItem('quantumPrefs', JSON.stringify(prefs)); } catch (e) {} }
 
         function ensureExtras() {
-            const d = { tickTimes: {}, energy: {}, distractions: [], procrastination: [], focus: [], stacks: [], plans: [], rules: [], wins: {}, balance: {}, reviews: {}, ba: { before: '', beforeDate: '', after: '', afterDate: '' }, goal: { ticks: 0, deadline: '' }, restDays: [] };
+            const d = { tickTimes: {}, energy: {}, distractions: [], procrastination: [], focus: [], stacks: [], plans: [], rules: [], wins: {}, balance: {}, reviews: {}, ba: { before: '', beforeDate: '', after: '', afterDate: '' }, goal: { ticks: 0, deadline: '' }, restDays: [], habitMins: {}, habitPrio: {}, plan: { avail: 120 }, goals: [], values: [], experiments: [], automations: [], kb: [], audits: {}, feedback: [] };
             Object.keys(d).forEach(k => { if (appState[k] === undefined) appState[k] = d[k]; });
         }
 
@@ -1822,16 +1857,17 @@
         const gInput = (id, ph, val) => `<div class="input-group" style="margin-bottom: 10px;"><input type="text" id="${id}" placeholder="${ph}" value="${esc(val || '')}"></div>`;
         const gArea = (id, label, val) => `<div class="input-group"><label>${label}</label><textarea id="${id}" rows="2">${esc(val || '')}</textarea></div>`;
         const li = (arr) => arr.map(x => `<div style="font-size: 14px; line-height: 1.5; margin-bottom: 8px;">- ${x}</div>`).join('');
-        function delItem(key, i) { appState[key].splice(i, 1); saveData(); renderGrowth(); }
+        function delItem(key, i) { appState[key].splice(i, 1); saveData(); renderGrowth(); if (typeof renderExtraPanel === 'function') renderExtraPanel(); }
 
         let growthTab = 'insights';
         function setGrowthTab(t) { growthTab = t; renderGrowth(); }
         function renderGrowth() {
-            const tabs = [['insights', 'Insights'], ['reports', 'Reports'], ['planner', 'Planner'], ['trackers', 'Trackers'], ['focus', 'Focus'], ['journey', 'Journey']];
+            const tabs = [['insights', 'Insights'], ['reports', 'Reports'], ['planner', 'Planner'], ['trackers', 'Trackers'], ['focus', 'Focus'], ['journey', 'Journey'], ['coach', 'Coach'], ['plan', 'Plan'], ['analyze', 'Analyze'], ['goals', 'Goals'], ['lab', 'Lab'], ['library', 'Library']];
             $('growthTabs').innerHTML = tabs.map(([k, l]) => `<button class="tab-btn ${growthTab === k ? 'active' : ''}" onclick="setGrowthTab('${k}')">${l}</button>`).join('');
-            const fn = { insights: gInsights, reports: gReports, planner: gPlanner, trackers: gTrackers, focus: gFocus, journey: gJourney }[growthTab];
+            const fn = { insights: gInsights, reports: gReports, planner: gPlanner, trackers: gTrackers, focus: gFocus, journey: gJourney, coach: gCoach, plan: gPlan, analyze: gAnalyze, goals: gGoals, lab: gLab, library: gLibrary }[growthTab];
             $('growthContent').innerHTML = fn();
             if (growthTab === 'journey') drawRadar();
+            if (growthTab === 'coach') renderChat();
         }
 
         // ---- INSIGHTS: smart insights, prediction, difficulty, recovery, time analysis, scheduling ----
@@ -1932,7 +1968,7 @@
                 + logCard('procrastination', 'Procrastination Tracker', 'What did you put off?', 'Be honest - awareness is the first step.');
         }
         function setEnergy(n) { appState.energy[getTodayStr()] = n; saveData(); renderGrowth(); }
-        function addLog(kind) { const el = $('log-' + kind), v = el.value.trim(); if (!v) return; appState[kind].push({ date: getTodayStr(), text: v }); saveData(); renderGrowth(); }
+        function addLog(kind) { const el = $('log-' + kind), v = el.value.trim(); if (!v) return; const nw = new Date(); appState[kind].push({ date: getTodayStr(), text: v, time: `${pad2(nw.getHours())}:${pad2(nw.getMinutes())}` }); saveData(); renderGrowth(); }
         function addWin() { const v = $('winInput').value.trim(); if (!v) return; const t = getTodayStr(); (appState.wins[t] = appState.wins[t] || []).push(v); saveData(); renderGrowth(); notify({ type: 'success', title: 'Win saved', message: v }); }
         function delWin(d, i) { appState.wins[d].splice(i, 1); saveData(); renderGrowth(); }
 
@@ -2025,6 +2061,8 @@
             Object.keys(appState.journal).forEach(d => { const e = appState.journal[d]; [e.day, e.missed, e.why].forEach(x => x && add('Note', `${formatTaskDate(d)}: ${x}`, 'journal')); });
             Object.keys(appState.wins).forEach(d => appState.wins[d].forEach(w => add('Win', w, 'growth', 'trackers')));
             appState.rules.forEach(r => add('Rule', r, 'growth', 'planner'));
+            appState.kb.forEach(k => add('Knowledge', `${k.title} ${k.text}`, 'growth', 'library'));
+            appState.goals.forEach(g => add('Goal', g.title, 'growth', 'goals'));
             appState.plans.forEach(p => add('If-Then', `${p.iff} -> ${p.then}`, 'growth', 'planner'));
             appState.distractions.concat(appState.procrastination).forEach(x => add('Log', x.text, 'growth', 'trackers'));
             $('searchResults').innerHTML = out.slice(0, 30).map(r => `<div class="search-result" onclick="goTo('${r.page}', '${r.tab || ''}')"><span class="search-tag">${r.type}</span>${esc(r.text)}</div>`).join('') || gEmpty('No results.');
@@ -2066,7 +2104,7 @@
             r.onload = () => { try { const d = JSON.parse(r.result); if (!Array.isArray(d.habits)) throw 0; if (!confirm('Replace ALL current data with this backup?')) return; appState = d; saveData(); location.reload(); } catch (e) { notify({ type: 'error', title: 'Not a valid backup file' }); } };
             r.readAsText(f);
         }
-        function makeBackup() { try { localStorage.setItem('quantumBackup', JSON.stringify({ at: Date.now(), data: appState })); return true; } catch (e) { return false; } }
+        function makeBackup() { saveVersion('Backup'); try { localStorage.setItem('quantumBackup', JSON.stringify({ at: Date.now(), data: appState })); return true; } catch (e) { return false; } }
         function autoBackup() { try { const b = JSON.parse(localStorage.getItem('quantumBackup') || 'null'); if (prefs.autoBackup && (!b || Date.now() - b.at > 7 * 864e5)) makeBackup(); } catch (e) {} }
         function backupNow() { notify(makeBackup() ? { type: 'success', title: 'Backup saved on this device' } : { type: 'error', title: 'Backup failed', message: 'Storage is full.' }); renderPrefsPanels(); }
         function restoreBackup() { try { const b = JSON.parse(localStorage.getItem('quantumBackup') || 'null'); if (!b || !confirm('Restore the last backup? Current data will be replaced.')) return; appState = b.data; saveData(); location.reload(); } catch (e) {} }
@@ -2080,11 +2118,10 @@
             const usual = habitTimes().reduce((a, x) => a.concat(x.all), []);
             const sug = usual.length ? `Suggested time from your habits: <b>${fm(Math.round(usual.reduce((a, b) => a + b, 0) / usual.length))}</b>` : 'Tick habits for a few days to get a suggested time.';
             $('prefsPanel').innerHTML = `<h2 class="panel-title" style="margin-bottom: 14px;">Personalize</h2>
-                ${line('Install Allex as an app', deferredInstall ? 'Add it to your home screen for full-screen use.' : 'Use your browser menu: "Install app" or "Add to Home screen".', deferredInstall ? '<button class="btn-primary" onclick="installApp()">Install</button>' : '')}
                 <div class="setting-title">Weekly rest days</div><div class="setting-desc" style="margin-bottom: 10px;">Rest days are not counted as missed and keep your streak alive.</div><div class="weekday-row" style="margin-bottom: 20px;">${rest}</div>
                 ${line('Daily reminder', `${sug}<br>Works while Allex is open in a tab.`, `<div style="display: flex; gap: 8px; align-items: center;"><input type="time" value="${prefs.reminder.time}" onchange="setReminder(prefs.reminder.on, this.value)" style="padding: 8px; border-radius: 10px; background: rgba(var(--tint), 0.06); border: 1px solid var(--border-color); color: var(--text-main);">${sw(prefs.reminder.on, 'setReminder(this.checked)')}</div>`)}
                 <div class="setting-title" style="margin-bottom: 8px;">Accessibility</div>
-                <div class="sound-row"><div class="sound-row-title">Text size</div><select onchange="setPref('size', Number(this.value))">${[90, 100, 115, 130].map(v => `<option value="${v}" ${prefs.size === v ? 'selected' : ''}>${v}%</option>`).join('')}</select></div>
+                <div class="sound-row"><div class="sound-row-title">Text size</div><select onchange="setPref('size', Number(this.value))">${[75, 90, 100, 115, 130].map(v => `<option value="${v}" ${prefs.size === v ? 'selected' : ''}>${v}%</option>`).join('')}</select></div>
                 <div class="sound-row"><div class="sound-row-title">Font</div><select onchange="setPref('font', this.value)">${[['outfit', 'Outfit (default)'], ['easy', 'Easy to read (Verdana)'], ['serif', 'Serif (Georgia)']].map(([v, l]) => `<option value="${v}" ${prefs.font === v ? 'selected' : ''}>${l}</option>`).join('')}</select></div>
                 ${line('High contrast', 'Brighter text and stronger borders.', sw(prefs.contrast, "setPref('contrast', this.checked)"))}
                 ${line('Reduce motion', 'Turn off animations and transitions.', sw(prefs.motion, "setPref('motion', this.checked)"))}
@@ -2099,6 +2136,390 @@
                 ${line('Automatic weekly backup', 'Saves a snapshot on this device once a week.', sw(prefs.autoBackup, "prefs.autoBackup = this.checked; savePrefs()"))}
                 <div class="quick-row" style="margin: 0;"><span class="quick-chip" onclick="exportJSON()">Export JSON</span><span class="quick-chip" onclick="exportCSV()">Export CSV</span><span class="quick-chip" onclick="document.getElementById('importFile').click()">Import backup</span><span class="quick-chip" onclick="backupNow()">Backup now</span><span class="quick-chip" onclick="restoreBackup()">Restore last backup</span></div>
                 <input type="file" id="importFile" accept=".json,application/json" style="display: none;" onchange="importJSON(this)">`;
+        }
+
+        // ================= GROWTH LAB 2: coach, plan, analyze, goals, lab, library =================
+        const STOP = new Set('the and for with from this that was were are you your our not but all any can had has have into its out too very just then them they what when who why how his her him she'.split(' '));
+        const words = str => (str || '').toLowerCase().replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter(w => w.length > 2 && !STOP.has(w)).map(w => w.replace(/s$/, ''));
+        function topWords(texts, n) { const c = {}; texts.forEach(t => words(t).forEach(w => { c[w] = (c[w] || 0) + 1; })); return Object.entries(c).sort((a, b) => b[1] - a[1]).slice(0, n); }
+        function sim(a, b) { const A = new Set(words(a)), B = new Set(words(b)); if (!A.size || !B.size) return 0; let i = 0; A.forEach(w => { if (B.has(w)) i++; }); return i / (A.size + B.size - i); }
+        function findDuplicate(name) {
+            const n = name.trim().toLowerCase(); let best = null;
+            appState.habits.forEach(h => { const sc = h.name.trim().toLowerCase() === n ? 1 : sim(h.name, name); if (sc >= 0.6 && (!best || sc > best.s)) best = { h, s: sc }; });
+            return best;
+        }
+        const hMin = h => (appState.habitMins[h.id] != null ? appState.habitMins[h.id] : 15);
+        const hPrio = h => appState.habitPrio[h.id] || 2;
+        const PRIO = { 1: 'High', 2: 'Medium', 3: 'Low' };
+        const TASK_MIN = 20;
+        const avgOf = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : null;
+        const barHtml = (pct, color) => `<div class="mini-bar"><div style="width:${Math.max(0, Math.min(100, pct))}%; background:${color || 'var(--neon-cyan)'};"></div></div>`;
+        const pill = (t, c) => `<span class="pill" style="color:${c};">${t}</span>`;
+        const selHtml = (id, opts, cur, onch) => `<select id="${id}" ${onch ? `onchange="${onch}"` : ''}>${opts.map(([v, l]) => `<option value="${v}" ${String(cur) === String(v) ? 'selected' : ''}>${l}</option>`).join('')}</select>`;
+
+        // ---- COACH: natural language add, chat, voice, duplicates & conflicts ----
+        function parseNL(text) {
+            const days = { sunday: 0, sun: 0, monday: 1, mon: 1, tuesday: 2, tue: 2, wednesday: 3, wed: 3, thursday: 4, thu: 4, friday: 5, fri: 5, saturday: 6, sat: 6 };
+            const dn = '(monday|mon|tuesday|tue|wednesday|wed|thursday|thu|friday|fri|saturday|sat|sunday|sun)\\b';
+            let title = text.trim().replace(/^(please\s+)?(add|create|remind me to|i want to|i will|i should)\s+/i, ''), low = text.toLowerCase(), m, task = null;
+            const t = getTodayStr();
+            if ((m = low.match(new RegExp('every ' + dn)))) { task = { type: 'weekly', weekdays: [days[m[1]]] }; title = title.replace(new RegExp('every ' + dn, 'i'), ''); }
+            else if ((m = low.match(/(?:every month|monthly)(?: on)?(?: the)? (\d{1,2})/))) { task = { type: 'monthly', monthDay: Math.min(31, +m[1]) }; title = title.replace(/(?:every month|monthly)(?: on)?(?: the)? \d{1,2}(?:st|nd|rd|th)?/i, ''); }
+            else if ((m = low.match(/in (\d+) days?/))) { task = { type: 'once', date: dateAdd(t, +m[1]) }; title = title.replace(/in \d+ days?/i, ''); }
+            else if (/\btomorrow\b/.test(low)) { task = { type: 'once', date: dateAdd(t, 1) }; title = title.replace(/\btomorrow\b/i, ''); }
+            else if (/\btoday\b/.test(low)) { task = { type: 'once', date: t }; title = title.replace(/\btoday\b/i, ''); }
+            else if ((m = low.match(new RegExp('(?:on |next )' + dn)))) { let k = (days[m[1]] - weekdayOf(t) + 7) % 7; if (k === 0) k = 7; task = { type: 'once', date: dateAdd(t, k) }; title = title.replace(new RegExp('(?:on |next )' + dn, 'i'), ''); }
+            title = title.replace(/\b(every ?day|daily|everyday)\b/ig, '').replace(/\s+/g, ' ').replace(/[,.\-]+$/, '').trim();
+            title = title.charAt(0).toUpperCase() + title.slice(1);
+            return { title, task };
+        }
+        function nlAdd() {
+            const v = $('nlInput').value.trim(); if (!v) return;
+            const r = parseNL(v); if (!r.title) return notify({ type: 'error', title: 'Could not understand that' });
+            if (r.task) {
+                appState.tasks.push(Object.assign({ id: Date.now().toString(), title: r.title, done: {}, prio: 2 }, r.task));
+                saveData(); updateUI(); notify({ type: 'task', title: 'Task added', message: `"${r.title}" - ${taskScheduleText(r.task)}` });
+            } else {
+                const dup = findDuplicate(r.title);
+                if (dup && !confirm(`"${r.title}" looks similar to "${dup.h.name}". Add it anyway?`)) return;
+                appState.habits.push({ id: Date.now().toString(), name: r.title, xp: HABIT_XP, completed: false, history: {} });
+                saveData(); renderHabits(); renderCalendar(); updateUI(); notify({ type: 'success', title: 'Habit added', message: r.title });
+            }
+            $('nlInput').value = ''; renderGrowth();
+        }
+        function matchHabit(txt) {
+            const w = new Set(words(txt)); let best = null, bs = 0;
+            appState.habits.forEach(h => { const hw = words(h.name); if (!hw.length) return; const sc = hw.filter(x => w.has(x)).length / hw.length; if (sc > bs) { bs = sc; best = h; } });
+            return bs >= 0.5 ? best : null;
+        }
+        function startVoice() {
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SR) return notify({ type: 'error', title: 'Voice is not supported here', message: 'Try Chrome on Android or desktop.' });
+            const r = new SR(); r.lang = navigator.language || 'en-US'; r.interimResults = false;
+            r.onresult = e => handleVoice(e.results[0][0].transcript);
+            r.onerror = () => notify({ type: 'error', title: 'Could not hear you', message: 'Check the microphone permission.' });
+            try { r.start(); notify({ type: 'info', title: 'Listening...', message: 'Say: "done meditation"' }); } catch (e) {}
+        }
+        function handleVoice(txt) {
+            chatLog.push({ from: 'user', text: txt });
+            const h = matchHabit(txt);
+            if (!h) chatLog.push({ from: 'bot', text: 'I could not match a habit in that. Try: "done" + the habit name.' });
+            else if (h.completed) chatLog.push({ from: 'bot', text: `"${h.name}" is already done today.` });
+            else { toggleHabit(h.id); chatLog.push({ from: 'bot', text: `Ticked "${h.name}". Nice work!` }); }
+            renderChat();
+        }
+        let chatLog = [{ from: 'bot', text: 'Hi! Ask me: "how am I doing?", "what should I do today?", "which habit is weakest?" or say you are tired.' }];
+        function renderChat() { const b = $('chatBox'); if (!b) return; b.innerHTML = chatLog.slice(-30).map(m => `<div class="chat-msg ${m.from}">${esc(m.text)}</div>`).join(''); b.scrollTop = b.scrollHeight; }
+        function sendChat() { const i = $('chatInput'), q = i.value.trim(); if (!q) return; chatLog.push({ from: 'user', text: q }); chatLog.push({ from: 'bot', text: coachReply(q) }); i.value = ''; renderChat(); }
+        function coachReply(q) {
+            const low = q.toLowerCase(), H = appState.habits, t = getTodayStr();
+            if (!H.length) return 'Add a habit first, then I can coach you. Try the Quick Add box above.';
+            const left = H.filter(h => !h.completed).sort((a, b) => hPrio(a) - hPrio(b)), d14 = lastDates(14), r7 = rateFor(lastDates(7)), r14 = rateFor(d14);
+            const hr = H.map(h => ({ h, r: rateFor(d14, [h]) })).sort((a, b) => b.r - a.r);
+            if (/tired|low energy|exhaust|drain|sleepy/.test(low)) return left.length ? `On low-energy days, do the 2-minute version of "${left[0].name}" only. A tiny win keeps your streak alive.` : 'You already finished everything today. Rest well!';
+            if (/plan|today|what should|what now|next|todo/.test(low)) return left.length ? `Left today: ${left.slice(0, 4).map(h => h.name).join(', ')}${left.length > 4 ? ` (+${left.length - 4} more)` : ''}. Start with "${left[0].name}" - it is your top priority.` : 'Every habit is done today. Great job!';
+            if (/weak|worst|struggl|hard|miss/.test(low)) return `"${hr[hr.length - 1].h.name}" is your weakest (${hr[hr.length - 1].r}% in 14 days). Shrink it to 2 minutes or attach it after "${hr[0].h.name}".`;
+            if (/best|strong/.test(low)) return `"${hr[0].h.name}" is your strongest habit (${hr[0].r}% in 14 days). Use it as an anchor for new habits.`;
+            if (/streak/.test(low)) return `Current streak: ${getCurrentStreak()} days. Longest: ${getLongestStreak()} days.`;
+            if (/level|xp/.test(low)) { const l = getLevelInfo(appState.totalXp); return `You are Level ${l.level} (${getRank(l.level)}). ${l.remaining} XP to complete this level.`; }
+            if (/goal/.test(low)) return appState.goals.length ? `You have ${appState.goals.length} goal(s). Next deadline: ${appState.goals.slice().sort((a, b) => a.due.localeCompare(b.due))[0].title}.` : 'You have no goals yet. Add one in the Goals tab.';
+            if (/time|busy|budget|overload/.test(low)) { const load = H.reduce((n, h) => n + hMin(h), 0); return `Your habits need about ${load} min a day and you set ${appState.plan.avail} min available. ${load > appState.plan.avail ? 'That is overloaded - see the Plan tab.' : 'That fits.'}`; }
+            if (/motiv|stuck|lazy|help|bored/.test(low)) return `Start tiny: do "${(left[0] || hr[0].h).name}" for just 2 minutes. You are at ${r7}% this week - momentum beats motivation.`;
+            if (/how am i|progress|doing|summary|report/.test(low)) return `This week: ${r7}% (last 14 days: ${r14}%). Streak: ${getCurrentStreak()} days. ${r7 >= r14 ? 'You are holding steady or improving.' : 'A small dip - one good day turns it around.'}`;
+            return 'I can help with: today\'s plan, your weakest/strongest habit, streaks, level, goals, time budget, or low energy days. Try asking one of those.';
+        }
+        function conflictHtml() {
+            const H = appState.habits, rows = [];
+            for (let i = 0; i < H.length; i++) for (let j = i + 1; j < H.length; j++) { const sc = sim(H[i].name, H[j].name); if (sc >= 0.6) rows.push(`${pill('DUPLICATE', 'var(--neon-yellow)')} "${esc(H[i].name)}" and "${esc(H[j].name)}" look the same.`); }
+            const ht = habitTimes().filter(x => x.n >= 3);
+            for (let i = 0; i < ht.length; i++) for (let j = i + 1; j < ht.length; j++) if (Math.abs(ht[i].avg - ht[j].avg) <= 15) rows.push(`${pill('CLASH', 'var(--neon-red)')} "${esc(ht[i].h.name)}" and "${esc(ht[j].h.name)}" are both usually done around ${fm(ht[i].avg)}.`);
+            const load = H.reduce((n, h) => n + hMin(h), 0);
+            if (load > appState.plan.avail) rows.push(`${pill('TIME', 'var(--neon-red)')} Your habits need ${load} min but you set ${appState.plan.avail} min per day.`);
+            return rows.length ? li(rows) : gEmpty('No duplicates or conflicts found.');
+        }
+        function gCoach() {
+            const mic = '<path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>';
+            return gCard('Quick Add (plain words)', gInput('nlInput', 'e.g. Read 20 pages every day | Pay bill in 3 days | Gym every monday') + '<button class="btn-primary" onclick="nlAdd()">Add</button>', 'Type naturally. Allex decides if it is a habit or a task and warns about duplicates.')
+                + gCard('Coach', `<div class="chat-box" id="chatBox"></div><div style="display: flex; gap: 8px; align-items: center;"><div class="input-group" style="margin: 0; flex: 1;"><input type="text" id="chatInput" placeholder="Ask your coach..." onkeydown="if (event.key === 'Enter') sendChat()"></div><button class="icon-btn" onclick="startVoice()" title="Speak"><svg class="icon icon-sm" viewBox="0 0 24 24">${mic}</svg></button><button class="btn-primary" onclick="sendChat()">Send</button></div>`, 'A rule-based coach that answers from your own data (not a cloud AI). Tap the mic and say "done meditation" to tick a habit.')
+                + gCard('Duplicate & Conflict Check', conflictHtml());
+        }
+
+        // ---- PLAN: time budget, adaptive plan, overload, burnout, simulator, what-if ----
+        let simOff = [], whatIf = { min: 0, ticks: 0 };
+        function setAvail(v) { appState.plan.avail = Math.max(10, Math.min(1440, parseInt(v, 10) || 120)); saveData(); renderGrowth(); }
+        function setHabitMins(id, v) { appState.habitMins[id] = Math.max(1, parseInt(v, 10) || 15); saveData(); renderGrowth(); }
+        function setHabitPrio(id, v) { appState.habitPrio[id] = parseInt(v, 10); saveData(); renderGrowth(); }
+        function toggleSim(id) { const i = simOff.indexOf(id); if (i >= 0) simOff.splice(i, 1); else simOff.push(id); renderGrowth(); }
+        function setWhatIf() { whatIf = { min: parseInt($('wiMin').value, 10) || 0, ticks: parseInt($('wiTicks').value, 10) || 0 }; renderGrowth(); }
+        function burnoutInfo() {
+            const H = appState.habits, avail = appState.plan.avail, load = H.reduce((n, h) => n + hMin(h), 0), why = []; let sc = 0;
+            if (load / avail > 1) { sc += 30; why.push('Your planned habits need more time than you have.'); } else if (load / avail > 0.8) { sc += 15; why.push('Your day is almost fully booked.'); }
+            const en = lastDates(7).map(d => appState.energy[d]).filter(Boolean), ae = avgOf(en);
+            if (ae !== null && ae <= 2.5) { sc += 25; why.push('Your energy has been low this week.'); } else if (ae !== null && ae <= 3) { sc += 10; why.push('Your energy is only so-so.'); }
+            if (rateFor(lastDates(7)) < rateFor(lastDates(14)) - 15) { sc += 15; why.push('Your consistency dropped recently.'); }
+            const w7 = lastDates(7); if (appState.distractions.concat(appState.procrastination).filter(x => w7.includes(x.date)).length >= 8) { sc += 10; why.push('Many distractions or delays logged.'); }
+            if (getCurrentStreak() >= 14 && !(appState.restDays || []).length) { sc += 10; why.push('Two weeks without a rest day.'); }
+            if (appState.focus.filter(f => w7.includes(f.date)).reduce((n, f) => n + f.mins, 0) > 600) { sc += 10; why.push('Over 10 hours of deep work this week.'); }
+            sc = Math.min(100, sc);
+            return { sc, label: sc < 30 ? 'Low' : sc < 60 ? 'Medium' : 'High', color: sc < 30 ? 'var(--neon-green)' : sc < 60 ? 'var(--neon-yellow)' : 'var(--neon-red)', why };
+        }
+        function gPlan() {
+            const H = appState.habits, avail = appState.plan.avail, t = getTodayStr();
+            if (!H.length) return gCard('Plan', gEmpty('Add habits first.'));
+            const due = getTasksDueToday().filter(i => !i.task.done[i.date]);
+            const hTotal = H.reduce((n, h) => n + hMin(h), 0), load = hTotal + due.length * TASK_MIN, ratio = load / avail;
+            const budgetRows = H.map(h => `<div class="sound-row" style="margin-bottom: 8px;"><div class="sound-row-title" style="flex: 1; min-width: 120px;">${esc(h.name)}</div><div class="sound-row-controls"><input type="number" min="1" value="${hMin(h)}" style="width: 70px; padding: 8px; border-radius: 10px; background: rgba(var(--tint), 0.06); border: 1px solid var(--border-color); color: var(--text-main);" onchange="setHabitMins('${h.id}', this.value)"><span class="setting-desc">min</span>${selHtml('pr' + h.id, [[1, 'High'], [2, 'Medium'], [3, 'Low']], hPrio(h), `setHabitPrio('${h.id}', this.value)`)}</div></div>`).join('');
+            let over = '';
+            if (ratio > 1) { let rest = load; const drop = []; H.slice().sort((a, b) => hPrio(b) - hPrio(a) || hMin(b) - hMin(a)).forEach(h => { if (rest > avail && hPrio(h) > 1) { drop.push(h.name); rest -= hMin(h); } }); over = `${pill('OVERLOAD', 'var(--neon-red)')} You plan ${load} min but have ${avail}. ${drop.length ? 'Consider skipping or shrinking: ' + esc(drop.slice(0, 4).join(', ')) + '.' : 'Raise your available time or reduce minutes.'}`; }
+            else if (ratio > 0.8) over = `${pill('TIGHT', 'var(--neon-yellow)')} You plan ${load} of ${avail} min. Leave some breathing room.`;
+            else over = `${pill('OK', 'var(--neon-green)')} ${load} of ${avail} min planned. You have ${avail - load} min free.`;
+            const done = H.filter(h => h.completed).reduce((n, h) => n + hMin(h), 0), budget = Math.max(0, avail - done);
+            const cands = H.filter(h => !h.completed).map(h => ({ n: h.name, m: hMin(h), p: hPrio(h), k: 'Habit' })).concat(due.map(i => ({ n: i.task.title, m: TASK_MIN, p: i.task.prio || 2, k: 'Task' }))).sort((a, b) => a.p - b.p || a.m - b.m);
+            let cum = 0; const doNow = [], later = [];
+            cands.forEach(c => { if (cum + c.m <= budget) { cum += c.m; doNow.push(gRow(`<b>${esc(c.n)}</b> <span class="setting-desc">${c.k} - ${c.m} min - ${PRIO[c.p]} - done by +${cum} min</span>`)); } else later.push(`${esc(c.n)} (${c.m} min)`); });
+            const cap = Math.max(30, avail - hTotal), pend = []; (appState.tasks || []).filter(x => x.type === 'once' && !x.done[x.date]).forEach(x => pend.push(x));
+            pend.sort((a, b) => (a.prio || 2) - (b.prio || 2) || a.date.localeCompare(b.date));
+            const used = {}, sched = pend.slice(0, 10).map(x => { let d = t; while ((used[d] || 0) + TASK_MIN > cap && daysBetween(t, d) < 60) d = dateAdd(d, 1); used[d] = (used[d] || 0) + TASK_MIN; const risk = d > x.date && x.date >= t; return gRow(`<b>${esc(x.title)}</b> <span class="setting-desc">${PRIO[x.prio || 2]} - due ${formatTaskDate(x.date)} - do on ${formatTaskDate(d)}</span> ${risk ? pill('AT RISK', 'var(--neon-red)') : ''}`); }).join('');
+            const bo = burnoutInfo();
+            const rate = d => rateFor(lastDates(56).filter(x => weekdayOf(x) === d));
+            const kept = H.filter(h => !simOff.includes(h.id)), sim = [1, 2, 3, 4, 5, 6, 0].map(d => { const planned = (appState.restDays || []).includes(d) ? 0 : kept.reduce((n, h) => n + hMin(h), 0), f = planned ? Math.min(1, avail / planned) : 1; return gRow(`<b>${WEEKDAY_NAMES[d]}</b>: ${planned} min planned of ${avail}${planned ? ` - expected completion <b>${Math.round(rate(d) * f)}%</b>` : ' - rest day'}${barHtml(planned / avail * 100, planned > avail ? 'var(--neon-red)' : 'var(--neon-cyan)')}`); }).join('');
+            const chips = H.map(h => `<span class="quick-chip" style="${simOff.includes(h.id) ? 'opacity: 0.4; text-decoration: line-through;' : ''}" onclick="toggleSim('${h.id}')">${esc(h.name)}</span>`).join('');
+            const nl = hTotal + whatIf.min, nr = nl / avail, g = appState.goal.ticks || 500, tot = getTotalCompleted(), pace = Math.max(whatIf.ticks, 0);
+            const wi = `<div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px;"><div class="input-group" style="margin: 0; flex: 1; min-width: 140px;"><label>Extra minutes per day</label><input type="number" id="wiMin" min="0" value="${whatIf.min}"></div><div class="input-group" style="margin: 0; flex: 1; min-width: 140px;"><label>Habits ticked per day</label><input type="number" id="wiTicks" min="0" value="${whatIf.ticks}"></div><button class="btn-primary" style="align-self: flex-end;" onclick="setWhatIf()">Simulate</button></div>`
+                + `<div style="font-size: 14px; line-height: 1.6;">New daily load: <b>${nl} min</b> (${Math.round(nr * 100)}% of your time). ${nr > 1 ? 'Expect completion to drop by roughly ' + Math.round((1 - 1 / nr) * 100) + '%.' : 'This still fits.'}<br>${pace > 0 ? (tot >= g ? 'Your goal is already reached.' : `At ${pace} ticks/day you reach ${g} ticks on <b>${formatTaskDate(dateAdd(t, Math.ceil((g - tot) / pace)))}</b>.`) : 'Enter ticks per day to forecast your goal.'}</div>`;
+            return gCard('Time Budget Planner', `<div class="input-group" style="max-width: 260px;"><label>Free minutes per day</label><input type="number" id="availInput" min="10" max="1440" value="${avail}" onchange="setAvail(this.value)"></div>${budgetRows}<div style="margin-top: 12px; font-size: 14px;">${over}${barHtml(ratio * 100, ratio > 1 ? 'var(--neon-red)' : ratio > 0.8 ? 'var(--neon-yellow)' : 'var(--neon-green)')}</div>`, 'Set minutes and priority for each habit. Tasks count as 20 minutes each.')
+                + gCard('Your Plan For Today', (doNow.join('') || gEmpty('Nothing left to plan - well done!')) + (later.length ? `<div class="setting-desc" style="margin-top: 8px;">Does not fit today, move to tomorrow: ${later.join(', ')}</div>` : ''), `You have ${budget} min left today. Highest priority first.`)
+                + gCard('Priority Task Schedule', sched || gEmpty('No upcoming one-time tasks.'), 'High priority and earliest due date go first.')
+                + gCard('Burnout Risk', `<div style="font-size: 18px; font-weight: 600; color: ${bo.color};">${bo.label} (${bo.sc}/100)</div>${barHtml(bo.sc, bo.color)}${bo.why.length ? li(bo.why) : '<div class="setting-desc">No warning signs. Keep a healthy pace.</div>'}${bo.sc >= 60 ? '<div style="margin-top: 8px;">' + pill('TAKE A BREAK', 'var(--neon-red)') + ' Schedule a rest day and shrink your habits this week.</div>' : ''}`)
+                + gCard('Weekly Routine Simulator', `<div class="quick-row" style="margin: 0 0 12px;">${chips}</div>${sim}`, 'Tap a habit to remove it and see how the week changes.')
+                + gCard('What-If Planning', wi);
+        }
+
+        // ---- ANALYZE: effectiveness, patterns, triggers, recovery, consistency, abandonment ----
+        function recoveryDays(h) {
+            const ds = Object.keys(h.history).filter(d => h.history[d]).sort(); if (ds.length < 5) return null;
+            const t = getTodayStr(), gaps = []; let d = ds[0], miss = 0;
+            while (d <= t) { if (h.history[d] === true) { if (miss > 0) gaps.push(miss); miss = 0; } else miss++; d = dateAdd(d, 1); }
+            return gaps.length ? avgOf(gaps) : 0;
+        }
+        function gAnalyze() {
+            const H = appState.habits, t = getTodayStr();
+            if (!H.length || getTotalCompleted() < 5) return gCard('Analyze', gEmpty('Tick at least 5 habits to unlock deeper analysis.'));
+            const en = appState.energy, enDays = Object.keys(en);
+            const eff = H.map(h => {
+                const ds = Object.keys(h.history).filter(d => h.history[d]).sort(), first = ds[0] || t, span = lastDates(daysBetween(first, t) + 1);
+                const cons = rateFor(span, [h]), others = H.filter(x => x.id !== h.id);
+                const dOn = span.filter(d => h.history[d] === true), dOff = span.filter(d => h.history[d] !== true);
+                const lift = others.length && dOn.length && dOff.length ? rateFor(dOn, others) - rateFor(dOff, others) : null;
+                const eOn = avgOf(enDays.filter(d => h.history[d] === true).map(d => en[d])), eOff = avgOf(enDays.filter(d => h.history[d] !== true).map(d => en[d]));
+                return { h, cons, lift, ed: eOn !== null && eOff !== null ? eOn - eOff : null };
+            }).sort((a, b) => b.cons - a.cons).map(x => gRow(`<b>${esc(x.h.name)}</b> - consistency ${x.cons}%${x.lift !== null ? `<br><span class="setting-desc">Other habits are ${x.lift >= 0 ? '+' : ''}${x.lift}% on days you do this</span>` : ''}${x.ed !== null ? `<br><span class="setting-desc">Energy ${x.ed >= 0 ? '+' : ''}${x.ed.toFixed(1)} on days you do this</span>` : ''}`)).join('');
+            const d56 = lastDates(56), wd = [0, 1, 2, 3, 4, 5, 6].map(w => ({ w, tk: d56.filter(d => weekdayOf(d) === w).reduce((n, d) => n + ticksOn(d), 0), fm: appState.focus.filter(f => d56.includes(f.date) && weekdayOf(f.date) === w).reduce((n, f) => n + f.mins, 0) }));
+            const bestT = wd.slice().sort((a, b) => b.tk - a.tk)[0], bestF = wd.slice().sort((a, b) => b.fm - a.fm)[0], all = habitTimes().reduce((a, x) => a.concat(x.all), []);
+            const bk = {}; all.forEach(m => { bk[bucket(m)] = (bk[bucket(m)] || 0) + 1; }); const topB = Object.keys(bk).sort((a, b) => bk[b] - bk[a])[0];
+            const pat = li([`Most productive day for habits: <b>${WEEKDAY_NAMES[bestT.w]}</b> (${bestT.tk} ticks in 8 weeks).`, bestF.fm ? `Best day for deep work: <b>${WEEKDAY_NAMES[bestF.w]}</b> (${bestF.fm} min).` : 'Log focus sessions to find your best deep-work day.', topB ? `You are most active in the <b>${topB}</b>.` : 'Tick habits for a few days to find your best time of day.']);
+            const logs = appState.distractions.concat(appState.procrastination), tw = topWords(logs.map(x => x.text), 5);
+            const lowD = enDays.filter(d => en[d] <= 2), hiD = enDays.filter(d => en[d] >= 4);
+            const missByDay = [0, 1, 2, 3, 4, 5, 6].map(w => ({ w, r: rateFor(d56.filter(d => weekdayOf(d) === w)) })).sort((a, b) => a.r - b.r)[0];
+            const trig = li([tw.length ? `Words that keep showing up in your logs: <b>${tw.map(x => esc(x[0]) + ' (' + x[1] + ')').join(', ')}</b>.` : 'Log distractions and delays to find your triggers.', lowD.length && hiD.length ? `Low-energy days: <b>${rateFor(lowD)}%</b> completion vs <b>${rateFor(hiD)}%</b> on high-energy days.` : 'Log your energy daily to link it with your habits.', `Hardest day for you: <b>${WEEKDAY_NAMES[missByDay.w]}</b> (${missByDay.r}%).`]);
+            const dd = [0, 0, 0, 0, 0, 0, 0], hrs = {}; appState.distractions.forEach(x => { dd[weekdayOf(x.date)]++; if (x.time) { const b = bucket(+x.time.slice(0, 2) * 60); hrs[b] = (hrs[b] || 0) + 1; } });
+            const worstD = dd.indexOf(Math.max(...dd)), worstH = Object.keys(hrs).sort((a, b) => hrs[b] - hrs[a])[0];
+            const dis = appState.distractions.length ? li([`Most distractions on <b>${WEEKDAY_NAMES[worstD]}</b> (${dd[worstD]}).`, worstH ? `Mostly in the <b>${worstH}</b>.` : 'Time of day will show once more logs are added.', `Top distraction words: ${topWords(appState.distractions.map(x => x.text), 3).map(x => '<b>' + esc(x[0]) + '</b>').join(', ') || '-'}.`]) : gEmpty('No distractions logged yet.');
+            const rec = H.map(h => ({ h, r: recoveryDays(h) })).filter(x => x.r !== null), recAll = avgOf(rec.map(x => x.r));
+            const recHtml = rec.length ? gRow(`<b>Overall</b>: you usually come back after <b>${recAll.toFixed(1)}</b> missed day(s).`) + rec.map(x => gRow(`${esc(x.h.name)}: ${x.r.toFixed(1)} days`)).join('') : gEmpty('Needs more history.');
+            const d30 = lastDates(30), showUp = Math.round(d30.filter(d => ticksOn(d) > 0).length / 30 * 100), comp = rateFor(d30);
+            const cc = `<div style="font-size: 14px; line-height: 1.6;">Showing up (any habit): <b>${showUp}%</b>${barHtml(showUp)}Completion (all habits): <b>${comp}%</b>${barHtml(comp, 'var(--neon-purple)')}${showUp - comp > 30 ? 'You show up often but do not finish everything. Try fewer habits per day.' : showUp < 50 ? 'Consistency is the gap. Make your habits smaller so you can show up daily.' : 'Showing up and finishing are well matched.'}</div>`;
+            const stalled = H.map(h => { const ds = Object.keys(h.history).filter(d => h.history[d]).sort(); return ds.length >= 5 && daysBetween(ds[ds.length - 1], t) >= 14 ? { h, life: daysBetween(ds[0], ds[ds.length - 1]), since: daysBetween(ds[ds.length - 1], t) } : null; }).filter(Boolean);
+            const stGoals = appState.goals.filter(g => g.ms.length && g.ms.some(m => !m.done) && daysBetween(g.lastProgress || g.created, t) >= 14);
+            const ab = (stalled.length ? stalled.map(x => gRow(`<b>${esc(x.h.name)}</b> lasted ${x.life} days and stopped ${x.since} days ago.`)).join('') + `<div class="setting-desc" style="margin-bottom: 8px;">Average lifespan before stopping: ${Math.round(avgOf(stalled.map(x => x.life)))} days. Make new habits smaller around that time.</div>` : gEmpty('No abandoned habits. Great!')) + stGoals.map(g => gRow(`${pill('STALLED', 'var(--neon-yellow)')} Goal "${esc(g.title)}" has had no progress for 14+ days.`)).join('');
+            return gCard('Habit Effectiveness Comparison', eff) + gCard('Productivity Patterns', pat) + gCard('Personal Triggers', trig) + gCard('Distraction Trigger Analysis', dis) + gCard('Recovery Time', recHtml, 'How many days you usually miss before restarting.') + gCard('Consistency vs Completion (30 days)', cc) + gCard('Abandonment Insights', ab);
+        }
+
+        // ---- GOALS: breakdown, forecast, trade-offs, values, recommendations ----
+        const AREA_TIPS = { Health: ['Add a 10-minute daily walk', 'Track sleep or water', 'Plan one active weekend activity'], Career: ['Block 1 deep-work session daily', 'Update your CV or portfolio', 'Ask for feedback this week'], Learning: ['Read 10 pages daily', 'Take one short course', 'Teach what you learned'], Money: ['Track expenses for 7 days', 'Set an automatic saving', 'Review subscriptions'], Relations: ['Call one friend weekly', 'Plan a family meal', 'Send a thank-you message'], Fun: ['Schedule one hobby slot', 'Try something new this month', 'Plan a small trip'], Mindset: ['Meditate 5 minutes', 'Write 3 gratitudes', 'Limit news and social media'], Home: ['Tidy for 10 minutes daily', 'Declutter one drawer', 'Plan weekly meals'] };
+        function addGoal() {
+            const title = $('goalTitle').value.trim(), due = $('goalDue').value;
+            if (!title || !due) return notify({ type: 'error', title: 'Add a title and a deadline' });
+            appState.goals.push({ id: Date.now().toString(), title, area: $('goalArea').value, due, hrs: parseFloat($('goalHrs').value) || 0, value: $('goalValue').value, created: getTodayStr(), lastProgress: getTodayStr(), ms: [] });
+            saveData(); renderGrowth();
+        }
+        function breakGoal(id) {
+            const g = appState.goals.find(x => x.id === id), n = Math.max(2, Math.min(12, parseInt($('msN-' + id).value, 10) || 4)), span = Math.max(1, daysBetween(g.created, g.due));
+            g.ms = Array.from({ length: n }, (_, k) => ({ t: `Step ${k + 1} of ${n}`, date: dateAdd(g.created, Math.round(span * (k + 1) / n)), done: false }));
+            saveData(); renderGrowth();
+        }
+        function addMs(id) { const g = appState.goals.find(x => x.id === id), tt = $('msT-' + id).value.trim(), d = $('msD-' + id).value; if (!tt || !d) return; g.ms.push({ t: tt, date: d, done: false }); g.ms.sort((a, b) => a.date.localeCompare(b.date)); saveData(); renderGrowth(); }
+        function toggleMs(id, i) { const g = appState.goals.find(x => x.id === id); g.ms[i].done = !g.ms[i].done; if (g.ms[i].done) g.lastProgress = getTodayStr(); saveData(); renderGrowth(); }
+        function delGoal(i) { if (confirm('Delete this goal?')) { appState.goals.splice(i, 1); saveData(); renderGrowth(); } }
+        function addValue() { const v = $('valInput').value.trim(); if (!v || appState.values.length >= 8) return; appState.values.push(v); saveData(); renderGrowth(); }
+        function gGoals() {
+            const t = getTodayStr(), G = appState.goals, areas = BAL_AREAS;
+            const vOpts = [['', 'No value']].concat(appState.values.map(v => [v, v]));
+            const form = `<div class="input-group" style="margin-bottom: 10px;"><input type="text" id="goalTitle" placeholder="e.g. Run a 10K"></div><div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;"><div class="input-group" style="margin: 0; flex: 1; min-width: 130px;"><label>Life area</label>${selHtml('goalArea', areas.map(a => [a, a]), 'Health')}</div><div class="input-group" style="margin: 0; flex: 1; min-width: 130px;"><label>Deadline</label><input type="date" id="goalDue"></div><div class="input-group" style="margin: 0; flex: 1; min-width: 110px;"><label>Hours / week</label><input type="number" id="goalHrs" min="0" step="0.5" value="2"></div><div class="input-group" style="margin: 0; flex: 1; min-width: 130px;"><label>Core value</label>${selHtml('goalValue', vOpts, '')}</div></div><button class="btn-primary" onclick="addGoal()">Add goal</button>`;
+            const cards = G.map((g, gi) => {
+                const done = g.ms.filter(m => m.done).length, tot = g.ms.length, el = Math.max(1, daysBetween(g.created, t)), pace = done / el, rem = tot - done;
+                let fc = 'Add milestones to see a forecast.';
+                if (tot) { if (rem === 0) fc = 'All milestones done. Goal complete!'; else if (!done) fc = 'Finish your first milestone to get a forecast.'; else { const eta = dateAdd(t, Math.ceil(rem / pace)); fc = `At your pace you finish around <b>${formatTaskDate(eta)}</b> - ${eta <= g.due ? pill('ON TRACK', 'var(--neon-green)') : pill('BEHIND', 'var(--neon-red)')} (deadline ${formatTaskDate(g.due)}).`; } }
+                const ms = g.ms.map((m, i) => `<div class="habit-row ${m.done ? 'completed' : ''}" style="margin-bottom: 6px;"><div class="custom-checkbox ${m.done ? 'checked' : ''}" onclick="toggleMs('${g.id}', ${i})">${m.done ? '✓' : ''}</div><div class="habit-info"><h3>${esc(m.t)}</h3><p>${formatTaskDate(m.date)} ${!m.done && m.date < t ? pill('OVERDUE', 'var(--neon-red)') : ''}</p></div></div>`).join('');
+                return gCard(`${esc(g.title)} ${pill(g.area, 'var(--neon-cyan)')}`, `<div class="setting-desc">Due ${formatTaskDate(g.due)} (${relativeDayText(g.due)}) - ${g.hrs} h/week${g.value ? ' - value: ' + esc(g.value) : ''}</div>${barHtml(tot ? done / tot * 100 : 0)}<div style="font-size: 14px; margin-bottom: 10px;">${fc}</div>${ms}<div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-end; margin-top: 10px;"><div class="input-group" style="margin: 0; width: 90px;"><label>Steps</label><input type="number" id="msN-${g.id}" min="2" max="12" value="4"></div><button class="btn-primary" onclick="breakGoal('${g.id}')">Break into steps</button><div class="input-group" style="margin: 0; flex: 1; min-width: 120px;"><input type="text" id="msT-${g.id}" placeholder="Custom milestone"></div><div class="input-group" style="margin: 0;"><input type="date" id="msD-${g.id}"></div><button class="btn-primary" onclick="addMs('${g.id}')">Add</button><button class="icon-btn" onclick="delGoal(${gi})" title="Delete goal">${ICON_TRASH}</button></div>`);
+            }).join('');
+            const free = (appState.plan.avail * 7 - appState.habits.reduce((n, h) => n + hMin(h), 0) * 7) / 60, need = G.reduce((n, g) => n + (g.hrs || 0), 0);
+            const byArea = {}; G.forEach(g => { byArea[g.area] = (byArea[g.area] || 0) + (g.hrs || 0); });
+            const late = G.filter(g => !g.value).sort((a, b) => b.due.localeCompare(a.due))[0] || G.slice().sort((a, b) => b.due.localeCompare(a.due))[0];
+            const trade = G.length ? `<div style="font-size: 14px; margin-bottom: 8px;">Your goals need <b>${need.toFixed(1)} h/week</b>. After habits you have about <b>${Math.max(0, free).toFixed(1)} h/week</b> free. ${need > free ? pill('TRADE-OFF NEEDED', 'var(--neon-red)') : pill('FITS', 'var(--neon-green)')}</div>` + Object.keys(byArea).map(a => gRow(`${a}: ${byArea[a]} h/week`)).join('') + (need > free && late ? `<div class="setting-desc" style="margin-top: 8px;">Suggestion: postpone <b>${esc(late.title)}</b> (latest deadline${late.value ? '' : ', not linked to a value'}) to free time.</div>` : '') : gEmpty('Add goals to compare their time needs.');
+            const vals = appState.values.map((v, i) => gRow(`<b>${esc(v)}</b> <span class="setting-desc">- ${G.filter(g => g.value === v).length} goal(s)</span>`, `delItem('values', ${i})`)).join('');
+            const linked = G.filter(g => g.value).length, align = G.length ? Math.round(linked / G.length * 100) : 0;
+            const valCard = gInput('valInput', 'A core value (e.g. Health, Family, Freedom)') + '<button class="btn-primary" style="margin-bottom: 12px;" onclick="addValue()">Add value</button>' + (vals || gEmpty('Add up to 8 core values.')) + (G.length ? `<div style="margin-top: 10px; font-size: 14px;">Goal alignment: <b>${align}%</b> of goals are tied to a value.${appState.values.filter(v => !G.some(g => g.value === v)).length ? ' Values with no goal: ' + esc(appState.values.filter(v => !G.some(g => g.value === v)).join(', ')) + '.' : ''}</div>` : '');
+            const low = areas.map((a, i) => ({ a, v: appState.balance[i] || 5 })).sort((a, b) => a.v - b.v).slice(0, 2), noGoal = areas.filter(a => !G.some(g => g.area === a)).slice(0, 2);
+            const recs = low.map(x => gRow(`<b>${x.a}</b> is rated ${x.v}/10. Try: ${AREA_TIPS[x.a].join('; ')}.`)).join('') + (noGoal.length ? `<div class="setting-desc" style="margin-top: 8px;">No goals yet for: ${noGoal.join(', ')}.</div>` : '');
+            return gCard('New Goal', form, 'Add a long-term goal, then break it into dated milestones.') + (cards || '') + gCard('Goal Trade-Off Analysis', trade) + gCard('Personal Values & Goal Alignment', valCard) + gCard('Life Area Recommendations', recs, 'Based on your Life Balance Wheel (Journey tab).');
+        }
+
+        // ---- LAB: experiments, automations, calendar export ----
+        function addExperiment() {
+            const name = $('exName').value.trim(); if (!name) return notify({ type: 'error', title: 'Name your experiment' });
+            appState.experiments.push({ id: Date.now().toString(), name, hyp: $('exHyp').value.trim(), days: parseInt($('exDays').value, 10) || 7, metric: $('exMetric').value, start: getTodayStr(), log: {} });
+            saveData(); renderGrowth();
+        }
+        function logExp(id, v) { appState.experiments.find(x => x.id === id).log[getTodayStr()] = v; saveData(); renderGrowth(); }
+        function expResult(e) {
+            const t = getTodayStr(), end = dateAdd(e.start, e.days - 1), per = []; for (let d = e.start; d <= end && d <= t; d = dateAdd(d, 1)) per.push(d);
+            const base = lastDates(e.days, dateAdd(e.start, -1)), followed = per.filter(d => e.log[d] === true).length;
+            const a = e.metric === 'energy' ? avgOf(per.map(d => appState.energy[d]).filter(Boolean)) : rateFor(per), b = e.metric === 'energy' ? avgOf(base.map(d => appState.energy[d]).filter(Boolean)) : rateFor(base);
+            return { followed, days: per.length, a, b, over: t > end, unit: e.metric === 'energy' ? '' : '%' };
+        }
+        function addAutomation() {
+            const tr = $('auTrig').value, text = $('auText').value.trim(), act = $('auAct').value;
+            if (act !== 'sound' && !text) return notify({ type: 'error', title: 'Write the message' });
+            appState.automations.push({ id: Date.now().toString(), trig: tr, habit: $('auHabit').value, num: parseInt($('auNum').value, 10) || 7, act, text, last: '' });
+            saveData(); renderGrowth();
+        }
+        function fireAutomations(trig, ctx) {
+            const t = getTodayStr(); ctx = ctx || {};
+            (appState.automations || []).forEach(a => {
+                let ok = false;
+                if (a.trig === trig) ok = trig !== 'habit_done' || a.habit === ctx.habitId;
+                if (!ok && trig === 'habit_done' && a.trig === 'streak' && getCurrentStreak() >= a.num && a.last !== t) ok = true;
+                if (!ok) return;
+                a.last = t;
+                if (a.act === 'notify') notify({ type: 'info', title: 'Automation', message: a.text, duration: 6000 });
+                else if (a.act === 'win') { (appState.wins[t] = appState.wins[t] || []).push(a.text); notify({ type: 'success', title: 'Win saved', message: a.text }); }
+                else playSound('achievement');
+            });
+            saveData();
+        }
+        function icsDate(d) { return d.replace(/-/g, ''); }
+        function exportICS() {
+            const L = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Allex//EN'], D = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
+            appState.tasks.forEach(x => {
+                const start = nextOccurrence(x) || x.date || getTodayStr();
+                L.push('BEGIN:VEVENT', `UID:${x.id}@allex`, `DTSTAMP:${icsDate(getTodayStr())}T000000Z`, `DTSTART;VALUE=DATE:${icsDate(start)}`, `SUMMARY:${x.title.replace(/[,;\n]/g, ' ')}`);
+                if (x.type === 'weekly') L.push('RRULE:FREQ=WEEKLY;BYDAY=' + x.weekdays.map(d => D[d]).join(','));
+                if (x.type === 'monthly') L.push('RRULE:FREQ=MONTHLY;BYMONTHDAY=' + x.monthDay);
+                L.push('END:VEVENT');
+            });
+            L.push('END:VCALENDAR'); downloadFile('allex-tasks.ics', L.join('\r\n'), 'text/calendar');
+        }
+        function gLab() {
+            const t = getTodayStr(), H = appState.habits, hOpts = [['', 'Any / none']].concat(H.map(h => [h.id, h.name]));
+            const exForm = gInput('exName', 'Experiment (e.g. No phone for the first hour)') + gInput('exHyp', 'My guess (e.g. I will focus better)') + `<div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px;"><div class="input-group" style="margin: 0; flex: 1; min-width: 120px;"><label>Days</label><input type="number" id="exDays" min="3" max="30" value="7"></div><div class="input-group" style="margin: 0; flex: 1; min-width: 140px;"><label>Measure</label>${selHtml('exMetric', [['consistency', 'Habit consistency'], ['energy', 'Energy level']], 'consistency')}</div></div><button class="btn-primary" onclick="addExperiment()">Start experiment</button>`;
+            const exList = appState.experiments.map((e, i) => {
+                const r = expResult(e), cmp = r.a !== null && r.b !== null ? `${e.metric === 'energy' ? 'Energy' : 'Consistency'} during: <b>${e.metric === 'energy' ? r.a.toFixed(1) : r.a}${r.unit}</b> vs before: <b>${e.metric === 'energy' ? r.b.toFixed(1) : r.b}${r.unit}</b> - ${r.a > r.b ? pill('IMPROVED', 'var(--neon-green)') : r.a < r.b ? pill('WORSE', 'var(--neon-red)') : pill('NO CHANGE', 'var(--neon-yellow)')}` : 'Not enough data to compare yet (log energy daily if you chose energy).';
+                return gRow(`<b>${esc(e.name)}</b> <span class="setting-desc">${r.over ? 'Finished' : `Day ${r.days} of ${e.days}`} - followed ${r.followed} day(s)</span>${e.hyp ? `<br><span class="setting-desc">Guess: ${esc(e.hyp)}</span>` : ''}<br>${cmp}${!r.over ? `<div style="margin-top: 8px;"><span class="quick-chip" onclick="logExp('${e.id}', true)">I followed it today</span> <span class="quick-chip" style="color: var(--neon-red); border-color: var(--neon-red);" onclick="logExp('${e.id}', false)">I skipped</span></div>` : ''}`, `delItem('experiments', ${i})`);
+            }).join('');
+            const auForm = `<div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;"><div class="input-group" style="margin: 0; flex: 1; min-width: 150px;"><label>When</label>${selHtml('auTrig', [['habit_done', 'A habit is done'], ['all_done', 'All habits are done'], ['task_done', 'A task is done'], ['streak', 'Streak reaches N days']], 'habit_done')}</div><div class="input-group" style="margin: 0; flex: 1; min-width: 150px;"><label>Habit (for "a habit is done")</label>${selHtml('auHabit', hOpts.slice(1), H[0] ? H[0].id : '')}</div><div class="input-group" style="margin: 0; width: 100px;"><label>Days (streak)</label><input type="number" id="auNum" min="1" value="7"></div><div class="input-group" style="margin: 0; flex: 1; min-width: 150px;"><label>Then</label>${selHtml('auAct', [['notify', 'Show a message'], ['win', 'Add to my Daily Wins'], ['sound', 'Play achievement sound']], 'notify')}</div></div>${gInput('auText', 'Message (e.g. Treat yourself to a coffee!)')}<button class="btn-primary" onclick="addAutomation()">Add rule</button>`;
+            const T = { habit_done: 'a habit is done', all_done: 'all habits are done', task_done: 'a task is done', streak: 'streak reaches N days' };
+            const auList = appState.automations.map((a, i) => { const hn = (H.find(h => h.id === a.habit) || {}).name; return gRow(`<b>WHEN</b> ${T[a.trig]}${a.trig === 'habit_done' ? ` (${esc(hn || '?')})` : ''}${a.trig === 'streak' ? ` (${a.num})` : ''}<br><b>THEN</b> ${a.act === 'notify' ? 'message: ' + esc(a.text) : a.act === 'win' ? 'add win: ' + esc(a.text) : 'play sound'}`, `delItem('automations', ${i})`); }).join('');
+            return gCard('Habit Experiments', exForm + `<div style="margin-top: 14px;">${exList || gEmpty('No experiments yet. Try a 7-day experiment!')}</div>`, 'Change one thing for a few days and compare with the days before.')
+                + gCard('Rules & Automations', auForm + `<div style="margin-top: 14px;">${auList || gEmpty('No rules yet.')}</div>`, 'Create your own WHEN-THEN rules. They run while Allex is open.')
+                + gCard('Calendar Export', '<button class="btn-primary" onclick="exportICS()">Download tasks (.ics)</button>', 'Import this file into Google Calendar, Outlook or Apple Calendar. Live two-way sync is not available.');
+        }
+
+        // ---- LIBRARY: knowledge base, searchable journal, monthly audit ----
+        let libQ = '';
+        function addKb() { const ti = $('kbTitle').value.trim(), tx = $('kbText').value.trim(); if (!ti && !tx) return; appState.kb.unshift({ id: Date.now().toString(), title: ti || 'Untitled', tags: $('kbTags').value.trim(), text: tx, date: getTodayStr() }); saveData(); renderGrowth(); }
+        function libSearch(q) { libQ = q; $('libResults').innerHTML = libResultsHtml(); }
+        function libResultsHtml() {
+            const q = libQ.trim().toLowerCase(), has = x => !q || String(x).toLowerCase().includes(q), out = [];
+            appState.kb.forEach((k, i) => { if (has(k.title + ' ' + k.tags + ' ' + k.text)) out.push(gRow(`${pill('KNOWLEDGE', 'var(--neon-purple)')} <b>${esc(k.title)}</b>${k.tags ? ` <span class="setting-desc">#${esc(k.tags.replace(/\s*,\s*/g, ' #'))}</span>` : ''}<br><span style="white-space: pre-wrap;">${esc(k.text)}</span>`, `delItem('kb', ${i})`)); });
+            if (q) {
+                Object.keys(appState.journal).sort().reverse().forEach(d => { const e = appState.journal[d], txt = [e.day, e.missed, e.why].filter(Boolean).join(' | '); if (has(txt)) out.push(gRow(`${pill('JOURNAL', 'var(--neon-cyan)')} <b>${formatTaskDate(d)}</b><br>${esc(txt)}`)); });
+                Object.keys(appState.wins).forEach(d => appState.wins[d].forEach(w => { if (has(w)) out.push(gRow(`${pill('WIN', 'var(--neon-green)')} ${esc(w)} <span class="setting-desc">${formatTaskDate(d)}</span>`)); }));
+            }
+            return out.slice(0, 40).join('') || gEmpty(q ? 'No results.' : 'No knowledge notes yet.');
+        }
+        function saveAudit(k) { appState.audits[k] = { scores: BAL_AREAS.map((_, i) => parseInt($('au-' + i).value, 10) || 5), win: $('auWin').value.trim(), lesson: $('auLesson').value.trim(), focus: $('auFocus').value.trim() }; saveData(); notify({ type: 'success', title: 'Life audit saved' }); renderGrowth(); }
+        function gLibrary() {
+            const now = new Date(), mk = `${now.getFullYear()}-${pad2(now.getMonth() + 1)}`, md = monthDates(now.getFullYear(), now.getMonth()), a = appState.audits[mk] || { scores: [], win: '', lesson: '', focus: '' };
+            const stats = gTiles([['Habit completion', rateFor(md) + '%'], ['Ticks', md.reduce((n, d) => n + ticksOn(d), 0)], ['Perfect days', perfectIn(md)], ['Focus min', appState.focus.filter(f => f.date.startsWith(mk)).reduce((n, f) => n + f.mins, 0)], ['Wins', Object.keys(appState.wins).filter(d => d.startsWith(mk)).reduce((n, d) => n + appState.wins[d].length, 0)], ['Notes', Object.keys(appState.journal).filter(d => d.startsWith(mk)).length]]);
+            const scores = BAL_AREAS.map((l, i) => `<div class="input-group" style="margin: 0; min-width: 100px;"><label>${l}</label>${selHtml('au-' + i, Array.from({ length: 10 }, (_, k) => [k + 1, k + 1]), a.scores[i] || 5)}</div>`).join('');
+            const past = Object.keys(appState.audits).filter(k => k !== mk).sort().reverse().slice(0, 3).map(k => gRow(`<b>${k}</b><br><span class="setting-desc">Win: ${esc(appState.audits[k].win || '-')} | Lesson: ${esc(appState.audits[k].lesson || '-')} | Focus: ${esc(appState.audits[k].focus || '-')}</span>`)).join('');
+            const audit = stats + `<div class="setting-desc" style="margin: 14px 0 8px;">Rate each life area this month (1-10)</div><div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px;">${scores}</div>` + gArea('auWin', 'Biggest win this month', a.win) + gArea('auLesson', 'Biggest lesson', a.lesson) + gArea('auFocus', 'Focus for next month', a.focus) + `<button class="btn-primary" onclick="saveAudit('${mk}')">Save audit</button>` + (past ? `<div style="margin-top: 14px;">${past}</div>` : '');
+            return gCard('Search Everything', `<div class="input-group"><input type="text" id="libQ" placeholder="Search knowledge, journal and wins..." value="${esc(libQ)}" oninput="libSearch(this.value)"></div><div id="libResults">${libResultsHtml()}</div>`, 'Your searchable life journal.')
+                + gCard('Personal Knowledge Base', gInput('kbTitle', 'Title (e.g. Book idea, Recipe, Lesson)') + gInput('kbTags', 'Tags, comma separated') + gArea('kbText', 'Your note', '') + '<button class="btn-primary" onclick="addKb()">Save to library</button>')
+                + gCard('Monthly Life Audit', audit, `Month: ${mk}`);
+        }
+
+        // ---- SETTINGS EXTRAS: privacy dashboard, version history, demo mode, feedback ----
+        const FEEDBACK_EMAIL = ''; // put your own email here to enable "Email feedback"
+        function saveVersion(label) {
+            try { const v = JSON.parse(localStorage.getItem('quantumVersions') || '[]'); v.unshift({ at: Date.now(), label, data: JSON.stringify(appState) }); while (v.length > 5) v.pop(); localStorage.setItem('quantumVersions', JSON.stringify(v)); return true; } catch (e) { return false; }
+        }
+        function restoreVersion(i) { try { const v = JSON.parse(localStorage.getItem('quantumVersions') || '[]'); if (!v[i] || !confirm('Restore this version? Current data will be replaced.')) return; appState = JSON.parse(v[i].data); saveData(); location.reload(); } catch (e) {} }
+        function saveVersionNow() { notify(saveVersion('Manual') ? { type: 'success', title: 'Version saved' } : { type: 'error', title: 'Storage is full' }); renderExtraPanel(); }
+        function deleteData(kind) {
+            if (!confirm(kind === 'all' ? 'Delete ALL Allex data on this device? This cannot be undone.' : 'Delete this data?')) return;
+            if (kind === 'all') { Object.keys(localStorage).filter(k => k.startsWith('quantum')).forEach(k => localStorage.removeItem(k)); location.reload(); return; }
+            if (kind === 'notes') appState.journal = {};
+            if (kind === 'logs') { appState.distractions = []; appState.procrastination = []; appState.energy = {}; appState.wins = {}; }
+            if (kind === 'kb') appState.kb = [];
+            saveData(); renderExtraPanel(); notify({ type: 'info', title: 'Deleted' });
+        }
+        function buildDemo() {
+            let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647, st = JSON.parse(JSON.stringify(appState)), t = getTodayStr();
+            st.habits = JSON.parse(JSON.stringify(defaultHabits)); st.tickTimes = {}; st.energy = {}; st.wins = {}; st.journal = {}; st.tasks = []; st.goals = []; st.badges = {}; st.demo = true;
+            st.habits.forEach((h, i) => { const p = 0.45 + (i % 5) * 0.1; for (let k = 44; k >= 0; k--) { const d = dateAdd(t, -k); if (rnd() < p) { h.history[d] = true; (st.tickTimes[h.id] = st.tickTimes[h.id] || {})[d] = `${pad2(6 + (i % 10) * 1 + Math.floor(rnd() * 2))}:${pad2(Math.floor(rnd() * 60))}`; } } });
+            for (let k = 20; k >= 1; k--) { const d = dateAdd(t, -k); st.energy[d] = 1 + Math.floor(rnd() * 5); if (k % 4 === 0) st.journal[d] = { mood: 'good', day: 'A productive day with steady progress.', missed: 'Evening walk', why: 'Got home late' }; if (k % 3 === 0) st.wins[d] = ['Finished my deep work block']; }
+            st.tasks = [{ id: 'd1', title: 'Pay electricity bill', type: 'once', date: dateAdd(t, 3), done: {}, prio: 1 }, { id: 'd2', title: 'Weekly review', type: 'weekly', weekdays: [0], done: {}, prio: 2 }];
+            st.goals = [{ id: 'g1', title: 'Run a 10K', area: 'Health', due: dateAdd(t, 60), hrs: 3, value: '', created: dateAdd(t, -15), lastProgress: dateAdd(t, -3), ms: [{ t: 'Run 3K', date: dateAdd(t, -5), done: true }, { t: 'Run 5K', date: dateAdd(t, 15), done: false }, { t: 'Run 10K', date: dateAdd(t, 60), done: false }] }];
+            st.totalXp = st.habits.reduce((n, h) => n + Object.keys(h.history).length, 0) * XP_PER_ACTION; st.xpVersion = 2; st.highestLevel = getLevelInfo(st.totalXp).level; st.currentLevel = st.highestLevel;
+            return st;
+        }
+        function startDemo() {
+            if (localStorage.getItem('quantumDemoBackup')) return notify({ type: 'info', title: 'Demo is already on' });
+            if (!confirm('Load sample data? Your own data is kept safe and returns when you exit demo mode.')) return;
+            try { localStorage.setItem('quantumDemoBackup', JSON.stringify(appState)); } catch (e) { return notify({ type: 'error', title: 'Not enough storage' }); }
+            appState = buildDemo(); saveData(); location.reload();
+        }
+        function exitDemo() { const b = localStorage.getItem('quantumDemoBackup'); if (!b) return; appState = JSON.parse(b); saveData(); localStorage.removeItem('quantumDemoBackup'); location.reload(); }
+        function addFeedback() {
+            const tx = $('fbText').value.trim(); if (!tx) return;
+            appState.feedback.unshift({ date: getTodayStr(), type: $('fbType').value, text: tx });
+            if (FEEDBACK_EMAIL) window.location.href = `mailto:${FEEDBACK_EMAIL}?subject=${encodeURIComponent('Allex ' + $('fbType').value)}&body=${encodeURIComponent(tx)}`;
+            saveData(); renderExtraPanel(); notify({ type: 'success', title: 'Thanks for the feedback!' });
+        }
+        function renderExtraPanel() {
+            const box = $('extraPanel'); if (!box) return;
+            const cnt = (o) => Array.isArray(o) ? o.length : Object.keys(o || {}).length;
+            let bytes = 0; Object.keys(localStorage).filter(k => k.startsWith('quantum')).forEach(k => { bytes += (localStorage.getItem(k) || '').length; });
+            const vers = (() => { try { return JSON.parse(localStorage.getItem('quantumVersions') || '[]'); } catch (e) { return []; } })();
+            const inDemo = !!localStorage.getItem('quantumDemoBackup');
+            box.innerHTML = `<h2 class="panel-title" style="margin-bottom: 14px;">Privacy Dashboard</h2>
+                <div class="setting-desc" style="margin-bottom: 10px;">All your data stays on this device. Allex sends nothing to any server. Storage used: <b>${(bytes / 1024).toFixed(0)} KB</b>. App lock: <b>${prefs.pinHash ? 'on' : 'off'}</b>.</div>
+                ${gTiles([['Habits', appState.habits.length], ['Tasks', appState.tasks.length], ['Notes', cnt(appState.journal)], ['Log entries', appState.distractions.length + appState.procrastination.length + cnt(appState.energy)], ['Knowledge notes', appState.kb.length], ['Goals', appState.goals.length]])}
+                <div class="quick-row" style="margin: 14px 0 22px;"><span class="quick-chip" onclick="deleteData('notes')">Delete notes</span><span class="quick-chip" onclick="deleteData('logs')">Delete logs & wins</span><span class="quick-chip" onclick="deleteData('kb')">Delete knowledge</span><span class="quick-chip" style="color: var(--neon-red); border-color: var(--neon-red);" onclick="deleteData('all')">Delete everything</span></div>
+                <h2 class="panel-title" style="margin-bottom: 8px;">Version History</h2>
+                <div class="setting-desc" style="margin-bottom: 10px;">The last 5 saved versions of your data. Restore any of them.</div>
+                ${vers.map((v, i) => gRow(`<b>${new Date(v.at).toLocaleString()}</b> <span class="setting-desc">${v.label}</span>`, null).replace('</div></div>', `</div><button class="btn-primary" onclick="restoreVersion(${i})">Restore</button></div>`)).join('') || gEmpty('No versions yet.')}
+                <button class="btn-primary" style="margin: 6px 0 22px;" onclick="saveVersionNow()">Save a version now</button>
+                <h2 class="panel-title" style="margin-bottom: 8px;">Demo Mode</h2>
+                <div class="setting-desc" style="margin-bottom: 10px;">Explore Allex with sample data. Your own data is stored safely and comes back when you exit.</div>
+                <button class="btn-primary" style="margin-bottom: 22px;" onclick="${inDemo ? 'exitDemo()' : 'startDemo()'}">${inDemo ? 'Exit demo mode' : 'Try demo data'}</button>
+                <h2 class="panel-title" style="margin-bottom: 8px;">Feedback & Feature Requests</h2>
+                <div class="setting-desc" style="margin-bottom: 10px;">${FEEDBACK_EMAIL ? 'Saved here and sent by email.' : 'Saved on this device. (The app owner can add an email address in the code to receive them.)'}</div>
+                <div class="input-group" style="max-width: 240px;">${selHtml('fbType', [['Idea', 'Feature idea'], ['Bug', 'Bug report'], ['Other', 'Other']], 'Idea')}</div>
+                ${gArea('fbText', 'Your message', '')}<button class="btn-primary" style="margin-bottom: 12px;" onclick="addFeedback()">Send feedback</button>
+                ${appState.feedback.slice(0, 5).map((f, i) => gRow(`${pill(f.type, 'var(--neon-cyan)')} ${esc(f.text)} <span class="setting-desc">${formatTaskDate(f.date)}</span>`, `delItem('feedback', ${i})`)).join('')}`;
         }
 
         // ================= THEME =================
@@ -2212,6 +2633,7 @@
             appState.currentLevel = startLevel;
             appState.highestLevel = startLevel;
             ensureExtras();
+            document.getElementById('demoBanner').style.display = localStorage.getItem('quantumDemoBackup') ? 'flex' : 'none';
             applyTheme(localStorage.getItem('quantumTheme') || 'dark');
             applyPrefs();
             autoBackup();
@@ -2261,10 +2683,12 @@
             // Sounds: tick sound on every check, completion chime when ALL habits are done
             if (habit.completed) {
                 recordTickAndStacks(habit);
+                fireAutomations('habit_done', { habitId: habit.id });
                 playSound('check');
                 if (appState.habits.length > 0 && appState.habits.every(h => h.completed)) {
                     setTimeout(() => playSound('complete'), 220);
                     showToast('Perfect Day! All habits done');
+                    fireAutomations('all_done');
                 }
             } else {
                 playSound('uncheck');
@@ -2975,6 +3399,7 @@
 
             // Sounds: tick sound on every check, completion chime when ALL of today's tasks are done
             if (t.done[dateKey]) {
+                fireAutomations('task_done');
                 playSound('check');
                 const items = getTasksDueToday();
                 if (items.length > 0 && items.every(i => i.task.done[i.date])) {
@@ -3094,6 +3519,7 @@
             document.getElementById('taskModalTitle').innerText = t ? 'Edit Task' : 'Add Task';
             document.getElementById('editTaskId').value = t ? t.id : '';
             document.getElementById('taskTitleInput').value = t ? t.title : '';
+            document.getElementById('taskPrioInput').value = t && t.prio ? t.prio : 2;
             document.getElementById('taskTypeInput').value = t ? t.type : 'once';
             document.getElementById('taskDateInput').value = t && t.type === 'once' ? t.date : dateAdd(getTodayStr(), 1);
             sel.value = t && t.type === 'monthly' ? t.monthDay : parseInt(getTodayStr().slice(8), 10);
@@ -3117,7 +3543,7 @@
             const type = document.getElementById('taskTypeInput').value;
             if (!title) return showToast('Please enter a task!', true);
 
-            const data = { title, type };
+            const data = { title, type, prio: parseInt($('taskPrioInput').value, 10) || 2 };
             if (type === 'once') {
                 const date = document.getElementById('taskDateInput').value;
                 if (!date) return showToast('Please pick a date!', true);
@@ -3303,6 +3729,7 @@
             const name = document.getElementById('habitNameInput').value;
 
             if (!name.trim()) return showToast("Please enter a name!", true);
+            if (!id) { const dup = findDuplicate(name); if (dup && !confirm(`"${name}" looks similar to "${dup.h.name}". Add it anyway?`)) return; }
 
             if (id) {
                 const habit = appState.habits.find(h => h.id === id);
@@ -3373,12 +3800,31 @@
 
         // ---- Install as app (PWA) ----
         let deferredInstall = null;
-        window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredInstall = e; if ($('prefsPanel')) renderPrefsPanels(); });
-        window.addEventListener('appinstalled', () => { deferredInstall = null; notify({ type: 'success', title: 'Allex installed!' }); });
+        window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredInstall = e; renderInstallPanel(); });
+        window.addEventListener('appinstalled', () => { deferredInstall = null; renderInstallPanel(); notify({ type: 'success', title: 'Allex installed!' }); });
+        function isInstalled() { return window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; }
+        function renderInstallPanel() {
+            const box = $('installPanel');
+            if (!box) return;
+            const done = isInstalled();
+            box.innerHTML = `<div class="setting-line" style="margin-bottom: 0;"><div><h2 class="panel-title">Download App</h2><div class="setting-desc">${done ? 'Allex is installed on this device.' : 'Install Allex on your home screen. It opens full screen and works offline.'}</div></div>${done ? '' : '<button class="btn-primary" onclick="downloadApp()">Download App</button>'}</div>`;
+        }
+        function downloadApp() {
+            if (isInstalled()) return notify({ type: 'info', title: 'Allex is already installed' });
+            if (deferredInstall) return installApp();
+            const ios = /iphone|ipad|ipod/i.test(navigator.userAgent), web = /^https?:$/.test(location.protocol);
+            $('installHelpBody').innerHTML = !web
+                ? 'To install Allex, open it from its website link (https://...). Installing does not work from a file saved on your device.'
+                : ios
+                    ? '1. Open this page in <b>Safari</b>.<br>2. Tap the <b>Share</b> button.<br>3. Choose <b>Add to Home Screen</b>.'
+                    : '1. Open this page in <b>Chrome</b>.<br>2. Tap the menu (three dots).<br>3. Tap <b>Install app</b> or <b>Add to Home screen</b>.';
+            $('installHelp').classList.add('show');
+        }
+        function closeInstallHelp() { $('installHelp').classList.remove('show'); }
         function installApp() {
             if (!deferredInstall) return;
             deferredInstall.prompt();
-            deferredInstall.userChoice.finally(() => { deferredInstall = null; renderPrefsPanels(); });
+            deferredInstall.userChoice.finally(() => { deferredInstall = null; renderInstallPanel(); });
         }
         if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
             window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
