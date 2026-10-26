@@ -805,6 +805,14 @@
         .mini-bar { height: 8px; border-radius: 10px; background: rgba(var(--tint), 0.1); overflow: hidden; margin: 6px 0; }
         .mini-bar > div { height: 100%; border-radius: 10px; }
 
+        /* --- FIXES: heatmap, colours, a11y --- */
+        :focus-visible { outline: 2px solid var(--neon-cyan); outline-offset: 2px; }
+        .cal-cell.editable { cursor: pointer; outline: 1px dashed var(--neon-cyan); }
+        .color-dot { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; flex-shrink: 0; }
+        .color-dot.selected { border-color: var(--text-main); }
+        .heat { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, 14px); grid-auto-columns: 14px; gap: 3px; overflow-x: auto; padding-bottom: 6px; }
+        .heat-cell { width: 14px; height: 14px; border-radius: 3px; background: rgba(var(--tint), 0.06); }
+
         /* Responsive */
         @media (max-width: 1024px) {
             .workspace { grid-template-columns: 1fr; }
@@ -1026,7 +1034,7 @@
             <section class="calendar-section" data-sec="tracker">
                 <div class="panel-header" style="margin-bottom: 15px;">
                     <h2 class="panel-title">Monthly Tracker</h2>
-                    <span style="font-size: 12px; color: var(--text-muted);">Scroll right to see all days (auto-updated)</span>
+                    <span style="font-size: 12px; color: var(--text-muted);">Scroll right to see all days. Tap yesterday to fix it.</span>
                 </div>
                 <div class="calendar-scroll-container">
                     <div class="calendar-grid" id="calendarGrid"></div>
@@ -1104,6 +1112,7 @@
             </header>
             <section class="panel">
                 <h2 class="panel-title" style="margin-bottom: 15px;">How was your day today?</h2>
+                <div id="noteEditing" class="setting-desc" style="display: none; color: var(--neon-yellow); margin-bottom: 12px;"></div>
                 <div class="mood-row" id="moodRow">
                     <button class="mood-btn" style="--mc: var(--neon-green);" onclick="selectMood('great')" data-mood="great">Great</button>
                     <button class="mood-btn" style="--mc: var(--neon-cyan);" onclick="selectMood('good')" data-mood="good">Good</button>
@@ -1124,9 +1133,10 @@
                     <textarea id="journalWhy" rows="3" placeholder="What stopped you? How can you fix it tomorrow?"></textarea>
                 </div>
                 <button class="btn-primary" style="width: 100%; padding: 12px;" onclick="saveJournal()">Save Today's Note</button>
+                <div id="noteSavedAt" class="setting-desc" style="text-align: center; margin-top: 10px;"></div>
             </section>
             <section class="panel">
-                <h2 class="panel-title" style="margin-bottom: 15px;">Past Notes</h2>
+                <h2 class="panel-title" style="margin-bottom: 15px;">Your Notes</h2>
                 <div id="journalHistory"></div>
             </section>
         </div>
@@ -1194,6 +1204,33 @@
                 <label>Habit Name</label>
                 <input type="text" id="habitNameInput" placeholder="e.g. Read 10 pages">
             </div>
+            <div class="input-group">
+                <label>Repeat on</label>
+                <div class="weekday-row" id="habitDays">
+                    <button type="button" class="weekday-btn" data-day="1" onclick="toggleWeekday(this)">Mon</button>
+                    <button type="button" class="weekday-btn" data-day="2" onclick="toggleWeekday(this)">Tue</button>
+                    <button type="button" class="weekday-btn" data-day="3" onclick="toggleWeekday(this)">Wed</button>
+                    <button type="button" class="weekday-btn" data-day="4" onclick="toggleWeekday(this)">Thu</button>
+                    <button type="button" class="weekday-btn" data-day="5" onclick="toggleWeekday(this)">Fri</button>
+                    <button type="button" class="weekday-btn" data-day="6" onclick="toggleWeekday(this)">Sat</button>
+                    <button type="button" class="weekday-btn" data-day="0" onclick="toggleWeekday(this)">Sun</button>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Times per day (e.g. 8 for 8 glasses of water)</label>
+                <input type="number" id="habitTargetInput" min="1" max="99" value="1">
+            </div>
+            <div class="input-group">
+                <label>Colour</label>
+                <div class="weekday-row" id="habitColors">
+                    <span class="color-dot" data-c="#00f0ff" style="background:#00f0ff;" onclick="pickHabitColor(this)"></span>
+                    <span class="color-dot" data-c="#b026ff" style="background:#b026ff;" onclick="pickHabitColor(this)"></span>
+                    <span class="color-dot" data-c="#00ff88" style="background:#00ff88;" onclick="pickHabitColor(this)"></span>
+                    <span class="color-dot" data-c="#ffcc00" style="background:#ffcc00;" onclick="pickHabitColor(this)"></span>
+                    <span class="color-dot" data-c="#ff3366" style="background:#ff3366;" onclick="pickHabitColor(this)"></span>
+                    <span class="color-dot" data-c="#fb923c" style="background:#fb923c;" onclick="pickHabitColor(this)"></span>
+                </div>
+            </div>
             <div style="display: flex; gap: 10px; margin-top: 25px;">
                 <button class="btn-primary" style="flex: 1; background: transparent; border-color: var(--text-muted); color: var(--text-muted);" onclick="closeModal()">Cancel</button>
                 <button class="btn-primary" style="flex: 2;" onclick="saveHabit()">Save Habit</button>
@@ -1209,6 +1246,30 @@
         <div class="focus-time" id="focusTime">25:00</div>
         <div style="width: min(420px, 90%); height: 8px; border-radius: 10px; background: rgba(var(--tint), 0.1); overflow: hidden;"><div id="focusBar" style="height: 100%; width: 0%; background: var(--neon-cyan);"></div></div>
         <button class="btn-primary" onclick="endFocus(false)">Stop session</button>
+    </div>
+
+    <div class="modal-overlay" id="confirmModal" style="z-index: 3500;">
+        <div class="modal-content" style="text-align: center;">
+            <div id="confirmMsg" style="font-size: 16px; line-height: 1.5; margin-bottom: 20px;"></div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-primary" style="flex: 1; background: transparent; border-color: var(--text-muted); color: var(--text-muted);" onclick="confirmAnswer(false)">Cancel</button>
+                <button class="btn-primary" style="flex: 1; border-color: var(--neon-red); color: var(--neon-red);" id="confirmYes" onclick="confirmAnswer(true)">Yes</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="welcomeModal">
+        <div class="modal-content" style="text-align: center;">
+            <h2 style="margin-bottom: 8px;">Welcome to Allex</h2>
+            <div style="font-size: 14px; line-height: 1.7; color: var(--text-muted); text-align: left; margin: 14px 0;">
+                1. Tick your habits every day. Each one gives <b>5 XP</b>.<br>
+                2. Finish levels to unlock new <b>themes</b> and <b>badges</b>.<br>
+                3. Add tasks for future days in <b>Tasks</b>.<br>
+                4. Open <b>Growth Lab</b> for reports, goals and focus tools.
+            </div>
+            <button class="btn-primary" style="width: 100%; padding: 12px; margin-bottom: 8px;" onclick="closeWelcome(false)">Start fresh</button>
+            <button class="btn-primary" style="width: 100%; padding: 12px; background: transparent; border-color: var(--text-muted); color: var(--text-muted);" onclick="closeWelcome(true)">Look around with demo data</button>
+        </div>
     </div>
 
     <div class="modal-overlay" id="installHelp" onclick="if (event.target === this) closeInstallHelp()">
@@ -1819,10 +1880,10 @@
         function rateFor(dates, habits) {
             habits = habits || appState.habits;
             let done = 0, tot = 0;
-            dates.forEach(d => { if (isRestDay(d)) return; habits.forEach(h => { tot++; if (h.history[d] === true) done++; }); });
+            dates.forEach(d => { if (isRestDay(d)) return; habits.forEach(h => { if (!isScheduled(h, d)) return; tot++; if (h.history[d] === true) done++; }); });
             return tot ? Math.round(done / tot * 100) : 0;
         }
-        function perfectIn(dates) { const H = appState.habits; return H.length ? dates.filter(d => H.every(h => h.history[d] === true)).length : 0; }
+        function perfectIn(dates) { return dates.filter(d => { const S = schedHabits(d); return S.length > 0 && S.every(h => h.history[d] === true); }).length; }
         const fm = m => `${pad2(Math.floor(m / 60))}:${pad2(m % 60)}`;
         const bucket = m => m < 720 ? 'Morning' : m < 1020 ? 'Afternoon' : m < 1260 ? 'Evening' : 'Night';
         function habitTimes() {
@@ -1861,9 +1922,15 @@
 
         let growthTab = 'insights';
         function setGrowthTab(t) { growthTab = t; renderGrowth(); }
+        let growthAdv = false;
+        function toggleAdv() { growthAdv = !growthAdv; renderGrowth(); }
         function renderGrowth() {
-            const tabs = [['insights', 'Insights'], ['reports', 'Reports'], ['planner', 'Planner'], ['trackers', 'Trackers'], ['focus', 'Focus'], ['journey', 'Journey'], ['coach', 'Coach'], ['plan', 'Plan'], ['analyze', 'Analyze'], ['goals', 'Goals'], ['lab', 'Lab'], ['library', 'Library']];
-            $('growthTabs').innerHTML = tabs.map(([k, l]) => `<button class="tab-btn ${growthTab === k ? 'active' : ''}" onclick="setGrowthTab('${k}')">${l}</button>`).join('');
+            const basic = [['insights', 'Insights'], ['reports', 'Reports'], ['planner', 'Planner'], ['trackers', 'Trackers'], ['focus', 'Focus'], ['journey', 'Journey']];
+            const adv = [['coach', 'Coach'], ['plan', 'Plan'], ['analyze', 'Analyze'], ['goals', 'Goals'], ['lab', 'Lab'], ['library', 'Library']];
+            const showAdv = growthAdv || adv.some(a => a[0] === growthTab);
+            const tabs = showAdv ? basic.concat(adv) : basic;
+            $('growthTabs').innerHTML = tabs.map(([k, l]) => `<button class="tab-btn ${growthTab === k ? 'active' : ''}" onclick="setGrowthTab('${k}')">${l}</button>`).join('')
+                + `<button class="tab-btn" style="border-style: dashed;" onclick="toggleAdv()">${showAdv ? 'Hide advanced' : 'Advanced tools'}</button>`;
             const fn = { insights: gInsights, reports: gReports, planner: gPlanner, trackers: gTrackers, focus: gFocus, journey: gJourney, coach: gCoach, plan: gPlan, analyze: gAnalyze, goals: gGoals, lab: gLab, library: gLibrary }[growthTab];
             $('growthContent').innerHTML = fn();
             if (growthTab === 'journey') drawRadar();
@@ -1919,7 +1986,7 @@
             const bestWeek = active.reduce((m, d) => Math.max(m, lastDates(7, dateAdd(d, 6)).reduce((n, x) => n + ticksOn(x), 0)), 0);
             const wkStart = dateAdd(t, -((weekdayOf(t) + 6) % 7)), rv = appState.reviews[wkStart] || {};
             const past = Object.keys(appState.reviews).filter(k => k !== wkStart).sort().reverse().slice(0, 3).map(k => gRow(`<b>Week of ${formatTaskDate(k)}</b><br><span class="setting-desc">Went well: ${esc(appState.reviews[k].well || '-')} | Improve: ${esc(appState.reviews[k].improve || '-')} | Goal: ${esc(appState.reviews[k].goal || '-')}</span>`)).join('');
-            return gCard('Weekly Self-Improvement Report', gTiles([['Last 7 days', r7 + '%'], ['vs previous week', dl(r7, rp)], ['Ticks', tk(d7)], ['Best habit', bestOf(d7)]]), `Compared with the 7 days before (${rp}%).`)
+            return gCard('Habit Heatmap (26 weeks)', heatmapHtml(), 'Darker green = more habits done that day.') + gCard('Weekly Self-Improvement Report', gTiles([['Last 7 days', r7 + '%'], ['vs previous week', dl(r7, rp)], ['Ticks', tk(d7)], ['Best habit', bestOf(d7)]]), `Compared with the 7 days before (${rp}%).`)
                 + gCard('Monthly Personal Growth Report', gTiles([['This month', rm + '%'], ['vs last month', dl(rm, rlm)], ['Ticks', tk(md)], ['Perfect days', perfectIn(md)], ['Best habit', bestOf(md)]]), rm >= rlm ? 'You are growing. Keep it up!' : 'A small dip - a fresh start is always possible.')
                 + gCard('Personal Best Records', gTiles([['Longest streak', getLongestStreak() + ' days'], ['Current streak', getCurrentStreak() + ' days'], ['Total ticks', getTotalCompleted()], ['Best day', bestDay + ' ticks'], ['Best week', bestWeek + ' ticks'], ['Perfect days', getPerfectDays()], ['Tasks done', getTasksDoneCount()], ['Focus minutes', appState.focus.reduce((n, f) => n + f.mins, 0)]]))
                 + gCard('Weekly Goal Review', gArea('rvWell', 'What went well this week?', rv.well) + gArea('rvImprove', 'What should I improve?', rv.improve) + gArea('rvGoal', 'My goal for next week', rv.goal) + `<button class="btn-primary" onclick="saveReview('${wkStart}')">Save review</button>` + (past ? `<div style="margin-top: 16px;">${past}</div>` : ''), `Week starting ${formatTaskDate(wkStart)}`);
@@ -2019,7 +2086,7 @@
             const t = getTodayStr(), ev = [];
             let first = null; appState.habits.forEach(h => Object.keys(h.history).forEach(d => { if (h.history[d] && (!first || d < first)) first = d; }));
             if (first) ev.push({ d: first, t: 'Ticked your very first habit' });
-            Object.keys(appState.journal || {}).sort().slice(0, 1).forEach(d => ev.push({ d, t: 'Wrote your first note' }));
+            Object.keys(appState.journal || {}).sort().slice(0, 1).forEach(d => ev.push({ d: d.slice(0, 10), t: 'Wrote your first note' }));
             BADGES.forEach(b => { if (appState.badges[b.id]) ev.push({ d: appState.badges[b.id], t: `Unlocked badge: ${b.name}` }); });
             appState.focus.slice(0, 1).forEach(f => ev.push({ d: f.date, t: 'Completed your first focus session' }));
             ev.sort((a, b) => b.d.localeCompare(a.d));
@@ -2058,7 +2125,7 @@
             const add = (type, text, page, tab) => { if (String(text).toLowerCase().includes(q)) out.push({ type, text, page, tab }); };
             appState.habits.forEach(h => add('Habit', h.name, 'habits'));
             appState.tasks.forEach(x => add('Task', x.title, 'tasks'));
-            Object.keys(appState.journal).forEach(d => { const e = appState.journal[d]; [e.day, e.missed, e.why].forEach(x => x && add('Note', `${formatTaskDate(d)}: ${x}`, 'journal')); });
+            Object.keys(appState.journal).forEach(d => { const e = appState.journal[d]; [e.day, e.missed, e.why].forEach(x => x && add('Note', `${formatTaskDate(d.slice(0, 10))}: ${x}`, 'journal')); });
             Object.keys(appState.wins).forEach(d => appState.wins[d].forEach(w => add('Win', w, 'growth', 'trackers')));
             appState.rules.forEach(r => add('Rule', r, 'growth', 'planner'));
             appState.kb.forEach(k => add('Knowledge', `${k.title} ${k.text}`, 'growth', 'library'));
@@ -2101,13 +2168,13 @@
         function importJSON(input) {
             const f = input.files[0]; if (!f) return;
             const r = new FileReader();
-            r.onload = () => { try { const d = JSON.parse(r.result); if (!Array.isArray(d.habits)) throw 0; if (!confirm('Replace ALL current data with this backup?')) return; appState = d; saveData(); location.reload(); } catch (e) { notify({ type: 'error', title: 'Not a valid backup file' }); } };
+            r.onload = () => { try { const d = JSON.parse(r.result); if (!Array.isArray(d.habits)) throw 0; confirmDo('Replace ALL current data with this backup?', () => { sanitizeState(d); appState = d; saveData(); location.reload(); }); } catch (e) { notify({ type: 'error', title: 'Not a valid backup file' }); } };
             r.readAsText(f);
         }
         function makeBackup() { saveVersion('Backup'); try { localStorage.setItem('quantumBackup', JSON.stringify({ at: Date.now(), data: appState })); return true; } catch (e) { return false; } }
         function autoBackup() { try { const b = JSON.parse(localStorage.getItem('quantumBackup') || 'null'); if (prefs.autoBackup && (!b || Date.now() - b.at > 7 * 864e5)) makeBackup(); } catch (e) {} }
         function backupNow() { notify(makeBackup() ? { type: 'success', title: 'Backup saved on this device' } : { type: 'error', title: 'Backup failed', message: 'Storage is full.' }); renderPrefsPanels(); }
-        function restoreBackup() { try { const b = JSON.parse(localStorage.getItem('quantumBackup') || 'null'); if (!b || !confirm('Restore the last backup? Current data will be replaced.')) return; appState = b.data; saveData(); location.reload(); } catch (e) {} }
+        function restoreBackup() { try { const b = JSON.parse(localStorage.getItem('quantumBackup') || 'null'); if (!b) return; confirmDo('Restore the last backup? Current data will be replaced.', () => { appState = b.data; saveData(); location.reload(); }); } catch (e) {} }
 
         function renderPrefsPanels() {
             if (!$('prefsPanel')) return;
@@ -2181,10 +2248,15 @@
                 saveData(); updateUI(); notify({ type: 'task', title: 'Task added', message: `"${r.title}" - ${taskScheduleText(r.task)}` });
             } else {
                 const dup = findDuplicate(r.title);
-                if (dup && !confirm(`"${r.title}" looks similar to "${dup.h.name}". Add it anyway?`)) return;
+                if (dup) return confirmDo(`"${r.title}" looks similar to "${dup.h.name}". Add it anyway?`, () => addHabitFromNL(r), 'Add anyway');
                 appState.habits.push({ id: Date.now().toString(), name: r.title, xp: HABIT_XP, completed: false, history: {} });
                 saveData(); renderHabits(); renderCalendar(); updateUI(); notify({ type: 'success', title: 'Habit added', message: r.title });
             }
+            $('nlInput').value = ''; renderGrowth();
+        }
+        function addHabitFromNL(r) {
+            appState.habits.push({ id: Date.now().toString(), name: r.title, xp: HABIT_XP, completed: false, history: {} });
+            saveData(); renderHabits(); renderCalendar(); updateUI(); notify({ type: 'success', title: 'Habit added', message: r.title });
             $('nlInput').value = ''; renderGrowth();
         }
         function matchHabit(txt) {
@@ -2350,7 +2422,7 @@
         }
         function addMs(id) { const g = appState.goals.find(x => x.id === id), tt = $('msT-' + id).value.trim(), d = $('msD-' + id).value; if (!tt || !d) return; g.ms.push({ t: tt, date: d, done: false }); g.ms.sort((a, b) => a.date.localeCompare(b.date)); saveData(); renderGrowth(); }
         function toggleMs(id, i) { const g = appState.goals.find(x => x.id === id); g.ms[i].done = !g.ms[i].done; if (g.ms[i].done) g.lastProgress = getTodayStr(); saveData(); renderGrowth(); }
-        function delGoal(i) { if (confirm('Delete this goal?')) { appState.goals.splice(i, 1); saveData(); renderGrowth(); } }
+        function delGoal(i) { confirmDo('Delete this goal?', () => { appState.goals.splice(i, 1); saveData(); renderGrowth(); }, 'Delete'); }
         function addValue() { const v = $('valInput').value.trim(); if (!v || appState.values.length >= 8) return; appState.values.push(v); saveData(); renderGrowth(); }
         function gGoals() {
             const t = getTodayStr(), G = appState.goals, areas = BAL_AREAS;
@@ -2443,7 +2515,7 @@
             const q = libQ.trim().toLowerCase(), has = x => !q || String(x).toLowerCase().includes(q), out = [];
             appState.kb.forEach((k, i) => { if (has(k.title + ' ' + k.tags + ' ' + k.text)) out.push(gRow(`${pill('KNOWLEDGE', 'var(--neon-purple)')} <b>${esc(k.title)}</b>${k.tags ? ` <span class="setting-desc">#${esc(k.tags.replace(/\s*,\s*/g, ' #'))}</span>` : ''}<br><span style="white-space: pre-wrap;">${esc(k.text)}</span>`, `delItem('kb', ${i})`)); });
             if (q) {
-                Object.keys(appState.journal).sort().reverse().forEach(d => { const e = appState.journal[d], txt = [e.day, e.missed, e.why].filter(Boolean).join(' | '); if (has(txt)) out.push(gRow(`${pill('JOURNAL', 'var(--neon-cyan)')} <b>${formatTaskDate(d)}</b><br>${esc(txt)}`)); });
+                Object.keys(appState.journal).sort().reverse().forEach(d => { const e = appState.journal[d], txt = [e.day, e.missed, e.why].filter(Boolean).join(' | '); if (has(txt)) out.push(gRow(`${pill('JOURNAL', 'var(--neon-cyan)')} <b>${formatTaskDate(d.slice(0, 10))}</b><br>${esc(txt)}`)); });
                 Object.keys(appState.wins).forEach(d => appState.wins[d].forEach(w => { if (has(w)) out.push(gRow(`${pill('WIN', 'var(--neon-green)')} ${esc(w)} <span class="setting-desc">${formatTaskDate(d)}</span>`)); }));
             }
             return out.slice(0, 40).join('') || gEmpty(q ? 'No results.' : 'No knowledge notes yet.');
@@ -2465,10 +2537,10 @@
         function saveVersion(label) {
             try { const v = JSON.parse(localStorage.getItem('quantumVersions') || '[]'); v.unshift({ at: Date.now(), label, data: JSON.stringify(appState) }); while (v.length > 5) v.pop(); localStorage.setItem('quantumVersions', JSON.stringify(v)); return true; } catch (e) { return false; }
         }
-        function restoreVersion(i) { try { const v = JSON.parse(localStorage.getItem('quantumVersions') || '[]'); if (!v[i] || !confirm('Restore this version? Current data will be replaced.')) return; appState = JSON.parse(v[i].data); saveData(); location.reload(); } catch (e) {} }
+        function restoreVersion(i) { try { const v = JSON.parse(localStorage.getItem('quantumVersions') || '[]'); if (!v[i]) return; confirmDo('Restore this version? Current data will be replaced.', () => { appState = JSON.parse(v[i].data); saveData(); location.reload(); }); } catch (e) {} }
         function saveVersionNow() { notify(saveVersion('Manual') ? { type: 'success', title: 'Version saved' } : { type: 'error', title: 'Storage is full' }); renderExtraPanel(); }
-        function deleteData(kind) {
-            if (!confirm(kind === 'all' ? 'Delete ALL Allex data on this device? This cannot be undone.' : 'Delete this data?')) return;
+        function deleteData(kind) { confirmDo(kind === 'all' ? 'Delete ALL Allex data on this device? This cannot be undone.' : 'Delete this data?', () => deleteDataNow(kind), 'Delete'); }
+        function deleteDataNow(kind) {
             if (kind === 'all') { Object.keys(localStorage).filter(k => k.startsWith('quantum')).forEach(k => localStorage.removeItem(k)); location.reload(); return; }
             if (kind === 'notes') appState.journal = {};
             if (kind === 'logs') { appState.distractions = []; appState.procrastination = []; appState.energy = {}; appState.wins = {}; }
@@ -2487,7 +2559,9 @@
         }
         function startDemo() {
             if (localStorage.getItem('quantumDemoBackup')) return notify({ type: 'info', title: 'Demo is already on' });
-            if (!confirm('Load sample data? Your own data is kept safe and returns when you exit demo mode.')) return;
+            return confirmDo('Load sample data? Your own data is kept safe and returns when you exit demo mode.', startDemoNow, 'Load demo');
+        }
+        function startDemoNow() {
             try { localStorage.setItem('quantumDemoBackup', JSON.stringify(appState)); } catch (e) { return notify({ type: 'error', title: 'Not enough storage' }); }
             appState = buildDemo(); saveData(); location.reload();
         }
@@ -2519,8 +2593,116 @@
                 <div class="setting-desc" style="margin-bottom: 10px;">${FEEDBACK_EMAIL ? 'Saved here and sent by email.' : 'Saved on this device. (The app owner can add an email address in the code to receive them.)'}</div>
                 <div class="input-group" style="max-width: 240px;">${selHtml('fbType', [['Idea', 'Feature idea'], ['Bug', 'Bug report'], ['Other', 'Other']], 'Idea')}</div>
                 ${gArea('fbText', 'Your message', '')}<button class="btn-primary" style="margin-bottom: 12px;" onclick="addFeedback()">Send feedback</button>
-                ${appState.feedback.slice(0, 5).map((f, i) => gRow(`${pill(f.type, 'var(--neon-cyan)')} ${esc(f.text)} <span class="setting-desc">${formatTaskDate(f.date)}</span>`, `delItem('feedback', ${i})`)).join('')}`;
+                ${appState.feedback.slice(0, 5).map((f, i) => gRow(`${pill(f.type, 'var(--neon-cyan)')} ${esc(f.text)} <span class="setting-desc">${formatTaskDate(f.date)}</span>`, `delItem('feedback', ${i})`)).join('')}
+                <h2 class="panel-title" style="margin: 22px 0 8px;">Diagnostics</h2>
+                <div class="setting-desc" style="margin-bottom: 10px;">Errors are saved only on this device. If something breaks, copy the details and send them to the app owner.</div>
+                <div class="quick-row" style="margin: 0;"><span class="quick-chip" onclick="copyErrors()">Copy error details (${errCount()})</span><span class="quick-chip" onclick="clearErrors()">Clear</span></div>`;
         }
+
+        // ================= FIXES & POLISH =================
+        let confirmCb = null;
+        function confirmDo(msg, cb, yes) {
+            confirmCb = cb;
+            document.getElementById('confirmMsg').innerText = msg;
+            document.getElementById('confirmYes').innerText = yes || 'Yes';
+            document.getElementById('confirmModal').classList.add('show');
+        }
+        function confirmAnswer(ok) {
+            document.getElementById('confirmModal').classList.remove('show');
+            const cb = confirmCb; confirmCb = null;
+            if (ok && cb) cb();
+        }
+
+        function isScheduled(h, d) { return !h.days || h.days.length === 0 || h.days.includes(weekdayOf(d)); }
+        function schedHabits(d) { return appState.habits.filter(h => isScheduled(h, d)); }
+        function monthPossible(dt) {
+            const y = dt.getFullYear(), m = dt.getMonth(), n = new Date(y, m + 1, 0).getDate();
+            let c = 0;
+            for (let i = 1; i <= n; i++) { const d = `${y}-${pad2(m + 1)}-${pad2(i)}`; if (!isRestDay(d)) c += schedHabits(d).length; }
+            return c;
+        }
+        function bumpCount(id, delta) {
+            const h = appState.habits.find(x => x.id === id); if (!h) return;
+            const t = getTodayStr(); h.counts = h.counts || {};
+            const n = Math.max(0, Math.min(h.target || 1, (h.counts[t] || 0) + delta));
+            h.counts[t] = n;
+            if ((n >= (h.target || 1)) !== !!h.completed) toggleHabit(id); else { saveData(); renderHabits(); }
+        }
+        function heatmapHtml() {
+            const t = getTodayStr(), start = dateAdd(t, -((weekdayOf(t) + 6) % 7) - 25 * 7);
+            let html = '';
+            for (let i = 0; i < 26 * 7; i++) {
+                const d = dateAdd(start, i);
+                if (d > t) { html += '<div class="heat-cell" style="visibility: hidden;"></div>'; continue; }
+                const r = rateFor([d]);
+                html += `<div class="heat-cell" title="${formatTaskDate(d)}: ${r}%" style="${r ? `background: color-mix(in srgb, var(--neon-green) ${20 + Math.round(r * 0.8)}%, transparent);` : ''}"></div>`;
+            }
+            return `<div class="heat">${html}</div>`;
+        }
+
+        // new day while the app stays open
+        let lastDay = getTodayStr();
+        function checkDayChange() {
+            const t = getTodayStr();
+            if (t === lastDay) return;
+            lastDay = t; syncTodayStatus(); renderHabits(); renderCalendar(); updateUI();
+            document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+            notify({ type: 'info', title: 'New day!', message: 'Your checklist is fresh. Good luck today.' });
+        }
+        setInterval(checkDayChange, 30000);
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) checkDayChange(); });
+
+        // safer import: strip anything odd from ids and dates
+        function sanitizeState(d) {
+            const id = v => String(v == null ? '' : v).replace(/[^\w-]/g, '');
+            const date = v => (/^\d{4}-\d{2}-\d{2}$/.test(v) ? v : '');
+            (d.habits || []).forEach(h => { h.id = id(h.id); h.name = String(h.name || ''); h.history = h.history || {}; });
+            (d.tasks || []).forEach(x => { x.id = id(x.id); x.title = String(x.title || ''); if (x.date !== undefined) x.date = date(x.date); x.done = x.done || {}; });
+            (d.goals || []).forEach(g => { g.id = id(g.id); g.due = date(g.due); g.created = date(g.created) || getTodayStr(); (g.ms || []).forEach(m => { m.date = date(m.date); }); });
+            (d.experiments || []).forEach(e => { e.id = id(e.id); e.start = date(e.start) || getTodayStr(); });
+            (d.stacks || []).forEach(s2 => { s2.after = id(s2.after); s2.then = id(s2.then); });
+            (d.automations || []).forEach(a => { a.id = id(a.id); a.habit = id(a.habit); });
+        }
+
+        // storage warning
+        function checkStorageUse() {
+            let n = 0; Object.keys(localStorage).filter(k => k.startsWith('quantum')).forEach(k => { n += (localStorage.getItem(k) || '').length; });
+            if (n > 4000000) setTimeout(() => notify({ type: 'error', title: 'Storage almost full', message: 'Export a backup and delete large custom sounds or old versions in Settings.', duration: 9000 }), 1500);
+        }
+
+        // welcome screen
+        function closeWelcome(demo) {
+            try { localStorage.setItem('quantumWelcomed', '1'); } catch (e) {}
+            document.getElementById('welcomeModal').classList.remove('show');
+            if (demo) startDemo();
+        }
+
+        // local error log
+        function logError(msg) { try { const a = JSON.parse(localStorage.getItem('quantumErrors') || '[]'); a.unshift(`${new Date().toISOString()} ${msg}`); localStorage.setItem('quantumErrors', JSON.stringify(a.slice(0, 10))); } catch (e) {} }
+        window.addEventListener('error', e => logError(`${e.message} (line ${e.lineno})`));
+        window.addEventListener('unhandledrejection', e => logError('Promise: ' + ((e.reason && e.reason.message) || e.reason)));
+        function errCount() { try { return JSON.parse(localStorage.getItem('quantumErrors') || '[]').length; } catch (e) { return 0; } }
+        function copyErrors() {
+            const t = (JSON.parse(localStorage.getItem('quantumErrors') || '[]')).join('\n') || 'No errors recorded.';
+            if (navigator.clipboard) navigator.clipboard.writeText(t).then(() => notify({ type: 'success', title: 'Copied' }), () => notify({ type: 'error', title: 'Could not copy' }));
+        }
+        function clearErrors() { localStorage.removeItem('quantumErrors'); renderExtraPanel(); }
+
+        // keyboard + screen-reader help for clickable elements
+        function a11yFix() {
+            document.querySelectorAll('[onclick]').forEach(el => {
+                if (['BUTTON', 'A', 'INPUT', 'SELECT', 'TEXTAREA', 'LABEL'].includes(el.tagName)) { if (!el.getAttribute('aria-label') && el.title) el.setAttribute('aria-label', el.title); return; }
+                if (el.classList.contains('modal-overlay')) return;
+                if (!el.hasAttribute('role')) el.setAttribute('role', 'button');
+                if (!el.hasAttribute('tabindex')) el.tabIndex = 0;
+            });
+        }
+        let a11yTimer;
+        new MutationObserver(() => { clearTimeout(a11yTimer); a11yTimer = setTimeout(a11yFix, 120); }).observe(document.documentElement, { childList: true, subtree: true });
+        document.addEventListener('keydown', e => {
+            const el = e.target;
+            if ((e.key === 'Enter' || e.key === ' ') && el.getAttribute && el.getAttribute('role') === 'button' && !['BUTTON', 'A', 'INPUT'].includes(el.tagName)) { e.preventDefault(); el.click(); }
+        });
 
         // ================= THEME =================
         const ICON_SUN = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
@@ -2633,6 +2815,8 @@
             appState.currentLevel = startLevel;
             appState.highestLevel = startLevel;
             ensureExtras();
+            if (!localStorage.getItem('quantumWelcomed')) document.getElementById('welcomeModal').classList.add('show');
+            checkStorageUse();
             document.getElementById('demoBanner').style.display = localStorage.getItem('quantumDemoBackup') ? 'flex' : 'none';
             applyTheme(localStorage.getItem('quantumTheme') || 'dark');
             applyPrefs();
@@ -2647,8 +2831,12 @@
             renderAnalyticsChart();
         }
 
+        let storageWarned = false;
         function saveData() {
-            localStorage.setItem('quantumHabitDataV1', JSON.stringify(appState));
+            try { localStorage.setItem('quantumHabitDataV1', JSON.stringify(appState)); }
+            catch (e) {
+                if (!storageWarned) { storageWarned = true; notify({ type: 'error', title: 'Storage is full', message: 'Export a backup, then delete big sounds or old versions in Settings.', duration: 8000 }); }
+            }
         }
 
         function syncTodayStatus() {
@@ -2665,6 +2853,7 @@
             const today = getTodayStr();
             habit.completed = !habit.completed;
             habit.history[today] = habit.completed;
+            if ((habit.target || 1) > 1) { habit.counts = habit.counts || {}; habit.counts[today] = habit.completed ? habit.target : Math.min(habit.counts[today] || 0, habit.target - 1); }
 
             if (habit.completed) {
                 appState.totalXp += HABIT_XP;
@@ -2685,7 +2874,7 @@
                 recordTickAndStacks(habit);
                 fireAutomations('habit_done', { habitId: habit.id });
                 playSound('check');
-                if (appState.habits.length > 0 && appState.habits.every(h => h.completed)) {
+                if (schedHabits(getTodayStr()).length > 0 && schedHabits(getTodayStr()).every(h => h.completed)) {
                     setTimeout(() => playSound('complete'), 220);
                     showToast('Perfect Day! All habits done');
                     fireAutomations('all_done');
@@ -2698,6 +2887,7 @@
         function toggleCalendarCell(habitId, dateStr, cellElement) {
             const habit = appState.habits.find(h => h.id === habitId);
             if (!habit) return;
+            if (dateStr !== dateAdd(getTodayStr(), -1) && dateStr !== getTodayStr()) return;
 
             const isCompleted = !habit.history[dateStr];
             habit.history[dateStr] = isCompleted;
@@ -2733,18 +2923,21 @@
         function renderHabits() {
             const container = document.getElementById('habitList');
             container.innerHTML = '';
-
+            const today = getTodayStr();
             appState.habits.forEach(habit => {
+                const sched = isScheduled(habit, today), tgt = habit.target || 1, cnt = (habit.counts || {})[today] || 0;
+                const days = habit.days && habit.days.length ? WEEKDAY_ORDER.filter(d => habit.days.includes(d)).map(d => WEEKDAY_NAMES[d]).join(' ') : '';
                 const row = document.createElement('div');
                 row.className = `habit-row ${habit.completed ? 'completed' : ''}`;
+                if (!sched) row.style.opacity = '0.5';
+                if (habit.color) row.style.borderLeft = `3px solid ${habit.color}`;
                 row.innerHTML = `
-                    <div class="custom-checkbox ${habit.completed ? 'checked' : ''}" onclick="toggleHabit('${habit.id}')">
-                        ${habit.completed ? '✓' : ''}
-                    </div>
+                    <div class="custom-checkbox ${habit.completed ? 'checked' : ''}" ${sched ? `onclick="toggleHabit('${habit.id}')"` : ''}>${habit.completed ? '✓' : ''}</div>
                     <div class="habit-info">
-                        <h3>${habit.name}</h3>
-                        <p><span class="habit-xp">+${HABIT_XP} XP</span></p>
+                        <h3>${escapeHtml(habit.name)}</h3>
+                        <p><span class="habit-xp">+${HABIT_XP} XP</span>${tgt > 1 ? `<span>${cnt}/${tgt} today</span>` : ''}${days ? `<span>${days}</span>` : ''}${!sched ? '<span>Not scheduled today</span>' : ''}</p>
                     </div>
+                    ${tgt > 1 && sched ? `<div class="task-row-actions" style="margin-right: 8px;"><button class="icon-btn" onclick="bumpCount('${habit.id}', -1)" title="One less">-</button><button class="icon-btn" onclick="bumpCount('${habit.id}', 1)" title="One more">+</button></div>` : ''}
                     <div class="habit-actions">
                         <button class="action-btn btn-edit" onclick="editHabit('${habit.id}')" title="Edit">${ICON_EDIT}</button>
                         <button class="action-btn btn-delete" onclick="deleteHabit('${habit.id}')" title="Delete">${ICON_TRASH}</button>
@@ -2772,14 +2965,15 @@
             }
 
             appState.habits.forEach(habit => {
-                grid.innerHTML += `<div class="cal-habit-name" title="${habit.name}">${habit.name}</div>`;
+                grid.innerHTML += `<div class="cal-habit-name" title="${escapeHtml(habit.name)}">${escapeHtml(habit.name)}</div>`;
                 for (let i = 1; i <= daysInMonth; i++) {
                     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
                     const isCompleted = habit.history[dateStr] === true;
                     const isToday = dateStr === todayStr;
-                    const isRest = !isCompleted && isRestDay(dateStr);
+                    const isRest = !isCompleted && (isRestDay(dateStr) || !isScheduled(habit, dateStr));
                     const isMissed = !isCompleted && !isRest && dateStr <= todayStr;
-                    grid.innerHTML += `<div class="cal-cell ${isCompleted ? 'completed' : ''} ${isMissed ? 'missed' : ''} ${isRest ? 'rest' : ''} ${isToday ? 'today' : ''}"></div>`;
+                    const canEdit = dateStr === dateAdd(todayStr, -1) && isScheduled(habit, dateStr);
+                    grid.innerHTML += `<div class="cal-cell ${isCompleted ? 'completed' : ''} ${isMissed ? 'missed' : ''} ${isRest ? 'rest' : ''} ${isToday ? 'today' : ''} ${canEdit ? 'editable' : ''}" ${canEdit ? `onclick="toggleCalendarCell('${habit.id}', '${dateStr}')" title="Tap to fix yesterday"` : ''}></div>`;
                 }
             });
         }
@@ -2963,7 +3157,8 @@
             if (appState.habits.length === 0) return 0;
             let count = 0;
             getActiveDates().forEach(d => {
-                if (appState.habits.every(h => h.history[d] === true)) count++;
+                const S = schedHabits(d);
+                if (S.length && S.every(h => h.history[d] === true)) count++;
             });
             return count;
         }
@@ -2972,7 +3167,7 @@
             const now = new Date();
             const prefix = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-`;
             const days = workDaysInMonth(now);
-            const possible = appState.habits.length * days;
+            const possible = monthPossible(now);
             if (possible === 0) return 0;
             const done = appState.habits.reduce((sum, h) => {
                 return sum + Object.entries(h.history).filter(([d, v]) => v === true && d.startsWith(prefix)).length;
@@ -3227,16 +3422,20 @@
             box.value = current ? `${current}, ${name}` : name;
         }
 
+        let editingNote = null;
+        function clearNoteForm() {
+            document.getElementById('journalDay').value = '';
+            document.getElementById('journalMissed').value = '';
+            document.getElementById('journalWhy').value = '';
+            selectMood('');
+            document.getElementById('noteEditing').style.display = 'none';
+        }
         function renderJournal() {
             if (!appState.journal) appState.journal = {};
-            const today = getTodayStr();
-            const entry = appState.journal[today] || { mood: '', day: '', missed: '', why: '' };
-
+            editingNote = null;
             document.getElementById('journalDate').innerText = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
-            document.getElementById('journalDay').value = entry.day;
-            document.getElementById('journalMissed').value = entry.missed;
-            document.getElementById('journalWhy').value = entry.why;
-            selectMood(entry.mood);
+            clearNoteForm();
+            document.getElementById('noteSavedAt').innerText = '';
 
             // Habits not completed today (tap to add to "missed")
             missedTodayList = appState.habits.filter(h => !h.completed).map(h => h.name);
@@ -3247,29 +3446,29 @@
             } else {
                 hint.innerHTML = appState.habits.length ? '<p style="color: var(--neon-green);">You completed every habit today!</p>' : '';
             }
-
             renderJournalHistory();
         }
 
         function renderJournalHistory() {
             const container = document.getElementById('journalHistory');
             const today = getTodayStr();
-            const dates = Object.keys(appState.journal || {}).filter(d => d !== today).sort().reverse();
-            if (!dates.length) {
-                container.innerHTML = '<div class="journal-empty">No past notes yet. Your earlier days will show up here.</div>';
+            const keys = Object.keys(appState.journal || {}).sort().reverse();
+            if (!keys.length) {
+                container.innerHTML = '<div class="journal-empty">No notes saved yet. Write one above and tap Save.</div>';
                 return;
             }
-            container.innerHTML = dates.map(d => {
-                const e = appState.journal[d];
+            container.innerHTML = keys.map(k => {
+                const e = appState.journal[k], d = k.slice(0, 10);
                 const mood = MOODS[e.mood];
                 const nl = t => escapeHtml(t).replace(/\n/g, '<br>');
                 return `
                     <div class="journal-entry">
                         <div class="journal-entry-head">
-                            <span class="journal-entry-date">${formatBadgeDate(d)}</span>
+                            <span class="journal-entry-date">${d === today ? 'Today' : formatBadgeDate(d)}${e.at ? ' - ' + e.at : ''}</span>
                             <div style="display:flex; align-items:center; gap:8px;">
                                 ${mood ? `<span class="journal-mood-tag" style="color:${mood.color};">${mood.label}</span>` : ''}
-                                <button class="action-btn btn-delete" style="opacity:0.6;" onclick="deleteJournalEntry('${d}')" title="Delete">${ICON_TRASH}</button>
+                                <button class="action-btn btn-edit" style="opacity:0.7;" onclick="editNote('${k}')" title="Edit">${ICON_EDIT}</button>
+                                <button class="action-btn btn-delete" style="opacity:0.7;" onclick="deleteJournalEntry('${k}')" title="Delete">${ICON_TRASH}</button>
                             </div>
                         </div>
                         ${e.day ? `<div class="journal-entry-label">My day</div><div class="journal-entry-text">${nl(e.day)}</div>` : ''}
@@ -3278,6 +3477,19 @@
                     </div>`;
             }).join('');
         }
+        function editNote(key) {
+            const e = appState.journal[key]; if (!e) return;
+            editingNote = key;
+            document.getElementById('journalDay').value = e.day || '';
+            document.getElementById('journalMissed').value = e.missed || '';
+            document.getElementById('journalWhy').value = e.why || '';
+            selectMood(e.mood || '');
+            const b = document.getElementById('noteEditing');
+            b.innerHTML = `Editing a saved note. <span class="quick-chip" onclick="cancelEditNote()">Cancel</span>`;
+            b.style.display = 'block';
+            window.scrollTo(0, 0);
+        }
+        function cancelEditNote() { editingNote = null; clearNoteForm(); }
 
         function saveJournal() {
             const day = document.getElementById('journalDay').value.trim();
@@ -3286,19 +3498,30 @@
             if (!journalMood && !day && !missed && !why) return showToast("Write something first!", true);
 
             if (!appState.journal) appState.journal = {};
-            appState.journal[getTodayStr()] = { mood: journalMood, day, missed, why };
+            const n = new Date(), at = `${pad2(n.getHours())}:${pad2(n.getMinutes())}`;
+            const wasEdit = !!editingNote;
+            let key = editingNote || `${getTodayStr()}~${pad2(n.getHours())}${pad2(n.getMinutes())}${pad2(n.getSeconds())}`;
+            if (!editingNote) { const base = key; let i = 1; while (appState.journal[key]) key = base + '-' + (i++); }
+            const old = appState.journal[key];
+            appState.journal[key] = { mood: journalMood, day, missed, why, at: (old && old.at) || at };
+            editingNote = null;
             saveData();
-            showToast("Note saved!");
+            clearNoteForm();
+            renderJournalHistory();
             updateUI();
+            showToast(wasEdit ? "Note updated!" : "Note saved!");
+            document.getElementById('noteSavedAt').innerText = `Saved at ${at} - it is in "Your Notes" below`;
         }
 
-        function deleteJournalEntry(dateStr) {
-            if (confirm("Delete this note?")) {
-                delete appState.journal[dateStr];
+        function deleteJournalEntry(key) {
+            confirmDo("Delete this note?", () => {
+                delete appState.journal[key];
+                if (editingNote === key) { editingNote = null; clearNoteForm(); }
                 saveData();
                 renderJournalHistory();
+                updateUI();
                 showToast("Note deleted");
-            }
+            }, 'Delete');
         }
 
         // ================= TASKS =================
@@ -3572,18 +3795,19 @@
         }
 
         function deleteTask(id) {
-            if (confirm('Delete this task?')) {
+            confirmDo('Delete this task?', () => {
                 appState.tasks = appState.tasks.filter(t => t.id !== id);
                 saveData();
                 renderHomeTasks();
                 renderTasksPage();
                 notify({ type: 'info', title: 'Task deleted' });
-            }
+            }, 'Delete');
         }
 
         function updateUI() {
-            const totalHabits = appState.habits.length;
-            const completedHabits = appState.habits.filter(h => h.completed).length;
+            const todaySched = schedHabits(getTodayStr());
+            const totalHabits = todaySched.length;
+            const completedHabits = todaySched.filter(h => h.completed).length;
 
             document.getElementById('habitsCompletedDisplay').innerText = `${completedHabits}/${totalHabits}`;
 
@@ -3600,7 +3824,7 @@
             const doneThisMonth = appState.habits.reduce((sum, h) => {
                 return sum + Object.entries(h.history).filter(([d, v]) => v === true && d.startsWith(monthPrefix)).length;
             }, 0);
-            const possibleThisMonth = totalHabits * daysInMonthNow;
+            const possibleThisMonth = monthPossible(nowM);
             const monthlyPercent = possibleThisMonth === 0 ? 0 : Math.round((doneThisMonth / possibleThisMonth) * 100);
             document.getElementById('monthlyPercentDisplay').innerText = `${monthlyPercent}%`;
             document.getElementById('monthlyProgressBar').style.width = `${monthlyPercent}%`;
@@ -3632,6 +3856,7 @@
             }
 
             renderMonthlyChart();
+            renderWeeklyChart();
             renderHomeTasks();
             updateStreakAndBadges();
         }
@@ -3684,39 +3909,35 @@
         }
 
         function renderWeeklyChart() {
-            const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-            const container = document.getElementById('weeklyBars');
-            container.innerHTML = '';
-
-            const todayIndex = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1;
-
-            days.forEach((day, index) => {
-                let height = Math.floor(Math.random() * 40) + 10;
-                let isActive = false;
-
-                if (index === todayIndex) {
-                    const total = appState.habits.length;
-                    const completed = appState.habits.filter(h => h.completed).length;
-                    height = total === 0 ? 5 : (completed / total) * 100;
-                    isActive = true;
-                } else if (index > todayIndex) {
-                    height = 5;
-                }
-
-                const wrapper = document.createElement('div');
-                wrapper.className = 'bar-wrapper';
-                wrapper.innerHTML = `
-                    <div class="bar ${isActive ? 'active' : ''}" style="height: ${height}%"></div>
-                    <div class="bar-label">${day}</div>
-                `;
-                container.appendChild(wrapper);
+            const names = ['M', 'T', 'W', 'T', 'F', 'S', 'S'], box = document.getElementById('weeklyBars');
+            box.innerHTML = '';
+            const t = getTodayStr(), start = dateAdd(t, -((weekdayOf(t) + 6) % 7));
+            names.forEach((n, i) => {
+                const d = dateAdd(start, i), future = d > t, pct = future ? 0 : rateFor([d]);
+                const w = document.createElement('div');
+                w.className = 'bar-wrapper';
+                w.title = `${formatTaskDate(d)}: ${future ? '-' : pct + '%'}`;
+                w.innerHTML = `<div class="bar ${d === t ? 'active' : ''}" style="height: ${Math.max(pct, 5)}%"></div><div class="bar-label">${n}</div>`;
+                box.appendChild(w);
             });
         }
 
+        function setHabitForm(h) {
+            document.getElementById('habitNameInput').value = h ? h.name : '';
+            const days = h && h.days && h.days.length ? h.days : [0, 1, 2, 3, 4, 5, 6];
+            document.querySelectorAll('#habitDays .weekday-btn').forEach(b => b.classList.toggle('selected', days.includes(Number(b.dataset.day))));
+            document.getElementById('habitTargetInput').value = h && h.target ? h.target : 1;
+            document.querySelectorAll('#habitColors .color-dot').forEach(c => c.classList.toggle('selected', !!h && h.color === c.dataset.c));
+        }
+        function pickHabitColor(el) {
+            const was = el.classList.contains('selected');
+            document.querySelectorAll('#habitColors .color-dot').forEach(c => c.classList.remove('selected'));
+            if (!was) el.classList.add('selected');
+        }
         function openModal() {
             document.getElementById('modalTitle').innerText = "Create New Habit";
             document.getElementById('editHabitId').value = "";
-            document.getElementById('habitNameInput').value = "";
+            setHabitForm(null);
             document.getElementById('habitModal').classList.add('show');
         }
 
@@ -3726,23 +3947,22 @@
 
         function saveHabit() {
             const id = document.getElementById('editHabitId').value;
-            const name = document.getElementById('habitNameInput').value;
+            const name = document.getElementById('habitNameInput').value.trim();
 
-            if (!name.trim()) return showToast("Please enter a name!", true);
-            if (!id) { const dup = findDuplicate(name); if (dup && !confirm(`"${name}" looks similar to "${dup.h.name}". Add it anyway?`)) return; }
+            if (!name) return showToast("Please enter a name!", true);
+            if (!id && !saveHabit.ok) { const dup = findDuplicate(name); if (dup) return confirmDo(`"${name}" looks similar to "${dup.h.name}". Add it anyway?`, () => { saveHabit.ok = true; saveHabit(); saveHabit.ok = false; }, 'Add anyway'); }
+
+            const sel = Array.from(document.querySelectorAll('#habitDays .weekday-btn.selected')).map(b => Number(b.dataset.day));
+            const days = sel.length === 7 || sel.length === 0 ? [] : sel;
+            const target = Math.max(1, Math.min(99, parseInt(document.getElementById('habitTargetInput').value, 10) || 1));
+            const cd = document.querySelector('#habitColors .color-dot.selected'), color = cd ? cd.dataset.c : '';
 
             if (id) {
                 const habit = appState.habits.find(h => h.id === id);
-                habit.name = name;
+                Object.assign(habit, { name, days, target, color });
                 showToast("Habit updated!");
             } else {
-                appState.habits.push({
-                    id: Date.now().toString(),
-                    name: name,
-                    xp: HABIT_XP,
-                    completed: false,
-                    history: {}
-                });
+                appState.habits.push({ id: Date.now().toString(), name, xp: HABIT_XP, completed: false, history: {}, days, target, color, counts: {} });
                 showToast("New habit created!");
             }
 
@@ -3759,12 +3979,12 @@
             if (!habit) return;
             document.getElementById('modalTitle').innerText = "Edit Habit";
             document.getElementById('editHabitId').value = habit.id;
-            document.getElementById('habitNameInput').value = habit.name;
+            setHabitForm(habit);
             document.getElementById('habitModal').classList.add('show');
         }
 
         function deleteHabit(id) {
-            if (confirm("Delete this habit? All history for it will be lost.")) {
+            confirmDo("Delete this habit? All history for it will be lost.", () => {
                 const habit = appState.habits.find(h => h.id === id);
                 if (habit && habit.completed) appState.totalXp -= HABIT_XP;
                 appState.habits = appState.habits.filter(h => h.id !== id);
@@ -3774,7 +3994,7 @@
                 updateUI();
                 renderAnalyticsChart();
                 showToast("Habit deleted");
-            }
+            }, 'Delete');
         }
 
         // Legacy helper: routes simple messages to the nicer notification cards
