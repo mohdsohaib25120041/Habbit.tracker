@@ -903,10 +903,6 @@
                 <svg class="icon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
                 Tasks
             </a>
-            <a href="#" class="nav-item" onclick="changePage('growth', this)">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-                Growth Lab
-            </a>
             <a href="#" class="nav-item" onclick="changePage('journal', this)">
                 <svg class="icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
                 Notes
@@ -916,10 +912,6 @@
                 Achievements
             </a>
         </div>
-        <a href="#" class="nav-item" onclick="downloadApp(); return false;">
-            <svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Download App
-        </a>
         <a href="#" class="nav-item" style="margin-bottom: 6px;" onclick="changePage('settings', this); return false;">
             <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
             Settings
@@ -1058,18 +1050,6 @@
             </div>
         </div>
 
-        <!-- GROWTH LAB PAGE -->
-        <div id="page-growth" class="page-section">
-            <header class="top-header">
-                <div>
-                    <h1>Growth Lab</h1>
-                    <p>Insights, reports, planning and focus tools built from your own data</p>
-                </div>
-            </header>
-            <div class="task-tabs" id="growthTabs" style="margin-bottom: 0;"></div>
-            <div id="growthContent" style="display: flex; flex-direction: column; gap: 25px;"></div>
-        </div>
-
         <!-- SETTINGS PAGE -->
         <div id="page-settings" class="page-section">
             <header class="top-header">
@@ -1078,7 +1058,6 @@
                     <p>Choose your own sounds and notifications</p>
                 </div>
             </header>
-            <section class="panel" id="installPanel"></section>
             <section class="panel" id="appearancePanel"></section>
             <section class="panel" id="soundSettingsPanel"></section>
             <section class="panel" id="notifySettingsPanel"></section>
@@ -1183,17 +1162,15 @@
         <div class="mobile-nav-item" data-pages="journal" onclick="changePage('journal', this)">
             <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>Notes
         </div>
-        <div class="mobile-nav-item" data-pages="growth,achievements,settings" onclick="toggleMore()">
+        <div class="mobile-nav-item" data-pages="achievements,settings" onclick="toggleMore()">
             <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg></span>More
         </div>
     </nav>
 
     <div class="more-backdrop" id="moreBackdrop" onclick="closeMore()"></div>
     <div class="more-sheet" id="moreSheet">
-        <div class="more-item" onclick="changePage('growth', null)"><svg class="icon" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>Growth Lab</div>
         <div class="more-item" onclick="changePage('achievements', null)"><svg class="icon" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>Achievements</div>
         <div class="more-item" onclick="changePage('settings', null)"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</div>
-        <div class="more-item" onclick="downloadApp(); closeMore()"><svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download App</div>
     </div>
 
     <div class="modal-overlay" id="habitModal">
@@ -1238,8 +1215,6 @@
         </div>
     </div>
 
-    <button class="qa-fab" id="qaFab" onclick="toggleQA()" title="Quick actions">+</button>
-    <div class="qa-menu" id="qaMenu"></div>
 
     <div class="focus-screen" id="focusScreen">
         <div style="color: var(--text-muted); font-size: 14px;">Focus Mode - everything else is hidden</div>
@@ -1264,19 +1239,11 @@
             <div style="font-size: 14px; line-height: 1.7; color: var(--text-muted); text-align: left; margin: 14px 0;">
                 1. Tick your habits every day. Each one gives <b>5 XP</b>.<br>
                 2. Finish levels to unlock new <b>themes</b> and <b>badges</b>.<br>
-                3. Add tasks for future days in <b>Tasks</b>.<br>
-                4. Open <b>Growth Lab</b> for reports, goals and focus tools.
+                3. Add tasks for future days in <b>Tasks</b>.
+
             </div>
             <button class="btn-primary" style="width: 100%; padding: 12px; margin-bottom: 8px;" onclick="closeWelcome(false)">Start fresh</button>
             <button class="btn-primary" style="width: 100%; padding: 12px; background: transparent; border-color: var(--text-muted); color: var(--text-muted);" onclick="closeWelcome(true)">Look around with demo data</button>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="installHelp" onclick="if (event.target === this) closeInstallHelp()">
-        <div class="modal-content">
-            <h2 style="margin-bottom: 12px;">Download Allex App</h2>
-            <div id="installHelpBody" style="font-size: 14px; line-height: 1.7; color: var(--text-muted);"></div>
-            <button class="btn-primary" style="width: 100%; margin-top: 18px; padding: 12px;" onclick="closeInstallHelp()">Got it</button>
         </div>
     </div>
 
@@ -1918,7 +1885,7 @@
         const gInput = (id, ph, val) => `<div class="input-group" style="margin-bottom: 10px;"><input type="text" id="${id}" placeholder="${ph}" value="${esc(val || '')}"></div>`;
         const gArea = (id, label, val) => `<div class="input-group"><label>${label}</label><textarea id="${id}" rows="2">${esc(val || '')}</textarea></div>`;
         const li = (arr) => arr.map(x => `<div style="font-size: 14px; line-height: 1.5; margin-bottom: 8px;">- ${x}</div>`).join('');
-        function delItem(key, i) { appState[key].splice(i, 1); saveData(); renderGrowth(); if (typeof renderExtraPanel === 'function') renderExtraPanel(); }
+        function delItem(key, i) { appState[key].splice(i, 1); saveData(); if (document.getElementById('growthTabs')) renderGrowth(); if (typeof renderExtraPanel === 'function') renderExtraPanel(); }
 
         let growthTab = 'insights';
         function setGrowthTab(t) { growthTab = t; renderGrowth(); }
@@ -2111,7 +2078,7 @@
         // ---- QUICK ACTIONS + SEARCH ----
         function toggleQA() {
             const m = $('qaMenu'), open = !m.classList.contains('show');
-            const items = [['Add Habit', "changePage('habits', null); openModal()"], ['Add Task', 'openTaskModal()'], ['Write Note', "changePage('journal', null)"], ['Start Focus', "growthTab = 'focus'; changePage('growth', null)"]];
+            const items = [['Add Habit', "changePage('habits', null); openModal()"], ['Add Task', 'openTaskModal()'], ['Write Note', "changePage('journal', null)"]];
             m.innerHTML = items.map(([l, f]) => `<div class="qa-item" onclick="${f}; toggleQA()">${l}</div>`).join('');
             m.classList.toggle('show', open); $('qaFab').classList.toggle('open', open);
             if (!open) { m.classList.remove('show'); $('qaFab').classList.remove('open'); }
@@ -2126,12 +2093,6 @@
             appState.habits.forEach(h => add('Habit', h.name, 'habits'));
             appState.tasks.forEach(x => add('Task', x.title, 'tasks'));
             Object.keys(appState.journal).forEach(d => { const e = appState.journal[d]; [e.day, e.missed, e.why].forEach(x => x && add('Note', `${formatTaskDate(d.slice(0, 10))}: ${x}`, 'journal')); });
-            Object.keys(appState.wins).forEach(d => appState.wins[d].forEach(w => add('Win', w, 'growth', 'trackers')));
-            appState.rules.forEach(r => add('Rule', r, 'growth', 'planner'));
-            appState.kb.forEach(k => add('Knowledge', `${k.title} ${k.text}`, 'growth', 'library'));
-            appState.goals.forEach(g => add('Goal', g.title, 'growth', 'goals'));
-            appState.plans.forEach(p => add('If-Then', `${p.iff} -> ${p.then}`, 'growth', 'planner'));
-            appState.distractions.concat(appState.procrastination).forEach(x => add('Log', x.text, 'growth', 'trackers'));
             $('searchResults').innerHTML = out.slice(0, 30).map(r => `<div class="search-result" onclick="goTo('${r.page}', '${r.tab || ''}')"><span class="search-tag">${r.type}</span>${esc(r.text)}</div>`).join('') || gEmpty('No results.');
         }
         document.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); openSearch(); } if (e.key === 'Escape') closeSearch(); });
@@ -2580,8 +2541,8 @@
             const inDemo = !!localStorage.getItem('quantumDemoBackup');
             box.innerHTML = `<h2 class="panel-title" style="margin-bottom: 14px;">Privacy Dashboard</h2>
                 <div class="setting-desc" style="margin-bottom: 10px;">All your data stays on this device. Allex sends nothing to any server. Storage used: <b>${(bytes / 1024).toFixed(0)} KB</b>. App lock: <b>${prefs.pinHash ? 'on' : 'off'}</b>.</div>
-                ${gTiles([['Habits', appState.habits.length], ['Tasks', appState.tasks.length], ['Notes', cnt(appState.journal)], ['Log entries', appState.distractions.length + appState.procrastination.length + cnt(appState.energy)], ['Knowledge notes', appState.kb.length], ['Goals', appState.goals.length]])}
-                <div class="quick-row" style="margin: 14px 0 22px;"><span class="quick-chip" onclick="deleteData('notes')">Delete notes</span><span class="quick-chip" onclick="deleteData('logs')">Delete logs & wins</span><span class="quick-chip" onclick="deleteData('kb')">Delete knowledge</span><span class="quick-chip" style="color: var(--neon-red); border-color: var(--neon-red);" onclick="deleteData('all')">Delete everything</span></div>
+                ${gTiles([['Habits', appState.habits.length], ['Tasks', appState.tasks.length], ['Notes', cnt(appState.journal)], ['Log entries', appState.distractions.length + appState.procrastination.length + cnt(appState.energy)]])}
+                <div class="quick-row" style="margin: 14px 0 22px;"><span class="quick-chip" onclick="deleteData('notes')">Delete notes</span><span class="quick-chip" style="color: var(--neon-red); border-color: var(--neon-red);" onclick="deleteData('all')">Delete everything</span></div>
                 <h2 class="panel-title" style="margin-bottom: 8px;">Version History</h2>
                 <div class="setting-desc" style="margin-bottom: 10px;">The last 5 saved versions of your data. Restore any of them.</div>
                 ${vers.map((v, i) => gRow(`<b>${new Date(v.at).toLocaleString()}</b> <span class="setting-desc">${v.label}</span>`, null).replace('</div></div>', `</div><button class="btn-primary" onclick="restoreVersion(${i})">Restore</button></div>`)).join('') || gEmpty('No versions yet.')}
