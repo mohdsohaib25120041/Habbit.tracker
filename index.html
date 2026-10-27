@@ -813,6 +813,35 @@
         .heat { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, 14px); grid-auto-columns: 14px; gap: 3px; overflow-x: auto; padding-bottom: 6px; }
         .heat-cell { width: 14px; height: 14px; border-radius: 3px; background: rgba(var(--tint), 0.06); }
 
+        /* --- WATER TRACKER --- */
+        .water-layout { display: grid; grid-template-columns: minmax(260px, 360px) 1fr; gap: 25px; align-items: start; }
+        .water-side { display: flex; flex-direction: column; gap: 25px; min-width: 0; }
+        .body-wrap { position: relative; width: 100%; max-width: 270px; margin: 0 auto; }
+        .body-svg { width: 100%; height: auto; display: block; overflow: visible; filter: drop-shadow(0 0 14px rgba(0, 240, 255, 0.28)); transition: filter 0.6s; }
+        .body-glass { fill: rgba(var(--tint), 0.05); }
+        .body-outline { fill: none; stroke: var(--neon-cyan); stroke-width: 2; stroke-linejoin: round; }
+        .water-level { transition: transform 1.8s cubic-bezier(0.22, 0.8, 0.3, 1); }
+        .wave-back { animation: waveMove 7s linear infinite; }
+        .wave-front { animation: waveMove 4.5s linear infinite reverse; }
+        @keyframes waveMove { from { transform: translateX(0); } to { transform: translateX(-100px); } }
+        .bubble { fill: rgba(255, 255, 255, 0.6); animation: bubbleUp 5s ease-in infinite; }
+        @keyframes bubbleUp { 0% { transform: translateY(0); opacity: 0; } 15% { opacity: 0.9; } 100% { transform: translateY(-190px); opacity: 0; } }
+        .body-readout { position: absolute; left: 50%; top: 31%; transform: translateX(-50%); text-align: center; pointer-events: none; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.55); }
+        .body-readout .pct { font-size: 44px; font-weight: 700; line-height: 1; color: #fff; }
+        .body-readout .ml { font-size: 14px; font-weight: 600; margin-top: 4px; color: #e6fbff; }
+        .body-readout .sub { font-size: 11px; margin-top: 2px; color: #bdf3ff; letter-spacing: 0.5px; }
+        .body-wrap.done .body-svg { filter: drop-shadow(0 0 22px var(--neon-cyan)); }
+        .body-wrap.celebrate .body-svg { animation: bodyPulse 0.9s ease-in-out 3; }
+        .body-wrap.celebrate::after { content: ''; position: absolute; left: 50%; top: 40%; width: 40px; height: 40px; margin: -20px; border-radius: 50%; border: 3px solid var(--neon-cyan); animation: ringOut 1.6s ease-out 2; pointer-events: none; }
+        @keyframes bodyPulse { 50% { transform: scale(1.04); } }
+        @keyframes ringOut { from { transform: scale(0.4); opacity: 0.9; } to { transform: scale(7); opacity: 0; } }
+        .water-bar { height: 12px; border-radius: 10px; background: rgba(var(--tint), 0.1); overflow: hidden; }
+        .water-bar > div { height: 100%; width: 0%; border-radius: 10px; background: linear-gradient(90deg, #7df9ff, #1e6bff); box-shadow: 0 0 12px rgba(0, 240, 255, 0.5); transition: width 1.2s cubic-bezier(0.22, 0.8, 0.3, 1); }
+        .water-quick { display: flex; gap: 10px; margin-top: 14px; }
+        .water-quick .btn-primary { flex: 1; }
+        .water-btn { flex: 1; min-height: 60px; font-size: 18px; border-radius: 16px; }
+        @media (max-width: 1024px) { .water-layout { grid-template-columns: 1fr; } }
+
         /* Responsive */
         @media (max-width: 1024px) {
             .workspace { grid-template-columns: 1fr; }
@@ -863,7 +892,7 @@
             input, select, textarea { font-size: 16px !important; }
             .main-content { padding-top: calc(20px + env(safe-area-inset-top)); padding-bottom: calc(96px + env(safe-area-inset-bottom)); }
             .mobile-nav { padding-bottom: calc(8px + env(safe-area-inset-bottom)); }
-            .mobile-nav-item { flex: 1; min-height: 44px; justify-content: center; }
+            .mobile-nav-item { flex: 1; min-width: 0; min-height: 44px; justify-content: center; font-size: 9.5px; white-space: nowrap; }
             .notify-stack { top: calc(10px + env(safe-area-inset-top)); }
             .qa-fab { bottom: calc(84px + env(safe-area-inset-bottom)); }
             .qa-menu { bottom: calc(148px + env(safe-area-inset-bottom)); }
@@ -888,7 +917,7 @@
     <aside class="sidebar">
         <div class="logo">
             <svg class="icon" viewBox="0 0 24 24"><path d="M13 2L4.5 13h6L10 22l8.5-11h-6L13 2z"/></svg>
-            Allex<span>.</span>
+            Nexuses<span>.</span>
         </div>
         <div class="nav-links">
             <a href="#" class="nav-item active" onclick="changePage('dashboard', this)">
@@ -902,6 +931,10 @@
             <a href="#" class="nav-item" onclick="changePage('tasks', this)">
                 <svg class="icon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
                 Tasks
+            </a>
+            <a href="#" class="nav-item" onclick="changePage('water', this)">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg>
+                Water
             </a>
             <a href="#" class="nav-item" onclick="changePage('journal', this)">
                 <svg class="icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
@@ -976,6 +1009,16 @@
                 </div>
             </section>
 
+            <section class="panel" data-sec="water" id="waterCard">
+                <div class="panel-header" style="margin-bottom: 12px;">
+                    <h2 class="panel-title">Water Today</h2>
+                    <button class="btn-primary" onclick="changePage('water', null)">Open</button>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px;"><span id="wcText">0 ml / 2,000 ml</span><span id="wcPct" style="color: var(--neon-cyan); font-weight: 600;">0%</span></div>
+                <div class="water-bar"><div id="wcBar"></div></div>
+                <div class="water-quick"><button class="btn-primary" onclick="addWater(250)">+250 ml</button><button class="btn-primary" onclick="addWater(500)">+500 ml</button></div>
+            </section>
+
             <div class="workspace">
                 <div class="ws-col">
                 <div class="panel" data-sec="overview" style="text-align: center;">
@@ -1048,6 +1091,95 @@
                     <div class="habit-list" id="habitList"></div>
                 </section>
             </div>
+        </div>
+
+        <!-- WATER PAGE -->
+        <div id="page-water" class="page-section">
+            <header class="top-header">
+                <div>
+                    <h1>Water Tracker</h1>
+                    <p id="waterDate"></p>
+                </div>
+            </header>
+
+            <div class="water-layout">
+                <section class="panel" style="text-align: center;">
+                    <div class="body-wrap" id="bodyWrap">
+                        <svg class="body-svg" viewBox="0 0 200 484" role="img" aria-label="Human body filled with water according to your daily goal">
+                            <defs>
+                                <clipPath id="bodyClip"><path d="M100 10 C114 10 125 22 125 38 C125 52 117 62 110 66 C110 70 110 74 111 78 C118 82 134 84 146 88 C160 92 170 96 174 108 C180 124 180 150 182 176 C183 200 186 224 190 246 C194 258 194 272 186 274 C178 276 174 262 172 250 C168 226 164 202 160 180 C158 156 154 134 148 122 C142 144 134 168 130 192 C128 212 140 228 144 252 C148 290 146 330 141 364 C138 384 142 404 138 424 C135 438 133 446 133 454 C136 460 146 462 148 470 C136 471.3 124 472.7 112 474 C110 468 110 462 110 450 C110 430 106 410 107 380 C107 340 104 300 102 276 C101 270 100 268 100 266 C100 268 99 270 98 276 C96 300 93 340 93 380 C94 410 90 430 90 450 C90 462 90 468 88 474 C76 472.7 64 471.3 52 470 C54 462 64 460 67 454 C67 446 65 438 62 424 C58 404 62 384 59 364 C54 330 52 290 56 252 C60 228 72 212 70 192 C66 168 58 144 52 122 C46 134 42 156 40 180 C36 202 32 226 28 250 C26 262 22 276 14 274 C6 272 6 258 10 246 C14 224 17 200 18 176 C20 150 20 124 26 108 C30 96 40 92 54 88 C66 84 82 82 89 78 C90 74 90 70 90 66 C83 62 75 52 75 38 C75 22 86 10 100 10 Z"/></clipPath>
+                                <linearGradient id="waterGrad" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#7df9ff" stop-opacity="0.8"/>
+                                    <stop offset="100%" stop-color="#1e6bff" stop-opacity="0.9"/>
+                                </linearGradient>
+                            </defs>
+                            <path class="body-glass" d="M100 10 C114 10 125 22 125 38 C125 52 117 62 110 66 C110 70 110 74 111 78 C118 82 134 84 146 88 C160 92 170 96 174 108 C180 124 180 150 182 176 C183 200 186 224 190 246 C194 258 194 272 186 274 C178 276 174 262 172 250 C168 226 164 202 160 180 C158 156 154 134 148 122 C142 144 134 168 130 192 C128 212 140 228 144 252 C148 290 146 330 141 364 C138 384 142 404 138 424 C135 438 133 446 133 454 C136 460 146 462 148 470 C136 471.3 124 472.7 112 474 C110 468 110 462 110 450 C110 430 106 410 107 380 C107 340 104 300 102 276 C101 270 100 268 100 266 C100 268 99 270 98 276 C96 300 93 340 93 380 C94 410 90 430 90 450 C90 462 90 468 88 474 C76 472.7 64 471.3 52 470 C54 462 64 460 67 454 C67 446 65 438 62 424 C58 404 62 384 59 364 C54 330 52 290 56 252 C60 228 72 212 70 192 C66 168 58 144 52 122 C46 134 42 156 40 180 C36 202 32 226 28 250 C26 262 22 276 14 274 C6 272 6 258 10 246 C14 224 17 200 18 176 C20 150 20 124 26 108 C30 96 40 92 54 88 C66 84 82 82 89 78 C90 74 90 70 90 66 C83 62 75 52 75 38 C75 22 86 10 100 10 Z"/>
+                            <g clip-path="url(#bodyClip)">
+                                <g class="water-level" id="waterLevel" style="transform: translateY(482px);">
+                                    <path class="wave-back" d="M0 0 q25 -8 50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 V520 H0 Z" fill="url(#waterGrad)" opacity="0.5"/>
+                                    <path class="wave-front" d="M0 0 q25 8 50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 V520 H0 Z" fill="url(#waterGrad)" stroke="rgba(255,255,255,0.55)" stroke-width="1.2"/>
+                                    <circle class="bubble" cx="78" cy="210" r="2.2" style="animation-delay: 0s; animation-duration: 5s;"/><circle class="bubble" cx="96" cy="230" r="1.6" style="animation-delay: 1.2s; animation-duration: 6s;"/><circle class="bubble" cx="112" cy="215" r="2.8" style="animation-delay: 2.1s; animation-duration: 4.6s;"/><circle class="bubble" cx="128" cy="235" r="1.8" style="animation-delay: 0.7s; animation-duration: 5.5s;"/><circle class="bubble" cx="88" cy="225" r="1.4" style="animation-delay: 3s; animation-duration: 6.5s;"/><circle class="bubble" cx="120" cy="205" r="2" style="animation-delay: 3.6s; animation-duration: 5.2s;"/><circle class="bubble" cx="104" cy="240" r="2.4" style="animation-delay: 1.8s; animation-duration: 4.8s;"/>
+                                </g>
+                            </g>
+                            <path class="body-outline" d="M100 10 C114 10 125 22 125 38 C125 52 117 62 110 66 C110 70 110 74 111 78 C118 82 134 84 146 88 C160 92 170 96 174 108 C180 124 180 150 182 176 C183 200 186 224 190 246 C194 258 194 272 186 274 C178 276 174 262 172 250 C168 226 164 202 160 180 C158 156 154 134 148 122 C142 144 134 168 130 192 C128 212 140 228 144 252 C148 290 146 330 141 364 C138 384 142 404 138 424 C135 438 133 446 133 454 C136 460 146 462 148 470 C136 471.3 124 472.7 112 474 C110 468 110 462 110 450 C110 430 106 410 107 380 C107 340 104 300 102 276 C101 270 100 268 100 266 C100 268 99 270 98 276 C96 300 93 340 93 380 C94 410 90 430 90 450 C90 462 90 468 88 474 C76 472.7 64 471.3 52 470 C54 462 64 460 67 454 C67 446 65 438 62 424 C58 404 62 384 59 364 C54 330 52 290 56 252 C60 228 72 212 70 192 C66 168 58 144 52 122 C46 134 42 156 40 180 C36 202 32 226 28 250 C26 262 22 276 14 274 C6 272 6 258 10 246 C14 224 17 200 18 176 C20 150 20 124 26 108 C30 96 40 92 54 88 C66 84 82 82 89 78 C90 74 90 70 90 66 C83 62 75 52 75 38 C75 22 86 10 100 10 Z"/>
+                        </svg>
+                        <div class="body-readout" id="bodyReadout">
+                            <div class="pct" id="bodyPct">0%</div>
+                            <div class="ml" id="bodyMl">0 ml</div>
+                            <div class="sub" id="bodySub">of 2,000 ml</div>
+                        </div>
+                    </div>
+                    <div class="setting-desc" style="margin-top: 14px;">A visual of your daily water goal. It is not a medical measurement of body hydration.</div>
+                </section>
+
+                <div class="water-side">
+                    <section class="panel">
+                        <div class="stats-grid" style="margin-bottom: 18px;">
+                            <div class="stat-card"><div class="stat-title">Drank</div><div class="stat-value" style="font-size: 22px; color: var(--neon-cyan);" id="wConsumed">0 ml</div></div>
+                            <div class="stat-card"><div class="stat-title">Daily goal</div><div class="stat-value" style="font-size: 22px;" id="wGoal">2,000 ml</div></div>
+                            <div class="stat-card"><div class="stat-title" id="wLeftLabel">Remaining</div><div class="stat-value" style="font-size: 22px; color: var(--neon-yellow);" id="wLeft">2,000 ml</div></div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px;"><span>Today's progress</span><span id="wPct" style="color: var(--neon-cyan); font-weight: 600;">0%</span></div>
+                        <div class="water-bar"><div id="wBar"></div></div>
+                        <div class="setting-desc" id="wMsg" style="margin-top: 10px;"></div>
+                    </section>
+
+                    <section class="panel">
+                        <h2 class="panel-title" style="margin-bottom: 14px;">Add Water</h2>
+                        <div style="display: flex; gap: 12px; margin-bottom: 14px;">
+                            <button class="btn-primary water-btn" onclick="addWater(250)">+250 ml</button>
+                            <button class="btn-primary water-btn" onclick="addWater(500)">+500 ml</button>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <div class="input-group" style="margin: 0; flex: 1;"><input type="number" id="waterCustom" min="1" max="5000" placeholder="Custom amount (ml)" onkeydown="if (event.key === 'Enter') addCustomWater()"></div>
+                            <button class="btn-primary" onclick="addCustomWater()">Add</button>
+                            <button class="btn-primary" style="background: transparent; border-color: var(--text-muted); color: var(--text-muted);" onclick="undoWater()">Undo</button>
+                        </div>
+                    </section>
+
+                    <section class="panel">
+                        <h2 class="panel-title" style="margin-bottom: 4px;">Daily Goal</h2>
+                        <div class="setting-desc" style="margin-bottom: 12px;">Pick a goal or type your own.</div>
+                        <div class="quick-row" style="margin: 0 0 14px;" id="waterGoalChips"></div>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <div class="input-group" style="margin: 0; flex: 1;"><input type="number" id="waterGoalCustom" min="500" max="10000" placeholder="Custom goal (ml)" onkeydown="if (event.key === 'Enter') setCustomGoal()"></div>
+                            <button class="btn-primary" onclick="setCustomGoal()">Set goal</button>
+                        </div>
+                    </section>
+
+                    <section class="panel">
+                        <h2 class="panel-title" style="margin-bottom: 4px;">Today's Log</h2>
+                        <div class="setting-desc" style="margin-bottom: 12px;" id="waterCount"></div>
+                        <div id="waterLog"></div>
+                    </section>
+                </div>
+            </div>
+
+            <section class="panel">
+                <h2 class="panel-title" style="margin-bottom: 4px;">History</h2>
+                <div class="setting-desc" style="margin-bottom: 14px;" id="waterSummary"></div>
+                <div id="waterHistory"></div>
+            </section>
         </div>
 
         <!-- SETTINGS PAGE -->
@@ -1162,16 +1294,13 @@
         <div class="mobile-nav-item" data-pages="journal" onclick="changePage('journal', this)">
             <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>Notes
         </div>
-        <div class="mobile-nav-item" data-pages="achievements,settings" onclick="toggleMore()">
-            <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg></span>More
+        <div class="mobile-nav-item" data-pages="achievements" onclick="changePage('achievements', this)">
+            <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></span>Achievements
+        </div>
+        <div class="mobile-nav-item" data-pages="settings" onclick="changePage('settings', this)">
+            <span class="mobile-nav-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>Settings
         </div>
     </nav>
-
-    <div class="more-backdrop" id="moreBackdrop" onclick="closeMore()"></div>
-    <div class="more-sheet" id="moreSheet">
-        <div class="more-item" onclick="changePage('achievements', null)"><svg class="icon" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>Achievements</div>
-        <div class="more-item" onclick="changePage('settings', null)"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</div>
-    </div>
 
     <div class="modal-overlay" id="habitModal">
         <div class="modal-content">
@@ -1386,7 +1515,6 @@
             document.querySelectorAll('.mobile-nav-item').forEach(nav => {
                 nav.classList.toggle('active', (nav.dataset.pages || '').split(',').includes(pageId));
             });
-            closeMore();
             window.scrollTo(0, 0);
 
             // Re-draw chart when opening analytics
@@ -1396,6 +1524,10 @@
 
             if (pageId === 'settings') {
                 renderSettings();
+            }
+
+            if (pageId === 'water') {
+                renderWaterAll();
             }
 
             if (pageId === 'tasks') {
@@ -1488,8 +1620,8 @@
             document.getElementById('levelUpOverlay').classList.remove('show');
         }
 
-        function spawnConfetti(count) {
-            const colors = ['#00f0ff', '#b026ff', '#00ff88', '#ffcc00', '#ff3366'];
+        function spawnConfetti(count, custom) {
+            const colors = custom || ['#00f0ff', '#b026ff', '#00ff88', '#ffcc00', '#ff3366'];
             for (let i = 0; i < count; i++) {
                 const el = document.createElement('div');
                 el.className = 'confetti-piece';
@@ -1558,7 +1690,14 @@
                 [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach(f => tone(f, 0.8, 1.6, 'triangle', 0.1));
                 [2093, 2637, 3136, 4186].forEach((f, i) => tone(f, 0.85 + i * 0.08, 0.5, 'sine', 0.045));
             } },
-            soft:     { label: 'Soft Blip',  fn() { tone(420, 0, 0.12, 'sine', 0.12, 260); } }
+            soft:     { label: 'Soft Blip',  fn() { tone(420, 0, 0.12, 'sine', 0.12, 260); } },
+            drop:     { label: 'Water Drop', fn() { tone(1300, 0, 0.09, 'sine', 0.2, 520); tone(760, 0.09, 0.18, 'sine', 0.13, 380); tone(1800, 0.02, 0.05, 'sine', 0.05); } },
+            splash:   { label: 'Splash',     fn() {
+                tone(320, 0, 0.5, 'sine', 0.12, 950);
+                [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach((f, i) => tone(f, 0.15 + i * 0.09, 0.45, 'sine', 0.13));
+                [1568, 2093, 2637, 3136].forEach((f, i) => tone(f, 0.6 + i * 0.07, 0.4, 'sine', 0.06));
+                [700, 900, 1100].forEach((f, i) => tone(f, 0.05 + i * 0.12, 0.12, 'sine', 0.07, f * 0.5));
+            } }
         };
 
         const SOUND_ACTIONS = [
@@ -1566,7 +1705,9 @@
             { id: 'uncheck',     label: 'Un-tick',              desc: 'Plays when you remove a tick.', def: 'soft' },
             { id: 'complete',    label: 'All Done',             desc: "Plays when all of today's habits or tasks are completed.", def: 'chime' },
             { id: 'achievement', label: 'Achievement Unlocked', desc: 'Plays when you unlock a new badge.', def: 'fanfare' },
-            { id: 'levelup',     label: 'Level Complete',       desc: 'Plays when you finish a level.', def: 'epic' }
+            { id: 'levelup',     label: 'Level Complete',       desc: 'Plays when you finish a level.', def: 'epic' },
+            { id: 'wateradd',    label: 'Water Added',          desc: 'Plays when you log some water.', def: 'drop' },
+            { id: 'watergoal',   label: 'Water Goal Complete',  desc: 'Plays when you reach your daily water goal.', def: 'splash' }
         ];
 
         let soundSettings = { volume: 0.7, choices: {}, customs: {} };
@@ -1816,7 +1957,7 @@
         function savePrefs() { try { localStorage.setItem('quantumPrefs', JSON.stringify(prefs)); } catch (e) {} }
 
         function ensureExtras() {
-            const d = { tickTimes: {}, energy: {}, distractions: [], procrastination: [], focus: [], stacks: [], plans: [], rules: [], wins: {}, balance: {}, reviews: {}, ba: { before: '', beforeDate: '', after: '', afterDate: '' }, goal: { ticks: 0, deadline: '' }, restDays: [], habitMins: {}, habitPrio: {}, plan: { avail: 120 }, goals: [], values: [], experiments: [], automations: [], kb: [], audits: {}, feedback: [] };
+            const d = { tickTimes: {}, energy: {}, distractions: [], procrastination: [], focus: [], stacks: [], plans: [], rules: [], wins: {}, balance: {}, reviews: {}, ba: { before: '', beforeDate: '', after: '', afterDate: '' }, goal: { ticks: 0, deadline: '' }, restDays: [], water: { goal: 2000, days: {} }, habitMins: {}, habitPrio: {}, plan: { avail: 120 }, goals: [], values: [], experiments: [], automations: [], kb: [], audits: {}, feedback: [] };
             Object.keys(d).forEach(k => { if (appState[k] === undefined) appState[k] = d[k]; });
         }
 
@@ -2140,7 +2281,7 @@
         function renderPrefsPanels() {
             if (!$('prefsPanel')) return;
             const rest = WEEKDAY_ORDER.map(d => `<button type="button" class="weekday-btn ${appState.restDays.includes(d) ? 'selected' : ''}" onclick="toggleRestDay(${d})">${WEEKDAY_NAMES[d]}</button>`).join('');
-            const secs = [['stats', 'Top stat cards'], ['overview', 'Daily Overview'], ['tracker', 'Monthly Tracker'], ['statistics', 'Statistics graph'], ['weekly', 'Weekly Performance'], ['monthly', 'Monthly Performance']];
+            const secs = [['stats', 'Top stat cards'], ['water', 'Water card'], ['overview', 'Daily Overview'], ['tracker', 'Monthly Tracker'], ['statistics', 'Statistics graph'], ['weekly', 'Weekly Performance'], ['monthly', 'Monthly Performance']];
             const sw = (checked, fn) => `<label class="switch"><input type="checkbox" ${checked ? 'checked' : ''} onchange="${fn}"><span class="switch-slider"></span></label>`;
             const line = (title, desc, ctl) => `<div class="setting-line" style="margin-bottom: 14px;"><div><div class="setting-title">${title}</div><div class="setting-desc">${desc}</div></div>${ctl}</div>`;
             const usual = habitTimes().reduce((a, x) => a.concat(x.all), []);
@@ -2516,6 +2657,12 @@
             st.tasks = [{ id: 'd1', title: 'Pay electricity bill', type: 'once', date: dateAdd(t, 3), done: {}, prio: 1 }, { id: 'd2', title: 'Weekly review', type: 'weekly', weekdays: [0], done: {}, prio: 2 }];
             st.goals = [{ id: 'g1', title: 'Run a 10K', area: 'Health', due: dateAdd(t, 60), hrs: 3, value: '', created: dateAdd(t, -15), lastProgress: dateAdd(t, -3), ms: [{ t: 'Run 3K', date: dateAdd(t, -5), done: true }, { t: 'Run 5K', date: dateAdd(t, 15), done: false }, { t: 'Run 10K', date: dateAdd(t, 60), done: false }] }];
             st.totalXp = st.habits.reduce((n, h) => n + Object.keys(h.history).length, 0) * XP_PER_ACTION; st.xpVersion = 2; st.highestLevel = getLevelInfo(st.totalXp).level; st.currentLevel = st.highestLevel;
+            st.water = { goal: 2500, days: {} };
+            for (let k = 12; k >= 1; k--) {
+                const d = dateAdd(t, -k), tot = Math.round((1200 + rnd() * 1800) / 250) * 250, ents = []; let left = tot, h = 8;
+                while (left > 0) { const ml = Math.min(left, rnd() < 0.5 ? 250 : 500); ents.push({ id: 'w' + k + '-' + ents.length, t: `${pad2(h)}:${pad2(Math.floor(rnd() * 60))}`, ml }); left -= ml; h += 1 + Math.floor(rnd() * 2); if (h > 22) h = 22; }
+                st.water.days[d] = { entries: ents, goal: 2500, celebrated: tot >= 2500 };
+            }
             return st;
         }
         function startDemo() {
@@ -2664,6 +2811,120 @@
             const el = e.target;
             if ((e.key === 'Enter' || e.key === ' ') && el.getAttribute && el.getAttribute('role') === 'button' && !['BUTTON', 'A', 'INPUT'].includes(el.tagName)) { e.preventDefault(); el.click(); }
         });
+
+        // ================= WATER TRACKER =================
+        const WATER_GOALS = [2000, 2500, 3000, 3500, 4000];
+        const fmtMl = n => `${Math.round(n).toLocaleString('en-US')} ml`;
+        function waterData() {
+            if (!appState.water) appState.water = { goal: 2000, days: {} };
+            if (!appState.water.days) appState.water.days = {};
+            if (!appState.water.goal) appState.water.goal = 2000;
+            return appState.water;
+        }
+        function waterDay(create) {
+            const w = waterData(), t = getTodayStr();
+            if (!w.days[t]) {
+                if (!create) return { entries: [], goal: w.goal, celebrated: false };
+                w.days[t] = { entries: [], goal: w.goal, celebrated: false };
+            }
+            return w.days[t];
+        }
+        const waterTotal = day => day.entries.reduce((n, e) => n + e.ml, 0);
+        function waterStats() {
+            const day = waterDay(false), total = waterTotal(day), goal = day.goal || waterData().goal;
+            return { day, total, goal, pct: Math.min(100, Math.round(total / goal * 100)), left: Math.max(0, goal - total), extra: Math.max(0, total - goal) };
+        }
+
+        function addWater(ml) {
+            ml = Math.round(Number(ml));
+            if (!(ml >= 1 && ml <= 5000)) return notify({ type: 'error', title: 'Enter an amount from 1 to 5000 ml' });
+            const day = waterDay(true), before = waterTotal(day), n = new Date();
+            day.goal = day.goal || waterData().goal;
+            day.entries.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 5), t: `${pad2(n.getHours())}:${pad2(n.getMinutes())}`, ml });
+            const after = before + ml, reached = before < day.goal && after >= day.goal && !day.celebrated;
+            if (reached) day.celebrated = true;
+            saveData();
+            renderWaterAll();
+            if (reached) return waterCelebrate(after);
+            playSound('wateradd');
+            const st = waterStats();
+            notify({ type: 'info', title: `+${fmtMl(ml)}`, message: st.total >= st.goal ? `Goal done - ${fmtMl(st.total)} today` : `${st.pct}% of today's goal - ${fmtMl(st.left)} to go` });
+        }
+        function addCustomWater() {
+            const el = $('waterCustom'), v = parseInt(el.value, 10);
+            if (!(v >= 1 && v <= 5000)) return notify({ type: 'error', title: 'Enter an amount from 1 to 5000 ml' });
+            addWater(v); el.value = '';
+        }
+        function setWaterGoal(ml) {
+            ml = Math.round(Number(ml));
+            if (!(ml >= 500 && ml <= 10000)) return notify({ type: 'error', title: 'Goal must be 500 to 10000 ml' });
+            const w = waterData(); w.goal = ml;
+            if (w.days[getTodayStr()]) w.days[getTodayStr()].goal = ml;
+            saveData(); renderWaterAll();
+            notify({ type: 'success', title: 'Daily goal set', message: fmtMl(ml) });
+        }
+        function setCustomGoal() { const el = $('waterGoalCustom'); setWaterGoal(parseInt(el.value, 10)); el.value = ''; }
+        function undoWater() {
+            const d = waterData().days[getTodayStr()];
+            if (!d || !d.entries.length) return notify({ type: 'info', title: 'Nothing to undo' });
+            const e = d.entries.pop(); saveData(); renderWaterAll();
+            notify({ type: 'info', title: 'Removed', message: `${fmtMl(e.ml)} at ${e.t}` });
+        }
+        function delWater(id) {
+            const d = waterData().days[getTodayStr()]; if (!d) return;
+            d.entries = d.entries.filter(e => e.id !== id); saveData(); renderWaterAll();
+        }
+        function waterCelebrate(total) {
+            playSound('watergoal');
+            spawnConfetti(90, ['#00f0ff', '#38bdf8', '#7df9ff', '#6366f1', '#ffffff']);
+            notify({ type: 'level', title: 'Water goal complete!', message: `You drank ${fmtMl(total)} today. Stay hydrated!`, duration: 6500 });
+            const w = $('bodyWrap');
+            if (w) { w.classList.remove('celebrate'); void w.offsetWidth; w.classList.add('celebrate'); setTimeout(() => w.classList.remove('celebrate'), 3800); }
+        }
+
+        function renderWaterAll() { renderWaterCard(); renderWaterPage(); }
+        function renderWaterCard() {
+            if (!$('wcText')) return;
+            const st = waterStats();
+            $('wcText').innerText = `${fmtMl(st.total)} / ${fmtMl(st.goal)}`;
+            $('wcPct').innerText = `${st.pct}%`;
+            $('wcBar').style.width = `${st.pct}%`;
+        }
+        function renderWaterPage() {
+            if (!$('waterLevel')) return;
+            const st = waterStats(), entries = st.day.entries;
+            $('waterDate').innerText = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+            // water level: fill % of the daily goal, capped at 100%
+            $('waterLevel').style.transform = `translateY(${(482 - st.pct * 4.72).toFixed(1)}px)`;
+            $('bodyWrap').classList.toggle('done', st.total >= st.goal);
+            $('bodyPct').innerText = `${st.pct}%`;
+            $('bodyMl').innerText = fmtMl(st.total);
+            $('bodySub').innerText = st.total >= st.goal ? 'GOAL COMPLETE' : `of ${fmtMl(st.goal)}`;
+            $('wConsumed').innerText = fmtMl(st.total);
+            $('wGoal').innerText = fmtMl(st.goal);
+            $('wLeftLabel').innerText = st.total >= st.goal ? 'Extra' : 'Remaining';
+            $('wLeft').innerText = st.total >= st.goal ? `+${fmtMl(st.extra)}` : fmtMl(st.left);
+            $('wPct').innerText = `${st.pct}%`;
+            $('wBar').style.width = `${st.pct}%`;
+            $('wMsg').innerText = st.total >= st.goal ? (st.extra ? `Goal reached! You drank ${fmtMl(st.extra)} more than your goal.` : 'Goal reached! Great job.') : `${fmtMl(st.left)} to go. Keep sipping!`;
+
+            $('waterGoalChips').innerHTML = WATER_GOALS.map(g => `<span class="quick-chip" style="${st.goal === g ? 'background: var(--neon-cyan); color: var(--bg-base);' : ''}" onclick="setWaterGoal(${g})">${g / 1000} L</span>`).join('')
+                + (WATER_GOALS.includes(st.goal) ? '' : `<span class="quick-chip" style="background: var(--neon-cyan); color: var(--bg-base);">${fmtMl(st.goal)}</span>`);
+
+            $('waterCount').innerText = entries.length ? `You drank ${entries.length} time${entries.length === 1 ? '' : 's'} today (${fmtMl(st.total)} in total).` : 'No water logged yet today.';
+            $('waterLog').innerHTML = entries.length ? entries.slice().reverse().map(e => `<div class="sound-row" style="margin-bottom: 8px;"><div style="flex: 1; font-size: 14px;"><b>+${fmtMl(e.ml)}</b> <span class="setting-desc">at ${e.t}</span></div><button class="icon-btn" onclick="delWater('${e.id}')" title="Delete">${ICON_TRASH}</button></div>`).join('') : '<div class="task-empty">Tap +250 ml or +500 ml after you drink.</div>';
+
+            // history of earlier days
+            const days = waterData().days, today = getTodayStr();
+            const past = Object.keys(days).filter(d => d !== today && days[d].entries.length).sort().reverse().slice(0, 14);
+            let met = 0, seen = 0;
+            for (let i = 0; i < 7; i++) { const d = dateAdd(today, -i), r = days[d]; if (r && r.entries.length) { seen++; if (waterTotal(r) >= (r.goal || waterData().goal)) met++; } }
+            $('waterSummary').innerText = seen ? `Goal met on ${met} of the last 7 days you tracked.` : 'Your finished days will appear here. A new day always starts at 0.';
+            $('waterHistory').innerHTML = past.length ? past.map(d => {
+                const r = days[d], tot = waterTotal(r), goal = r.goal || waterData().goal, pct = Math.min(100, Math.round(tot / goal * 100)), ok = tot >= goal;
+                return `<div class="sound-row" style="margin-bottom: 8px; flex-direction: column; align-items: stretch;"><div style="display: flex; justify-content: space-between; gap: 8px; font-size: 14px;"><b>${formatTaskDate(d)}</b><span>${fmtMl(tot)} / ${fmtMl(goal)} ${ok ? '<span class="pill" style="color: var(--neon-green);">GOAL MET</span>' : `<span class="setting-desc">${pct}%</span>`}</span></div><div class="water-bar" style="height: 8px; margin-top: 8px;"><div style="width: ${pct}%;"></div></div><div class="setting-desc" style="margin-top: 6px;">${r.entries.length} time${r.entries.length === 1 ? '' : 's'}</div></div>`;
+            }).join('') : '<div class="task-empty">No earlier days yet.</div>';
+        }
 
         // ================= THEME =================
         const ICON_SUN = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
@@ -3818,6 +4079,7 @@
 
             renderMonthlyChart();
             renderWeeklyChart();
+            renderWaterAll();
             renderHomeTasks();
             updateStreakAndBadges();
         }
@@ -3969,15 +4231,6 @@
             notify({ type: 'success', title: message });
         }
 
-        function toggleMore() {
-            const open = !document.getElementById('moreSheet').classList.contains('show');
-            document.getElementById('moreSheet').classList.toggle('show', open);
-            document.getElementById('moreBackdrop').classList.toggle('show', open);
-        }
-        function closeMore() {
-            document.getElementById('moreSheet').classList.remove('show');
-            document.getElementById('moreBackdrop').classList.remove('show');
-        }
 
         // ---- Install as app (PWA) ----
         let deferredInstall = null;
