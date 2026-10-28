@@ -2277,13 +2277,44 @@
         function importJSON(input) {
             const f = input.files[0]; if (!f) return;
             const r = new FileReader();
-            r.onload = () => { try { const d = JSON.parse(r.result); if (!Array.isArray(d.habits)) throw 0; confirmDo('Replace ALL current data with this backup?', () => { sanitizeState(d); appState = d; saveData(); location.reload(); }); } catch (e) { notify({ type: 'error', title: 'Not a valid backup file' }); } };
+            r.onload = () => {
+                try {
+                    const d = JSON.parse(r.result);
+                    if (!d || !Array.isArray(d.habits) || !Array.isArray(d.tasks)) throw new Error('Invalid backup structure');
+                    confirmDo('Replace ALL current data with this backup?', () => {
+                        try { sanitizeState(d); appState = d; saveData(); location.reload(); }
+                        catch (e) { notify({ type: 'error', title: 'Import failed', message: 'The backup could not be applied. Your file may be incomplete.' }); }
+                    });
+                } catch (e) { notify({ type: 'error', title: 'Not a valid backup file', message: 'Choose an Allex JSON backup exported from Settings.' }); }
+                input.value = '';
+            };
             r.readAsText(f);
         }
         function makeBackup() { saveVersion('Backup'); try { localStorage.setItem('quantumBackup', JSON.stringify({ at: Date.now(), data: appState })); return true; } catch (e) { return false; } }
         function autoBackup() { try { const b = JSON.parse(localStorage.getItem('quantumBackup') || 'null'); if (prefs.autoBackup && (!b || Date.now() - b.at > 7 * 864e5)) makeBackup(); } catch (e) {} }
         function backupNow() { notify(makeBackup() ? { type: 'success', title: 'Backup saved on this device' } : { type: 'error', title: 'Backup failed', message: 'Storage is full.' }); renderPrefsPanels(); }
-        function restoreBackup() { try { const b = JSON.parse(localStorage.getItem('quantumBackup') || 'null'); if (!b) return; confirmDo('Restore the last backup? Current data will be replaced.', () => { appState = b.data; saveData(); location.reload(); }); } catch (e) {} }
+        function restoreBackup() {
+            let b;
+            try {
+                b = JSON.parse(localStorage.getItem('quantumBackup') || 'null');
+            } catch (e) {
+                return notify({ type: 'error', title: 'Backup could not be read', message: 'The saved backup is damaged. Import a valid JSON backup instead.' });
+            }
+            if (!b || !b.data || !Array.isArray(b.data.habits)) {
+                return notify({ type: 'info', title: 'No valid local backup', message: 'Create a backup first, or use Import backup to select a JSON file.' });
+            }
+            confirmDo('Restore the last backup? Current data will be replaced.', () => {
+                try {
+                    sanitizeState(b.data);
+                    appState = b.data;
+                    saveData();
+                    notify({ type: 'success', title: 'Backup restored', message: 'Reloading Allex with the restored data.' });
+                    location.reload();
+                } catch (e) {
+                    notify({ type: 'error', title: 'Restore failed', message: 'Your current data was not confirmed as restored. Try importing a valid JSON backup.' });
+                }
+            });
+        }
 
         function renderPrefsPanels() {
             if (!$('prefsPanel')) return;
@@ -2981,7 +3012,7 @@
 
         function isLightTheme() { return document.documentElement.getAttribute('data-theme') === 'light'; }
 
-        // Each level unlocks a new theme (Night and Day are free from Level 1)
+        // All themes are unlocked for every user; theme selection is not level-gated.
         const THEMES = [
             { id: 'dark',   name: 'Night',  level: 1,  sw: ['#000000', '#00f0ff'] },
             { id: 'light',  name: 'Day',    level: 1,  sw: ['#f4f5f7', '#0097a7'] },
@@ -3001,7 +3032,9 @@
 
         function applyTheme(id) {
             const root = document.documentElement;
-            const t = THEMES.find(x => x.id === id && x.level <= unlockedLevel()) || THEMES[0];
+            // All themes are available in Appearance Studio; apply both palette and layout identity.
+            const t = THEMES.find(x => x.id === id) || THEMES[0];
+            root.setAttribute('data-ui', t.id);
             ['--bg-base', '--bg-card', '--sidebar-bg', '--nav-bg', '--modal-bg', '--neon-cyan', '--neon-purple'].forEach(v => root.style.removeProperty(v));
             if (t.id === 'light') root.setAttribute('data-theme', 'light');
             else {
@@ -3021,7 +3054,6 @@
         function setTheme(id) {
             const t = THEMES.find(x => x.id === id);
             if (!t) return;
-            if (t.level > unlockedLevel()) return notify({ type: 'error', title: `${t.name} is locked`, message: `Reach Level ${t.level} to unlock this theme.` });
             try { localStorage.setItem('quantumTheme', id); } catch (e) {}
             applyTheme(id);
             updateThemeButton();
@@ -3034,13 +3066,12 @@
             const ul = unlockedLevel();
             box.innerHTML = `
                 <h2 class="panel-title" style="margin-bottom: 4px;">Appearance</h2>
-                <div class="setting-desc" style="margin-bottom: 14px;">Every level unlocks a new theme. Your level: ${ul}.</div>
+                <div class="setting-desc" style="margin-bottom: 14px;">All themes are unlocked. Choose any style you like.</div>
                 <div class="theme-grid">${THEMES.map(t => {
-                    const locked = t.level > ul;
-                    return `<div class="theme-card ${cur === t.id ? 'selected' : ''} ${locked ? 'locked' : ''}" onclick="setTheme('${t.id}')">
+                    return `<div class="theme-card ${cur === t.id ? 'selected' : ''}" onclick="setTheme('${t.id}')">
                         <div class="theme-sw" style="background: linear-gradient(135deg, ${t.sw[0]} 55%, ${t.sw[1]} 55%);"></div>
                         <div class="theme-name">${t.name}</div>
-                        <div class="theme-lv">${locked ? 'Unlocks at Level ' + t.level : (t.level === 1 ? 'Free' : 'Unlocked')}</div>
+                        <div class="theme-lv">Unlocked</div>
                     </div>`;
                 }).join('')}</div>`;
         }
