@@ -4430,5 +4430,110 @@ html[data-ui="legend"] :is(.panel,.stat-card,.calendar-section){clip-path:polygo
  };
 })();
 </script>
+    <!-- ===== APPEARANCE STUDIO PATCH =====
+     Isko apni index.html me sabse last me, </body> se THEEK PEHLE paste karo.
+     (Aakhri </script> ke baad, existing code ko delete/change mat karo.) -->
+<style>
+#appearancePanel{padding:28px}
+.as-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:22px}
+.as-title{font-size:32px;font-weight:700;line-height:1.1}
+.as-sub{color:var(--text-muted);font-size:14px;margin-top:8px;max-width:520px;line-height:1.5}
+.as-level{padding:8px 16px;border-radius:30px;font-size:12px;font-weight:700;background:rgba(var(--tint),.07);border:1px solid var(--border-color);white-space:nowrap}
+.as-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px}
+.as-card{padding:12px;border-radius:22px;cursor:pointer;background:rgba(var(--tint),.03);border:1px solid var(--border-color);transition:transform .25s,border-color .25s,box-shadow .25s}
+.as-card:hover{transform:translateY(-3px);border-color:var(--neon-cyan)}
+.as-card.sel{border:2px solid var(--neon-cyan);box-shadow:0 0 22px rgba(var(--tint),.08),0 0 18px var(--neon-cyan)}
+.as-prev{position:relative;height:126px;border-radius:16px;overflow:hidden;padding:12px;display:flex;flex-direction:column;gap:8px;border:1px solid rgba(var(--tint),.08)}
+.as-glow{position:absolute;top:-28px;right:-22px;width:90px;height:90px;border-radius:50%;opacity:.55}
+.as-top{display:flex;align-items:center;gap:5px;position:relative}
+.as-top i{width:6px;height:6px;border-radius:50%}
+.as-top b{height:4px;width:46%;border-radius:4px;background:var(--ln)}
+.as-row{position:relative;display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:10px;background:var(--rowbg);border:1px solid var(--ln)}
+.as-row.big{padding:9px 8px}
+.as-ic{width:16px;height:16px;border-radius:6px;flex-shrink:0}
+.as-row.sm .as-ic{width:11px;height:11px;border-radius:50%;opacity:.7}
+.as-lines{flex:1;display:flex;flex-direction:column;gap:4px}
+.as-lines u{display:block;height:3px;border-radius:3px;background:var(--ln)}
+.as-lines u+u{width:60%}
+.as-badge{position:absolute;right:10px;bottom:9px;font-style:normal;font-size:9px;font-weight:700;padding:3px 8px;border-radius:10px;color:#000}
+.as-info{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 4px 4px}
+.as-name{font-weight:700;font-size:15px}
+.as-state{font-size:12px;color:var(--text-muted);margin-top:2px}
+.as-act{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(var(--tint),.07);border:1px solid var(--border-color);color:var(--text-muted)}
+.as-card.sel .as-act{background:var(--neon-cyan);border-color:var(--neon-cyan);color:#000}
+.as-act .icon{width:15px;height:15px;stroke-width:2.5}
+.as-note{margin-top:20px;padding:14px 18px;border-radius:16px;font-size:13px;color:var(--text-muted);background:rgba(var(--tint),.03);border:1px solid var(--border-color)}
+.as-note b{color:var(--text-main)}
+@media(max-width:768px){.as-title{font-size:24px}.as-grid{grid-template-columns:1fr 1fr;gap:10px}.as-prev{height:104px}}
+</style>
+<script>
+(function () {
+  // 1) Saare themes unlocked
+  unlockedLevel = function () { return 999; };
+
+  // 2) Appearance Studio design
+  const TAGLINE = {
+    dark: 'Deep black focus', light: 'Clean and bright', ocean: 'Calm deep blue',
+    forest: 'Organic nature', sunset: 'Warm evening glow', royal: 'Elegant purple',
+    rose: 'Soft and romantic', cyber: 'Neon terminal style', gold: 'Rich golden shine',
+    aurora: 'Glassy northern lights', legend: 'Bold and fierce'
+  };
+  const BASE = {
+    dark:  { bg: '#000000', a: '#00f0ff', b: '#b026ff' },
+    light: { bg: '#f4f5f7', a: '#0097a7', b: '#8e24aa' }
+  };
+  const CHECK = '<svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';
+  const ARROW = '<svg class="icon" viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>';
+
+  renderAppearance = function () {
+    const box = document.getElementById('appearancePanel');
+    if (!box) return;
+    let cur = 'dark';
+    try { cur = localStorage.getItem('quantumTheme') || 'dark'; } catch (e) {}
+    const lvl = getLevelInfo(appState.totalXp).level;
+
+    const cards = THEMES.map(t => {
+      const c = BASE[t.id] || { bg: t.bg, a: t.a, b: t.b };
+      const light = t.id === 'light';
+      const ln = light ? 'rgba(0,0,0,.16)' : 'rgba(255,255,255,.22)';
+      const rowbg = light ? '#ffffff' : 'rgba(255,255,255,.05)';
+      const sel = cur === t.id;
+      return `
+        <div class="as-card ${sel ? 'sel' : ''}" onclick="setTheme('${t.id}')">
+          <div class="as-prev" style="background:${c.bg};--ln:${ln};--rowbg:${rowbg};">
+            <span class="as-glow" style="background:${c.a};"></span>
+            <div class="as-top"><i style="background:${c.a}"></i><i style="background:${c.b}"></i><b></b></div>
+            <div class="as-row big" style="border-color:${c.a}66;"><span class="as-ic" style="background:${c.a}"></span><div class="as-lines"><u></u><u></u></div></div>
+            <div class="as-row sm"><span class="as-ic" style="background:${c.a}"></span><div class="as-lines"><u></u></div></div>
+            <em class="as-badge" style="background:${c.a};">${t.name.toUpperCase()}</em>
+          </div>
+          <div class="as-info">
+            <div>
+              <div class="as-name">${t.name}</div>
+              <div class="as-state">${sel ? 'Currently active' : TAGLINE[t.id]}</div>
+            </div>
+            <span class="as-act">${sel ? CHECK : ARROW}</span>
+          </div>
+        </div>`;
+    }).join('');
+
+    box.innerHTML = `
+      <div class="as-head">
+        <div>
+          <div class="as-title">Appearance Studio</div>
+          <div class="as-sub">Pick a look that makes you want to come back. Every theme changes the whole feel of the app.</div>
+        </div>
+        <div class="as-level">LEVEL ${lvl}</div>
+      </div>
+      <div class="as-grid">${cards}</div>
+      <div class="as-note"><b>Make it your space.</b> Tap any theme to switch to it right away. All themes are unlocked.</div>`;
+  };
+
+  // Settings page pe turant naya design dikhao
+  try { renderAppearance(); } catch (e) {}
+  // Level-based lock wali theme wapas apply ho (reload par bhi)
+  try { applyTheme(localStorage.getItem('quantumTheme') || 'dark'); } catch (e) {}
+})();
+</script>
 </body>
 </html>
