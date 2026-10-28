@@ -3186,13 +3186,7 @@
             renderAnalyticsChart();
         }
 
-        function checkLevelUp() {
-            const newLevel = Math.floor(appState.totalXp / 100) + 1;
-            if (newLevel > appState.currentLevel) {
-                appState.currentLevel = newLevel;
-                showToast(`Level Up! You are now Level ${newLevel}`);
-            }
-        }
+
 
         function habitMeta(tgt, cnt, days, sched) {
             const bits = [];
