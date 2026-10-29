@@ -2283,7 +2283,16 @@
         function makeBackup() { saveVersion('Backup'); try { localStorage.setItem('quantumBackup', JSON.stringify({ at: Date.now(), data: appState })); return true; } catch (e) { return false; } }
         function autoBackup() { try { const b = JSON.parse(localStorage.getItem('quantumBackup') || 'null'); if (prefs.autoBackup && (!b || Date.now() - b.at > 7 * 864e5)) makeBackup(); } catch (e) {} }
         function backupNow() { notify(makeBackup() ? { type: 'success', title: 'Backup saved on this device' } : { type: 'error', title: 'Backup failed', message: 'Storage is full.' }); renderPrefsPanels(); }
-        function restoreBackup() { try { const b = JSON.parse(localStorage.getItem('quantumBackup') || 'null'); if (!b) return; confirmDo('Restore the last backup? Current data will be replaced.', () => { appState = b.data; saveData(); location.reload(); }); } catch (e) {} }
+        function restoreBackup() {
+            try {
+                const b = JSON.parse(localStorage.getItem('quantumBackup') || 'null');
+                if (!b || !b.data || !Array.isArray(b.data.habits)) return notify({ type: 'error', title: 'No valid backup found' });
+                confirmDo('Restore the last backup? Current data will be replaced.', () => {
+                    try { sanitizeState(b.data); appState = b.data; saveData(); location.reload(); }
+                    catch (e) { notify({ type: 'error', title: 'Backup could not be restored', message: 'The backup data is invalid.' }); }
+                });
+            } catch (e) { notify({ type: 'error', title: 'Backup could not be read' }); }
+        }
 
         function renderPrefsPanels() {
             if (!$('prefsPanel')) return;
@@ -2646,7 +2655,19 @@
         function saveVersion(label) {
             try { const v = JSON.parse(localStorage.getItem('quantumVersions') || '[]'); v.unshift({ at: Date.now(), label, data: JSON.stringify(appState) }); while (v.length > 5) v.pop(); localStorage.setItem('quantumVersions', JSON.stringify(v)); return true; } catch (e) { return false; }
         }
-        function restoreVersion(i) { try { const v = JSON.parse(localStorage.getItem('quantumVersions') || '[]'); if (!v[i]) return; confirmDo('Restore this version? Current data will be replaced.', () => { appState = JSON.parse(v[i].data); saveData(); location.reload(); }); } catch (e) {} }
+        function restoreVersion(i) {
+            try {
+                const v = JSON.parse(localStorage.getItem('quantumVersions') || '[]');
+                if (!v[i] || typeof v[i].data !== 'string') return notify({ type: 'error', title: 'Saved version not found' });
+                confirmDo('Restore this version? Current data will be replaced.', () => {
+                    try {
+                        const restored = JSON.parse(v[i].data);
+                        if (!restored || !Array.isArray(restored.habits)) throw new Error('Saved habits list is missing');
+                        sanitizeState(restored); appState = restored; saveData(); location.reload();
+                    } catch (e) { notify({ type: 'error', title: 'Version could not be restored', message: 'The saved data is invalid.' }); }
+                });
+            } catch (e) { notify({ type: 'error', title: 'Version history could not be read' }); }
+        }
         function saveVersionNow() { notify(saveVersion('Manual') ? { type: 'success', title: 'Version saved' } : { type: 'error', title: 'Storage is full' }); renderExtraPanel(); }
         function deleteData(kind) { confirmDo(kind === 'all' ? 'Delete ALL Allex data on this device? This cannot be undone.' : 'Delete this data?', () => deleteDataNow(kind), 'Delete'); }
         function deleteDataNow(kind) {
@@ -2767,16 +2788,54 @@
         setInterval(checkDayChange, 30000);
         document.addEventListener('visibilitychange', () => { if (!document.hidden) checkDayChange(); });
 
-        // safer import: strip anything odd from ids and dates
+        // Validate and normalize imported/restored data before it reaches render code.
         function sanitizeState(d) {
-            const id = v => String(v == null ? '' : v).replace(/[^\w-]/g, '');
-            const date = v => (/^\d{4}-\d{2}-\d{2}$/.test(v) ? v : '');
-            (d.habits || []).forEach(h => { h.id = id(h.id); h.name = String(h.name || ''); h.history = h.history || {}; });
-            (d.tasks || []).forEach(x => { x.id = id(x.id); x.title = String(x.title || ''); if (x.date !== undefined) x.date = date(x.date); x.done = x.done || {}; });
-            (d.goals || []).forEach(g => { g.id = id(g.id); g.due = date(g.due); g.created = date(g.created) || getTodayStr(); (g.ms || []).forEach(m => { m.date = date(m.date); }); });
-            (d.experiments || []).forEach(e => { e.id = id(e.id); e.start = date(e.start) || getTodayStr(); });
-            (d.stacks || []).forEach(s2 => { s2.after = id(s2.after); s2.then = id(s2.then); });
-            (d.automations || []).forEach(a => { a.id = id(a.id); a.habit = id(a.habit); });
+            if (!d || typeof d !== 'object' || Array.isArray(d)) throw new Error('Invalid backup data');
+            const id = v => String(v == null ? '' : v).replace(/[^\w-]/g, '').slice(0, 100);
+            const date = v => (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : '');
+            const obj = v => v && typeof v === 'object' && !Array.isArray(v) ? v : {};
+            const arr = v => Array.isArray(v) ? v : [];
+            d.habits = arr(d.habits).filter(h => h && typeof h === 'object').map((h, i) => {
+                h.id = id(h.id) || `habit-${i + 1}`;
+                h.name = String(h.name || `Habit ${i + 1}`).slice(0, 120);
+                h.history = obj(h.history);
+                Object.keys(h.history).forEach(k => { if (!date(k)) delete h.history[k]; else h.history[k] = h.history[k] === true; });
+                h.completed = !!h.history[getTodayStr()];
+                h.target = Math.min(100, Math.max(1, Number(h.target) || 1));
+                h.counts = obj(h.counts);
+                return h;
+            });
+            d.tasks = arr(d.tasks).filter(x => x && typeof x === 'object').map((x, i) => {
+                x.id = id(x.id) || `task-${i + 1}`;
+                x.title = String(x.title || 'Untitled task').slice(0, 200);
+                if (x.date !== undefined) x.date = date(x.date);
+                x.done = obj(x.done);
+                Object.keys(x.done).forEach(k => { if (!date(k)) delete x.done[k]; else x.done[k] = x.done[k] === true; });
+                return x;
+            });
+            ['badges','journal','tickTimes','energy','wins','balance','reviews','ba','goal','habitMins','habitPrio','plan','audits','water'].forEach(k => { d[k] = obj(d[k]); });
+            ['distractions','procrastination','focus','stacks','plans','rules','restDays','goals','values','experiments','automations','kb','feedback'].forEach(k => { d[k] = arr(d[k]); });
+            d.totalXp = Math.max(0, Math.floor(Number(d.totalXp) || 0));
+            d.currentLevel = Math.max(1, Math.floor(Number(d.currentLevel) || 1));
+            d.highestLevel = Math.max(1, Math.floor(Number(d.highestLevel) || d.currentLevel));
+            d.restDays = d.restDays.filter(n => Number.isInteger(n) && n >= 0 && n <= 6);
+            d.water.goal = Math.min(10000, Math.max(500, Math.floor(Number(d.water.goal) || 2000)));
+            d.water.days = obj(d.water.days);
+            Object.keys(d.water.days).forEach(dayKey => {
+                const day = d.water.days[dayKey];
+                if (!date(dayKey) || !day || typeof day !== 'object' || Array.isArray(day)) { delete d.water.days[dayKey]; return; }
+                day.goal = Math.min(10000, Math.max(500, Math.floor(Number(day.goal) || d.water.goal)));
+                day.entries = arr(day.entries).filter(e => e && typeof e === 'object' && Number.isFinite(Number(e.ml)) && Number(e.ml) >= 1 && Number(e.ml) <= 5000).map((e, i) => ({
+                    id: id(e.id) || `water-${i + 1}`, t: /^\d{2}:\d{2}$/.test(String(e.t || '')) ? e.t : '12:00',
+                    ml: Math.floor(Number(e.ml))
+                }));
+                day.celebrated = !!day.celebrated;
+            });
+            d.goals.forEach(g => { if (!g || typeof g !== 'object') return; g.id = id(g.id); g.due = date(g.due); g.created = date(g.created) || getTodayStr(); g.ms = arr(g.ms); g.ms.forEach(m => { if (m && typeof m === 'object') m.date = date(m.date); }); });
+            d.experiments.forEach(e => { if (!e || typeof e !== 'object') return; e.id = id(e.id); e.start = date(e.start) || getTodayStr(); });
+            d.stacks.forEach(x => { if (!x || typeof x !== 'object') return; x.after = id(x.after); x.then = id(x.then); });
+            d.automations.forEach(a => { if (!a || typeof a !== 'object') return; a.id = id(a.id); a.habit = id(a.habit); });
+            return d;
         }
 
         // storage warning
@@ -3062,15 +3121,21 @@
             document.getElementById('greetingText').innerText = `${greeting}, Achiever!`;
             document.getElementById('currentDate').innerText = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 
-            const savedData = localStorage.getItem('quantumHabitDataV1');
+            let savedData = null;
+            try { savedData = localStorage.getItem('quantumHabitDataV1'); } catch (e) { logError('Local storage read failed: ' + (e && e.message || e)); }
             if (savedData) {
-                appState = JSON.parse(savedData);
-                appState.habits.forEach(h => { if(!h.history) h.history = {}; });
-                if(!appState.badges) appState.badges = {};
-                if(!appState.journal) appState.journal = {};
-                if(!appState.tasks) appState.tasks = [];
+                try {
+                    const parsed = JSON.parse(savedData);
+                    if (!parsed || !Array.isArray(parsed.habits)) throw new Error('Saved habits list is missing');
+                    sanitizeState(parsed);
+                    appState = parsed;
+                } catch (e) {
+                    logError('Saved data could not be loaded: ' + (e && e.message || e));
+                    appState.habits = JSON.parse(JSON.stringify(defaultHabits));
+                    notify({ type: 'error', title: 'Saved data could not be read', message: 'A fresh habit list was opened. If you have a backup, restore it from Settings.' });
+                }
             } else {
-                appState.habits = defaultHabits;
+                appState.habits = JSON.parse(JSON.stringify(defaultHabits));
             }
 
             // If the saved habits are still the untouched old starter habits, switch to the new default list
@@ -3090,7 +3155,7 @@
             }
             const startLevel = getLevelInfo(appState.totalXp).level;
             appState.currentLevel = startLevel;
-            appState.highestLevel = startLevel;
+            appState.highestLevel = Math.max(Number(appState.highestLevel) || 1, startLevel);
             ensureExtras();
             
             checkStorageUse();
@@ -4430,9 +4495,10 @@ html[data-ui="legend"] :is(.panel,.stat-card,.calendar-section){clip-path:polygo
  /* ---------- every theme gets its own full UI skin ---------- */
  const _ap=applyTheme;
  applyTheme=function(id){
-  _ap(id);
-  const t=THEMES.find(x=>x.id===id&&x.level<=unlockedLevel())||THEMES[0],r=document.documentElement;
-  if(t.id==='dark')r.removeAttribute('data-ui');else r.setAttribute('data-ui',t.id);
+  const t=THEMES.find(x=>x.id===id)||THEMES[0],r=document.documentElement;
+  _ap(t.id);
+  // All themes are intentionally available; keep the layout skin in sync for every theme.
+  r.setAttribute('data-ui',t.id);
  };
 })();
 </script>
