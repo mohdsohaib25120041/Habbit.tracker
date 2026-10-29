@@ -4,17 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#000000">
-    <meta name="description" content="Nexuses - a gamified habit tracker with levels, badges, tasks and focus tools.">
+    <meta name="description" content="Allex - a gamified habit tracker with levels, badges, tasks and focus tools.">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="Nexuses">
+    <meta name="apple-mobile-web-app-title" content="Allex">
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="icon" href="icons/icon-192.png">
     <link rel="apple-touch-icon" href="icons/icon-192.png">
     <script>
         try { if (localStorage.getItem('quantumTheme') === 'light') document.documentElement.setAttribute('data-theme', 'light'); } catch (e) {}
     </script>
-    <title>Nexuses - Gamified Habit Tracker</title>
+    <title>Allex - Gamified Habit Tracker</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 
@@ -1371,7 +1371,7 @@
 
     <div class="modal-overlay" id="welcomeModal">
         <div class="modal-content" style="text-align: center;">
-            <h2 style="margin-bottom: 8px;">Welcome to Nexuses</h2>
+            <h2 style="margin-bottom: 8px;">Welcome to Allex</h2>
             <div style="font-size: 14px; line-height: 1.7; color: var(--text-muted); text-align: left; margin: 14px 0;">
                 1. Tick your habits every day. Each one gives <b>5 XP</b>.<br>
                 2. Finish levels to unlock new <b>themes</b> and <b>badges</b>.<br>
@@ -2181,7 +2181,7 @@
             if (mins >= 1) { appState.focus.push({ date: getTodayStr(), mins }); saveData(); }
             if (done) { playSound('complete'); notify({ type: 'level', title: 'Focus session complete!', message: `${mins} minutes of deep work. Great job!`, duration: 5500 }); }
             else if (mins >= 1) notify({ type: 'info', title: 'Session saved', message: `${mins} min logged` });
-            if ($('page-growth') && $('page-growth').classList.contains('active')) renderGrowth();
+            if ($('page-growth').classList.contains('active')) renderGrowth();
         }
 
         // ---- JOURNEY: timeline, before/after, milestones + forecast, balance wheel ----
@@ -2252,8 +2252,8 @@
             const r = prefs.reminder, n = new Date(), t = getTodayStr();
             if (!r.on || r.last === t || r.time !== `${pad2(n.getHours())}:${pad2(n.getMinutes())}`) return;
             r.last = t; savePrefs();
-            notify({ type: 'info', title: 'Time to build your habits!', message: 'Open Nexuses and tick what you have done.', duration: 8000 }); playSound('complete');
-            if ('Notification' in window && Notification.permission === 'granted') { try { new Notification('Nexuses', { body: 'Time to tick your habits!' }); } catch (e) {} }
+            notify({ type: 'info', title: 'Time to build your habits!', message: 'Open Allex and tick what you have done.', duration: 8000 }); playSound('complete');
+            if ('Notification' in window && Notification.permission === 'granted') { try { new Notification('Allex', { body: 'Time to tick your habits!' }); } catch (e) {} }
         }
         setInterval(checkReminder, 20000);
         function setPref(k, v) { prefs[k] = v; savePrefs(); applyPrefs(); }
@@ -2268,11 +2268,11 @@
         async function unlockApp() { const v = $('lockInput').value.trim(); if (await hashPin(v) === prefs.pinHash) { $('lockOverlay').classList.remove('show'); $('lockInput').value = ''; } else { notify({ type: 'error', title: 'Wrong PIN' }); $('lockInput').value = ''; } }
 
         function downloadFile(name, text, type) { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type })); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); }
-        function exportJSON() { downloadFile(`nexuses-backup-${getTodayStr()}.json`, JSON.stringify(appState, null, 2), 'application/json'); }
+        function exportJSON() { downloadFile(`allex-backup-${getTodayStr()}.json`, JSON.stringify(appState, null, 2), 'application/json'); }
         function exportCSV() {
             const rows = ['date,habit,done'];
             appState.habits.forEach(h => Object.keys(h.history).sort().forEach(d => rows.push(`${d},"${h.name.replace(/"/g, '""')}",${h.history[d] ? 1 : 0}`)));
-            downloadFile(`nexuses-habits-${getTodayStr()}.csv`, rows.join('\n'), 'text/csv');
+            downloadFile(`allex-habits-${getTodayStr()}.csv`, rows.join('\n'), 'text/csv');
         }
         function importJSON(input) {
             const f = input.files[0]; if (!f) return;
@@ -2295,7 +2295,7 @@
             const sug = usual.length ? `Suggested time from your habits: <b>${fm(Math.round(usual.reduce((a, b) => a + b, 0) / usual.length))}</b>` : 'Tick habits for a few days to get a suggested time.';
             $('prefsPanel').innerHTML = `<h2 class="panel-title" style="margin-bottom: 14px;">Personalize</h2>
                 <div class="setting-title">Weekly rest days</div><div class="setting-desc" style="margin-bottom: 10px;">Rest days are not counted as missed and keep your streak alive.</div><div class="weekday-row" style="margin-bottom: 20px;">${rest}</div>
-                ${line('Daily reminder', `${sug}<br>Works while Nexuses is open in a tab.`, `<div style="display: flex; gap: 8px; align-items: center;"><input type="time" value="${prefs.reminder.time}" onchange="setReminder(prefs.reminder.on, this.value)" style="padding: 8px; border-radius: 10px; background: rgba(var(--tint), 0.06); border: 1px solid var(--border-color); color: var(--text-main);">${sw(prefs.reminder.on, 'setReminder(this.checked)')}</div>`)}
+                ${line('Daily reminder', `${sug}<br>Works while Allex is open in a tab.`, `<div style="display: flex; gap: 8px; align-items: center;"><input type="time" value="${prefs.reminder.time}" onchange="setReminder(prefs.reminder.on, this.value)" style="padding: 8px; border-radius: 10px; background: rgba(var(--tint), 0.06); border: 1px solid var(--border-color); color: var(--text-main);">${sw(prefs.reminder.on, 'setReminder(this.checked)')}</div>`)}
                 <div class="setting-title" style="margin-bottom: 8px;">Accessibility</div>
                 <div class="sound-row"><div class="sound-row-title">Text size</div><select onchange="setPref('size', Number(this.value))">${[75, 90, 100, 115, 130].map(v => `<option value="${v}" ${prefs.size === v ? 'selected' : ''}>${v}%</option>`).join('')}</select></div>
                 <div class="sound-row"><div class="sound-row-title">Font</div><select onchange="setPref('font', this.value)">${[['outfit', 'Outfit (default)'], ['easy', 'Easy to read (Verdana)'], ['serif', 'Serif (Georgia)']].map(([v, l]) => `<option value="${v}" ${prefs.font === v ? 'selected' : ''}>${l}</option>`).join('')}</select></div>
@@ -2420,7 +2420,7 @@
         }
         function gCoach() {
             const mic = '<path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>';
-            return gCard('Quick Add (plain words)', gInput('nlInput', 'e.g. Read 20 pages every day | Pay bill in 3 days | Gym every monday') + '<button class="btn-primary" onclick="nlAdd()">Add</button>', 'Type naturally. Nexuses decides if it is a habit or a task and warns about duplicates.')
+            return gCard('Quick Add (plain words)', gInput('nlInput', 'e.g. Read 20 pages every day | Pay bill in 3 days | Gym every monday') + '<button class="btn-primary" onclick="nlAdd()">Add</button>', 'Type naturally. Allex decides if it is a habit or a task and warns about duplicates.')
                 + gCard('Coach', `<div class="chat-box" id="chatBox"></div><div style="display: flex; gap: 8px; align-items: center;"><div class="input-group" style="margin: 0; flex: 1;"><input type="text" id="chatInput" placeholder="Ask your coach..." onkeydown="if (event.key === 'Enter') sendChat()"></div><button class="icon-btn" onclick="startVoice()" title="Speak"><svg class="icon icon-sm" viewBox="0 0 24 24">${mic}</svg></button><button class="btn-primary" onclick="sendChat()">Send</button></div>`, 'A rule-based coach that answers from your own data (not a cloud AI). Tap the mic and say "done meditation" to tick a habit.')
                 + gCard('Duplicate & Conflict Check', conflictHtml());
         }
@@ -2591,7 +2591,7 @@
         }
         function icsDate(d) { return d.replace(/-/g, ''); }
         function exportICS() {
-            const L = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Nexuses//EN'], D = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
+            const L = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Allex//EN'], D = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
             appState.tasks.forEach(x => {
                 const start = nextOccurrence(x) || x.date || getTodayStr();
                 L.push('BEGIN:VEVENT', `UID:${x.id}@allex`, `DTSTAMP:${icsDate(getTodayStr())}T000000Z`, `DTSTART;VALUE=DATE:${icsDate(start)}`, `SUMMARY:${x.title.replace(/[,;\n]/g, ' ')}`);
@@ -2599,7 +2599,7 @@
                 if (x.type === 'monthly') L.push('RRULE:FREQ=MONTHLY;BYMONTHDAY=' + x.monthDay);
                 L.push('END:VEVENT');
             });
-            L.push('END:VCALENDAR'); downloadFile('nexuses-tasks.ics', L.join('\r\n'), 'text/calendar');
+            L.push('END:VCALENDAR'); downloadFile('allex-tasks.ics', L.join('\r\n'), 'text/calendar');
         }
         function gLab() {
             const t = getTodayStr(), H = appState.habits, hOpts = [['', 'Any / none']].concat(H.map(h => [h.id, h.name]));
@@ -2612,7 +2612,7 @@
             const T = { habit_done: 'a habit is done', all_done: 'all habits are done', task_done: 'a task is done', streak: 'streak reaches N days' };
             const auList = appState.automations.map((a, i) => { const hn = (H.find(h => h.id === a.habit) || {}).name; return gRow(`<b>WHEN</b> ${T[a.trig]}${a.trig === 'habit_done' ? ` (${esc(hn || '?')})` : ''}${a.trig === 'streak' ? ` (${a.num})` : ''}<br><b>THEN</b> ${a.act === 'notify' ? 'message: ' + esc(a.text) : a.act === 'win' ? 'add win: ' + esc(a.text) : 'play sound'}`, `delItem('automations', ${i})`); }).join('');
             return gCard('Habit Experiments', exForm + `<div style="margin-top: 14px;">${exList || gEmpty('No experiments yet. Try a 7-day experiment!')}</div>`, 'Change one thing for a few days and compare with the days before.')
-                + gCard('Rules & Automations', auForm + `<div style="margin-top: 14px;">${auList || gEmpty('No rules yet.')}</div>`, 'Create your own WHEN-THEN rules. They run while Nexuses is open.')
+                + gCard('Rules & Automations', auForm + `<div style="margin-top: 14px;">${auList || gEmpty('No rules yet.')}</div>`, 'Create your own WHEN-THEN rules. They run while Allex is open.')
                 + gCard('Calendar Export', '<button class="btn-primary" onclick="exportICS()">Download tasks (.ics)</button>', 'Import this file into Google Calendar, Outlook or Apple Calendar. Live two-way sync is not available.');
         }
 
@@ -2648,7 +2648,7 @@
         }
         function restoreVersion(i) { try { const v = JSON.parse(localStorage.getItem('quantumVersions') || '[]'); if (!v[i]) return; confirmDo('Restore this version? Current data will be replaced.', () => { appState = JSON.parse(v[i].data); saveData(); location.reload(); }); } catch (e) {} }
         function saveVersionNow() { notify(saveVersion('Manual') ? { type: 'success', title: 'Version saved' } : { type: 'error', title: 'Storage is full' }); renderExtraPanel(); }
-        function deleteData(kind) { confirmDo(kind === 'all' ? 'Delete ALL Nexuses data on this device? This cannot be undone.' : 'Delete this data?', () => deleteDataNow(kind), 'Delete'); }
+        function deleteData(kind) { confirmDo(kind === 'all' ? 'Delete ALL Allex data on this device? This cannot be undone.' : 'Delete this data?', () => deleteDataNow(kind), 'Delete'); }
         function deleteDataNow(kind) {
             if (kind === 'all') { Object.keys(localStorage).filter(k => k.startsWith('quantum')).forEach(k => localStorage.removeItem(k)); location.reload(); return; }
             if (kind === 'notes') appState.journal = {};
@@ -2684,7 +2684,7 @@
         function addFeedback() {
             const tx = $('fbText').value.trim(); if (!tx) return;
             appState.feedback.unshift({ date: getTodayStr(), type: $('fbType').value, text: tx });
-            if (FEEDBACK_EMAIL) window.location.href = `mailto:${FEEDBACK_EMAIL}?subject=${encodeURIComponent('Nexuses ' + $('fbType').value)}&body=${encodeURIComponent(tx)}`;
+            if (FEEDBACK_EMAIL) window.location.href = `mailto:${FEEDBACK_EMAIL}?subject=${encodeURIComponent('Allex ' + $('fbType').value)}&body=${encodeURIComponent(tx)}`;
             saveData(); renderExtraPanel(); notify({ type: 'success', title: 'Thanks for the feedback!' });
         }
         function renderExtraPanel() {
@@ -2694,7 +2694,7 @@
             const vers = (() => { try { return JSON.parse(localStorage.getItem('quantumVersions') || '[]'); } catch (e) { return []; } })();
             const inDemo = !!localStorage.getItem('quantumDemoBackup');
             box.innerHTML = `<h2 class="panel-title" style="margin-bottom: 14px;">Privacy Dashboard</h2>
-                <div class="setting-desc" style="margin-bottom: 10px;">All your data stays on this device. Nexuses sends nothing to any server. Storage used: <b>${(bytes / 1024).toFixed(0)} KB</b>. App lock: <b>${prefs.pinHash ? 'on' : 'off'}</b>.</div>
+                <div class="setting-desc" style="margin-bottom: 10px;">All your data stays on this device. Allex sends nothing to any server. Storage used: <b>${(bytes / 1024).toFixed(0)} KB</b>. App lock: <b>${prefs.pinHash ? 'on' : 'off'}</b>.</div>
                 ${gTiles([['Habits', appState.habits.length], ['Tasks', appState.tasks.length], ['Notes', cnt(appState.journal)], ['Log entries', appState.distractions.length + appState.procrastination.length + cnt(appState.energy)]])}
                 <div class="quick-row" style="margin: 14px 0 22px;"><span class="quick-chip" onclick="deleteData('notes')">Delete notes</span><span class="quick-chip" style="color: var(--neon-red); border-color: var(--neon-red);" onclick="deleteData('all')">Delete everything</span></div>
                 <h2 class="panel-title" style="margin-bottom: 8px;">Version History</h2>
@@ -2702,7 +2702,7 @@
                 ${vers.map((v, i) => gRow(`<b>${new Date(v.at).toLocaleString()}</b> <span class="setting-desc">${v.label}</span>`, null).replace('</div></div>', `</div><button class="btn-primary" onclick="restoreVersion(${i})">Restore</button></div>`)).join('') || gEmpty('No versions yet.')}
                 <button class="btn-primary" style="margin: 6px 0 22px;" onclick="saveVersionNow()">Save a version now</button>
                 <h2 class="panel-title" style="margin-bottom: 8px;">Demo Mode</h2>
-                <div class="setting-desc" style="margin-bottom: 10px;">Explore Nexuses with sample data. Your own data is stored safely and comes back when you exit.</div>
+                <div class="setting-desc" style="margin-bottom: 10px;">Explore Allex with sample data. Your own data is stored safely and comes back when you exit.</div>
                 <button class="btn-primary" style="margin-bottom: 22px;" onclick="${inDemo ? 'exitDemo()' : 'startDemo()'}">${inDemo ? 'Exit demo mode' : 'Try demo data'}</button>
                 <h2 class="panel-title" style="margin-bottom: 8px;">Feedback & Feature Requests</h2>
                 <div class="setting-desc" style="margin-bottom: 10px;">${FEEDBACK_EMAIL ? 'Saved here and sent by email.' : 'Saved on this device. (The app owner can add an email address in the code to receive them.)'}</div>
@@ -2859,7 +2859,7 @@
             notify({ type: 'info', title: `+${fmtMl(ml)}`, message: st.total >= st.goal ? `Goal done - ${fmtMl(st.total)} today` : `${st.pct}% of today's goal - ${fmtMl(st.left)} to go` });
         }
         function addCustomWater() {
-            const el = $('waterCustom'), v = parseInt(el.value, 10);
+            const el = $('waterCustom'); if (!el) return; const v = parseInt(el.value, 10);
             if (!(v >= 1 && v <= 5000)) return notify({ type: 'error', title: 'Enter an amount from 1 to 5000 ml' });
             addWater(v); el.value = '';
         }
@@ -2871,7 +2871,7 @@
             saveData(); renderWaterAll();
             notify({ type: 'success', title: 'Daily goal set', message: fmtMl(ml) });
         }
-        function setCustomGoal() { const el = $('waterGoalCustom'); setWaterGoal(parseInt(el.value, 10)); el.value = ''; }
+        function setCustomGoal() { const el = $('waterGoalCustom'); if (!el) return; setWaterGoal(parseInt(el.value, 10)); el.value = ''; }
         function undoWater() {
             const d = waterData().days[getTodayStr()];
             if (!d || !d.entries.length) return notify({ type: 'info', title: 'Nothing to undo' });
@@ -2981,7 +2981,7 @@
 
         function isLightTheme() { return document.documentElement.getAttribute('data-theme') === 'light'; }
 
-        // Each level unlocks a new theme (Night and Day are free from Level 1)
+        // All themes are available to the user.
         const THEMES = [
             { id: 'dark',   name: 'Night',  level: 1,  sw: ['#000000', '#00f0ff'] },
             { id: 'light',  name: 'Day',    level: 1,  sw: ['#f4f5f7', '#0097a7'] },
@@ -3001,15 +3001,21 @@
 
         function applyTheme(id) {
             const root = document.documentElement;
-            const t = THEMES.find(x => x.id === id && x.level <= unlockedLevel()) || THEMES[0];
+            const t = THEMES.find(x => x.id === id) || THEMES[0];
+            // Phase 2 fix: set data-ui so each theme's layout tokens actually apply.
+            root.setAttribute('data-ui', t.id);
             ['--bg-base', '--bg-card', '--sidebar-bg', '--nav-bg', '--modal-bg', '--neon-cyan', '--neon-purple'].forEach(v => root.style.removeProperty(v));
             if (t.id === 'light') root.setAttribute('data-theme', 'light');
             else {
                 root.removeAttribute('data-theme');
                 if (t.bg) {
-                    root.style.setProperty('--bg-base', t.bg); root.style.setProperty('--bg-card', t.card);
-                    root.style.setProperty('--sidebar-bg', t.bg + 'e6'); root.style.setProperty('--nav-bg', t.bg + 'f2');
-                    root.style.setProperty('--modal-bg', t.bg); root.style.setProperty('--neon-cyan', t.a); root.style.setProperty('--neon-purple', t.b);
+                    root.style.setProperty('--bg-base', t.bg);
+                    if (t.card) root.style.setProperty('--bg-card', t.card);
+                    root.style.setProperty('--sidebar-bg', t.bg + 'e6');
+                    root.style.setProperty('--nav-bg', t.bg + 'f2');
+                    root.style.setProperty('--modal-bg', t.bg);
+                    if (t.a) root.style.setProperty('--neon-cyan', t.a);
+                    if (t.b) root.style.setProperty('--neon-purple', t.b);
                 }
             }
         }
@@ -3021,7 +3027,7 @@
         function setTheme(id) {
             const t = THEMES.find(x => x.id === id);
             if (!t) return;
-            if (t.level > unlockedLevel()) return notify({ type: 'error', title: `${t.name} is locked`, message: `Reach Level ${t.level} to unlock this theme.` });
+            
             try { localStorage.setItem('quantumTheme', id); } catch (e) {}
             applyTheme(id);
             updateThemeButton();
@@ -3034,13 +3040,13 @@
             const ul = unlockedLevel();
             box.innerHTML = `
                 <h2 class="panel-title" style="margin-bottom: 4px;">Appearance</h2>
-                <div class="setting-desc" style="margin-bottom: 14px;">Every level unlocks a new theme. Your level: ${ul}.</div>
+                <div class="setting-desc" style="margin-bottom: 14px;">Choose any theme. All themes are unlocked.</div>
                 <div class="theme-grid">${THEMES.map(t => {
-                    const locked = t.level > ul;
+                    const locked = false;
                     return `<div class="theme-card ${cur === t.id ? 'selected' : ''} ${locked ? 'locked' : ''}" onclick="setTheme('${t.id}')">
                         <div class="theme-sw" style="background: linear-gradient(135deg, ${t.sw[0]} 55%, ${t.sw[1]} 55%);"></div>
                         <div class="theme-name">${t.name}</div>
-                        <div class="theme-lv">${locked ? 'Unlocks at Level ' + t.level : (t.level === 1 ? 'Free' : 'Unlocked')}</div>
+                        <div class="theme-lv">Unlocked</div>
                     </div>`;
                 }).join('')}</div>`;
         }
@@ -3058,20 +3064,7 @@
 
             const savedData = localStorage.getItem('quantumHabitDataV1');
             if (savedData) {
-                try {
-                    appState = JSON.parse(savedData);
-                    if (!appState || !Array.isArray(appState.habits)) throw new Error('bad save');
-                } catch (err) {
-                    try { localStorage.setItem('quantumCorruptCopy', savedData); } catch (e2) {}
-                    try {
-                        const bk = JSON.parse(localStorage.getItem('quantumBackup') || 'null');
-                        if (bk && bk.data && Array.isArray(bk.data.habits)) { appState = bk.data; var recoveredFrom = 'backup'; } else throw new Error('no backup');
-                    } catch (e3) {
-                        appState = { totalXp: 0, currentLevel: 1, badges: {}, journal: {}, tasks: [], habits: JSON.parse(JSON.stringify(defaultHabits)) };
-                        var recoveredFrom = 'fresh';
-                    }
-                    saveData();
-                }
+                appState = JSON.parse(savedData);
                 appState.habits.forEach(h => { if(!h.history) h.history = {}; });
                 if(!appState.badges) appState.badges = {};
                 if(!appState.journal) appState.journal = {};
@@ -3099,7 +3092,6 @@
             appState.currentLevel = startLevel;
             appState.highestLevel = startLevel;
             ensureExtras();
-            if (typeof recoveredFrom !== 'undefined' && recoveredFrom) setTimeout(() => notify({ type: 'error', title: 'Saved data was damaged', message: recoveredFrom === 'backup' ? 'Your last automatic backup was restored.' : 'Started fresh. A copy of the damaged data was kept on this device.', duration: 9000 }), 700);
             
             checkStorageUse();
             document.getElementById('demoBanner').style.display = localStorage.getItem('quantumDemoBackup') ? 'flex' : 'none';
@@ -4302,20 +4294,20 @@
         // ---- Install as app (PWA) ----
         let deferredInstall = null;
         window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredInstall = e; renderInstallPanel(); });
-        window.addEventListener('appinstalled', () => { deferredInstall = null; renderInstallPanel(); notify({ type: 'success', title: 'Nexuses installed!' }); });
+        window.addEventListener('appinstalled', () => { deferredInstall = null; renderInstallPanel(); notify({ type: 'success', title: 'Allex installed!' }); });
         function isInstalled() { return window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; }
         function renderInstallPanel() {
             const box = $('installPanel');
             if (!box) return;
             const done = isInstalled();
-            box.innerHTML = `<div class="setting-line" style="margin-bottom: 0;"><div><h2 class="panel-title">Download App</h2><div class="setting-desc">${done ? 'Nexuses is installed on this device.' : 'Install Nexuses on your home screen. It opens full screen and works offline.'}</div></div>${done ? '' : '<button class="btn-primary" onclick="downloadApp()">Download App</button>'}</div>`;
+            box.innerHTML = `<div class="setting-line" style="margin-bottom: 0;"><div><h2 class="panel-title">Download App</h2><div class="setting-desc">${done ? 'Allex is installed on this device.' : 'Install Allex on your home screen. It opens full screen and works offline.'}</div></div>${done ? '' : '<button class="btn-primary" onclick="downloadApp()">Download App</button>'}</div>`;
         }
         function downloadApp() {
-            if (isInstalled()) return notify({ type: 'info', title: 'Nexuses is already installed' });
+            if (isInstalled()) return notify({ type: 'info', title: 'Allex is already installed' });
             if (deferredInstall) return installApp();
             const ios = /iphone|ipad|ipod/i.test(navigator.userAgent), web = /^https?:$/.test(location.protocol);
             $('installHelpBody').innerHTML = !web
-                ? 'To install Nexuses, open it from its website link (https://...). Installing does not work from a file saved on your device.'
+                ? 'To install Allex, open it from its website link (https://...). Installing does not work from a file saved on your device.'
                 : ios
                     ? '1. Open this page in <b>Safari</b>.<br>2. Tap the <b>Share</b> button.<br>3. Choose <b>Add to Home Screen</b>.'
                     : '1. Open this page in <b>Chrome</b>.<br>2. Tap the menu (three dots).<br>3. Tap <b>Install app</b> or <b>Add to Home screen</b>.';
@@ -4442,6 +4434,111 @@ html[data-ui="legend"] :is(.panel,.stat-card,.calendar-section){clip-path:polygo
   const t=THEMES.find(x=>x.id===id&&x.level<=unlockedLevel())||THEMES[0],r=document.documentElement;
   if(t.id==='dark')r.removeAttribute('data-ui');else r.setAttribute('data-ui',t.id);
  };
+})();
+</script>
+    <!-- ===== APPEARANCE STUDIO PATCH =====
+     Isko apni index.html me sabse last me, </body> se THEEK PEHLE paste karo.
+     (Aakhri </script> ke baad, existing code ko delete/change mat karo.) -->
+<style>
+#appearancePanel{padding:28px}
+.as-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:22px}
+.as-title{font-size:32px;font-weight:700;line-height:1.1}
+.as-sub{color:var(--text-muted);font-size:14px;margin-top:8px;max-width:520px;line-height:1.5}
+.as-level{padding:8px 16px;border-radius:30px;font-size:12px;font-weight:700;background:rgba(var(--tint),.07);border:1px solid var(--border-color);white-space:nowrap}
+.as-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px}
+.as-card{padding:12px;border-radius:22px;cursor:pointer;background:rgba(var(--tint),.03);border:1px solid var(--border-color);transition:transform .25s,border-color .25s,box-shadow .25s}
+.as-card:hover{transform:translateY(-3px);border-color:var(--neon-cyan)}
+.as-card.sel{border:2px solid var(--neon-cyan);box-shadow:0 0 22px rgba(var(--tint),.08),0 0 18px var(--neon-cyan)}
+.as-prev{position:relative;height:126px;border-radius:16px;overflow:hidden;padding:12px;display:flex;flex-direction:column;gap:8px;border:1px solid rgba(var(--tint),.08)}
+.as-glow{position:absolute;top:-28px;right:-22px;width:90px;height:90px;border-radius:50%;opacity:.55}
+.as-top{display:flex;align-items:center;gap:5px;position:relative}
+.as-top i{width:6px;height:6px;border-radius:50%}
+.as-top b{height:4px;width:46%;border-radius:4px;background:var(--ln)}
+.as-row{position:relative;display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:10px;background:var(--rowbg);border:1px solid var(--ln)}
+.as-row.big{padding:9px 8px}
+.as-ic{width:16px;height:16px;border-radius:6px;flex-shrink:0}
+.as-row.sm .as-ic{width:11px;height:11px;border-radius:50%;opacity:.7}
+.as-lines{flex:1;display:flex;flex-direction:column;gap:4px}
+.as-lines u{display:block;height:3px;border-radius:3px;background:var(--ln)}
+.as-lines u+u{width:60%}
+.as-badge{position:absolute;right:10px;bottom:9px;font-style:normal;font-size:9px;font-weight:700;padding:3px 8px;border-radius:10px;color:#000}
+.as-info{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 4px 4px}
+.as-name{font-weight:700;font-size:15px}
+.as-state{font-size:12px;color:var(--text-muted);margin-top:2px}
+.as-act{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(var(--tint),.07);border:1px solid var(--border-color);color:var(--text-muted)}
+.as-card.sel .as-act{background:var(--neon-cyan);border-color:var(--neon-cyan);color:#000}
+.as-act .icon{width:15px;height:15px;stroke-width:2.5}
+.as-note{margin-top:20px;padding:14px 18px;border-radius:16px;font-size:13px;color:var(--text-muted);background:rgba(var(--tint),.03);border:1px solid var(--border-color)}
+.as-note b{color:var(--text-main)}
+@media(max-width:768px){.as-title{font-size:24px}.as-grid{grid-template-columns:1fr 1fr;gap:10px}.as-prev{height:104px}}
+</style>
+<script>
+(function () {
+  // 1) Saare themes unlocked
+  unlockedLevel = function () { return 999; };
+
+  // 2) Appearance Studio design
+  const TAGLINE = {
+    dark: 'Deep black focus', light: 'Clean and bright', ocean: 'Calm deep blue',
+    forest: 'Organic nature', sunset: 'Warm evening glow', royal: 'Elegant purple',
+    rose: 'Soft and romantic', cyber: 'Neon terminal style', gold: 'Rich golden shine',
+    aurora: 'Glassy northern lights', legend: 'Bold and fierce'
+  };
+  const BASE = {
+    dark:  { bg: '#000000', a: '#00f0ff', b: '#b026ff' },
+    light: { bg: '#f4f5f7', a: '#0097a7', b: '#8e24aa' }
+  };
+  const CHECK = '<svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';
+  const ARROW = '<svg class="icon" viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>';
+
+  renderAppearance = function () {
+    const box = document.getElementById('appearancePanel');
+    if (!box) return;
+    let cur = 'dark';
+    try { cur = localStorage.getItem('quantumTheme') || 'dark'; } catch (e) {}
+    const lvl = getLevelInfo(appState.totalXp).level;
+
+    const cards = THEMES.map(t => {
+      const c = BASE[t.id] || { bg: t.bg, a: t.a, b: t.b };
+      const light = t.id === 'light';
+      const ln = light ? 'rgba(0,0,0,.16)' : 'rgba(255,255,255,.22)';
+      const rowbg = light ? '#ffffff' : 'rgba(255,255,255,.05)';
+      const sel = cur === t.id;
+      return `
+        <div class="as-card ${sel ? 'sel' : ''}" onclick="setTheme('${t.id}')">
+          <div class="as-prev" style="background:${c.bg};--ln:${ln};--rowbg:${rowbg};">
+            <span class="as-glow" style="background:${c.a};"></span>
+            <div class="as-top"><i style="background:${c.a}"></i><i style="background:${c.b}"></i><b></b></div>
+            <div class="as-row big" style="border-color:${c.a}66;"><span class="as-ic" style="background:${c.a}"></span><div class="as-lines"><u></u><u></u></div></div>
+            <div class="as-row sm"><span class="as-ic" style="background:${c.a}"></span><div class="as-lines"><u></u></div></div>
+            <em class="as-badge" style="background:${c.a};">${t.name.toUpperCase()}</em>
+          </div>
+          <div class="as-info">
+            <div>
+              <div class="as-name">${t.name}</div>
+              <div class="as-state">${sel ? 'Currently active' : TAGLINE[t.id]}</div>
+            </div>
+            <span class="as-act">${sel ? CHECK : ARROW}</span>
+          </div>
+        </div>`;
+    }).join('');
+
+    box.innerHTML = `
+      <div class="as-head">
+        <div>
+          <div class="as-title">Appearance Studio</div>
+          <div class="as-sub">Pick a look that makes you want to come back. Every theme changes the whole feel of the app.</div>
+        </div>
+        <div class="as-level">LEVEL ${lvl}</div>
+      </div>
+      <div class="as-grid">${cards}</div>
+      <div class="as-note"><b>Make it your space.</b> Tap any theme to switch to it right away. All themes are unlocked.</div>`;
+  };
+
+  // Settings page pe turant naya design dikhao
+  try { renderAppearance(); } catch (e) {}
+  // Level-based lock wali theme wapas apply ho (reload par bhi)
+  try { applyTheme(localStorage.getItem('quantumTheme') || 'dark'); } catch (e) {}
 })();
 </script>
 </body>
